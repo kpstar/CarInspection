@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class Contents {
             BuildConfig.DEBUG ?
                     "http://24.30.63.116:8080/Peled_v6/restful" :
                     "http://peled.co/Peled_v6/restful";
+    public static String API_REGISTER_DEVICE = API_ROOT + "/configuration/registerDevice/%s"; //phone_number
     public static String API_GET_VEHICLE_DATA = API_ROOT + "/vehicle/getVehicleData/%s/%s"; //phone_number/v_plate
     public static String API_GET_INSPECTORS = API_ROOT + "/inspector/getInspectors/%s";//phone_number
     public static String API_GET_DRIVERS = API_ROOT + "/driver/getDriversData/%s/%s";//phone_number/v_plate
@@ -34,7 +36,8 @@ public class Contents {
     public static String API_GET_TRAILER = API_ROOT + "/trailer/getTrailerData/%s/%s";//phone_number/trailer_id
     public static String API_GET_VEHICLE_TRAILER_DATA = API_ROOT + "/trailer/getVhicleTrailerData/%s/%s";//phone_number/v_plate
     public static String API_GET_VEHICLE_ADDITIONAL_DETAILS = API_ROOT + "/vehicle/getAdditionalDetails/%s/%s";//phone_number/v_plate
-    public static String API_GET_INSPECTION_DATA = API_ROOT + "/inspection/getInspectionData/%s/%s";//phone_number/v_plate
+    public static String API_GET_TRUCK_INSPECTION_JSON = API_ROOT + "inspection/getTruckInspectionJson/%s";//phone_number
+    public static String API_GET_TRAILER_INSPECTION_JSON = API_ROOT + "inspection/getTrailerInspectionJson/%s";//phone_number
     public static String API_GET_DATE_AND_PICTURES = API_ROOT + "/vehicle/getVehicleDateAndPictureInfo/%s/%s";//phone_number/v_plate
     public static String API_GET_PICTURE_BY_ID = API_ROOT + "/image/getPictureById/%s/%s";//phone_number/picture id
     public static String API_GET_CONFIG = API_ROOT + "/configuration/getConfigurationFile/%s";//phone number
@@ -47,10 +50,19 @@ public class Contents {
     public static String EXTERNAL_JSON_DIR_PATH;
     public static String EXTERNAL_PICTURES_DIR_PATH;
     public static String PHONE_NUMBER;
+    public static String TOKEN;
     public static String CURRENT_VEHICLE_NUMBER;
 
     public static String DEFAULT_DATE_FORMAT = "dd/MM/yyyy";
     public static String DATE_PREFIX = "#";
+    public static String TOKEN_KEY = "registerDevice";
+    public static String HEADER_KEY = "peled-guid";
+
+    public static Map<String, String> getHeaders() {
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("key", "Value");
+        return headers;
+    }
 
     public static class JsonVehicleData {
         public static String VEHICLE_PLATE = "vehiclePlate";
@@ -188,16 +200,29 @@ public class Contents {
         public static String FILE_PATH;
     }
 
-    public static class JsonInspectionData {
+    public static class JsonTruckInspectionJson {
         public static String SECTIONS = "testSections";
         public static String IDENTIFIER = "identifier";
-        public static String SUBSECTIONS = "subSections";
         public static String QUESTIONS = "questions";
         public static String NOTES = "notes";
+        public static String ORDER = "order";
         public static String CAPTION = "caption";
         public static String STATUS = "checked"; //status == checked
-        public static String ASSET_FILE_NAME = "full_inspection_structure.json";
-        public static String FILE_NAME = "inspection_data.json";
+        public static String ASSET_FILE_NAME = "full_truck_inspection_structure.json";
+        public static String FILE_NAME = "truck_inspection_json.json";
+        public static String FILE_PATH;
+    }
+
+    public static class JsonTrailerInspectionJson {
+        public static String SECTIONS = "testSections";
+        public static String IDENTIFIER = "identifier";
+        public static String QUESTIONS = "questions";
+        public static String NOTES = "notes";
+        public static String ORDER = "order";
+        public static String CAPTION = "caption";
+        public static String STATUS = "checked"; //status == checked
+        public static String ASSET_FILE_NAME = "full_trailer_inspection_structure.json";
+        public static String FILE_NAME = "trailer_inspection_json.json";
         public static String FILE_PATH;
     }
 
@@ -309,7 +334,8 @@ public class Contents {
         JsonTrailers.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonTrailers.FILE_NAME;
         JsonVehicleTrailerData.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonVehicleTrailerData.FILE_NAME;
         VehicleAdditionalDetails.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + VehicleAdditionalDetails.FILE_NAME;
-        JsonInspectionData.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonInspectionData.FILE_NAME;
+        JsonTrailerInspectionJson.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonTrailerInspectionJson.FILE_NAME;
+        JsonTruckInspectionJson.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonTruckInspectionJson.FILE_NAME;
         JsonDateAndPictures.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonDateAndPictures.FILE_NAME;
         JsonFileTypesEnum.FILE_PATH = MyApp.getContext().getExternalFilesDir(null) + "/" + JsonFileTypesEnum.FILE_NAME;
         Config.FILE_PATH = MyApp.getContext().getExternalFilesDir(null) + "/" + Config.FILE_NAME;
@@ -320,6 +346,7 @@ public class Contents {
 
         API_ROOT = myPreference.getAPIBaseURL();
 
+        API_REGISTER_DEVICE = API_ROOT + "/configuration/registerDevice/%s"; //phone_number
         API_GET_VEHICLE_DATA = API_ROOT + "/vehicle/getVehicleData/%s/%s"; //phone_number/v_plate
         API_GET_INSPECTORS = API_ROOT + "/inspector/getInspectors/%s";//phone_number
         API_GET_DRIVERS = API_ROOT + "/driver/getDriversData/%s/%s";//phone_number/v_plate
@@ -329,7 +356,8 @@ public class Contents {
         API_GET_TRAILER = API_ROOT + "/trailer/getTrailerData/%s/%s";//phone_number/trailer_id
         API_GET_VEHICLE_TRAILER_DATA = API_ROOT + "/trailer/getVhicleTrailerData/%s/%s";//phone_number/v_plate
         API_GET_VEHICLE_ADDITIONAL_DETAILS = API_ROOT + "/vehicle/getAdditionalDetails/%s/%s";//phone_number/v_plate
-        API_GET_INSPECTION_DATA = API_ROOT + "/inspection/getInspectionData/%s/%s";//phone_number/v_plate
+        API_GET_TRUCK_INSPECTION_JSON = API_ROOT + "/inspection/getTruckInspectionJson/%s";//phone_number
+        API_GET_TRAILER_INSPECTION_JSON = API_ROOT + "/inspection/getTrailerInspectionJson/%s";//phone_number
         API_GET_DATE_AND_PICTURES = API_ROOT + "/vehicle/getVehicleDateAndPictureInfo/%s/%s";//phone_number/v_plate
         API_GET_PICTURE_BY_ID = API_ROOT + "/image/getPictureById/%s/%s";//phone_number/picture id
         API_GET_CONFIG = API_ROOT + "/configuration/getConfigurationFile/%s";//phone number

@@ -115,10 +115,12 @@ public class SyncService extends Service {
                                 }
                             }
 
+
                             @Override
                             public Map<String, String> getHeaders() throws AuthFailureError {
                                 Map<String, String>  params = new HashMap<>();
                                 params.put("Content-Type", "application/json");
+                                params.put(Contents.HEADER_KEY, Contents.TOKEN);
                                 return params;
                             }
                         };
@@ -164,7 +166,7 @@ public class SyncService extends Service {
     private String getSubmitInspectionData(Submission submission){
         String jsonDir = getExternalFilesDir(submission.vehiclePlate) + "/" + Contents.EXTERNAL_JSON_DIR;
 
-        JSONObject inspectionDataJson = JsonHelper.readJsonFromFile(jsonDir + "/" + Contents.JsonInspectionData.FILE_NAME);
+        JSONObject inspectionDataJson = JsonHelper.readJsonFromFile(jsonDir + "/" + Contents.JsonTruckInspectionJson.FILE_NAME);
         JSONObject driverDataJson = JsonHelper.readJsonFromFile(jsonDir + "/" + Contents.JsonVehicleDriverData.FILE_NAME);
         JSONObject vehicleDataJson = JsonHelper.readJsonFromFile(jsonDir + "/" + Contents.JsonVehicleData.FILE_NAME);
         JSONObject dateAndPicturesJson = JsonHelper.readJsonFromFile(jsonDir + "/" + Contents.JsonDateAndPictures.FILE_NAME);

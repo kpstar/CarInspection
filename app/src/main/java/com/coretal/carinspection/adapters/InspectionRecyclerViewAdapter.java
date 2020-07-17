@@ -176,7 +176,6 @@ public class InspectionRecyclerViewAdapter
             onBind = true;
             checkBox.setChecked(content.isChecked);
             onBind = false;
-            editTextTitle.setText(content.subsectionCaption);
             editTextSubTitle.setText(content.questionCaption);
             editTextRemarks.setText(content.questionNotes);
         }
@@ -215,14 +214,16 @@ public class InspectionRecyclerViewAdapter
     public static class SectionHeader extends ExpandableGroup<SectionContent> {
         public String sectionId;
         public String sectionCaption;
+        public int sectionOrder;
         public ArrayList<SectionContent> sectionContents;
         public boolean isChecked = false;
 
-        public SectionHeader(String sectionId, String sectionCaption, ArrayList<SectionContent> sectionContents, boolean isChecked) {
+        public SectionHeader(String sectionId, String sectionCaption, int sectionOrder, ArrayList<SectionContent> sectionContents, boolean isChecked) {
             super(sectionCaption, sectionContents);
             this.sectionId = sectionId;
             this.sectionCaption = sectionCaption;
             this.sectionContents = sectionContents;
+            this.sectionOrder = sectionOrder;
             this.isChecked = isChecked;
             for (SectionContent sectionContent: sectionContents) {
                 sectionContent.sectionHeader = this;
@@ -233,28 +234,25 @@ public class InspectionRecyclerViewAdapter
     public static class SectionContent implements Parcelable {
 
         public SectionHeader sectionHeader;
-        public String subsectionId;
-        public String subsectionCaption; // subsection caption
         public String questionId;
         public String questionCaption; //question caption
         public String questionNotes; //questionNotes
+        public int questionOrder;
         public boolean isChecked;
 
-        public SectionContent(String subsectionId, String subsectionCaption, String questionId, String questionCaption, String questionNotes, boolean isChecked) {
-            this.subsectionId = subsectionId;
-            this.subsectionCaption = subsectionCaption;
+        public SectionContent(String questionId, String questionCaption, String questionNotes, int questionOrder, boolean isChecked) {
             this.questionId = questionId;
             this.questionCaption = questionCaption;
             this.questionNotes = questionNotes;
+            this.questionOrder = questionOrder;
             this.isChecked = isChecked;
         }
 
         public SectionContent(Parcel in){
-            this.subsectionId = in.readString();
-            this.subsectionCaption = in.readString();
             this.questionId = in.readString();
             this.questionCaption = in.readString();
             this.questionNotes = in.readString();
+            this.questionOrder = in.readInt();
             this.isChecked = in.readByte() == 1;
         }
 
@@ -265,8 +263,6 @@ public class InspectionRecyclerViewAdapter
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(subsectionId);
-            dest.writeString(subsectionCaption);
             dest.writeString(questionId);
             dest.writeString(questionCaption);
             dest.writeString(questionNotes);

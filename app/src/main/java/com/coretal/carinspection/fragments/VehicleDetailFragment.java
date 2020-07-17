@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.error.AuthFailureError;
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.JsonObjectRequest;
 import com.android.volley.request.StringRequest;
@@ -52,6 +53,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -232,7 +234,7 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
 
     @Override
     public void onSubmitVPlateDialog(String vPlate) {
-        Log.d("Kangtle", "Start vehidle number: " + vPlate);
+        Log.d("Kangtle", "Start vehicle number: " + vPlate);
 
         this.vPlate = vPlate;
         Contents.CURRENT_VEHICLE_NUMBER = vPlate;
@@ -248,8 +250,10 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
 
             if(!MyHelper.isConnectedInternet(getActivity())){
                 newSubmission(vPlate);
-                JSONObject inspectionDataJson = JsonHelper.readJsonFromAsset(Contents.JsonInspectionData.ASSET_FILE_NAME);
-                JsonHelper.saveJsonObject(inspectionDataJson, Contents.JsonInspectionData.FILE_PATH);
+                JSONObject truckInspectionDataJson = JsonHelper.readJsonFromAsset(Contents.JsonTruckInspectionJson.ASSET_FILE_NAME);
+                JsonHelper.saveJsonObject(truckInspectionDataJson, Contents.JsonTruckInspectionJson.FILE_PATH);
+                JSONObject trailerInspectionDataJson = JsonHelper.readJsonFromAsset(Contents.JsonTrailerInspectionJson.ASSET_FILE_NAME);
+                JsonHelper.saveJsonObject(trailerInspectionDataJson, Contents.JsonTrailerInspectionJson.FILE_PATH);
                 Contents.IS_STARTED_INSPECTION = true;
                 setValuesFromJsonFiles();
                 return;
@@ -279,7 +283,14 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                         public void onErrorResponse(VolleyError error) {
                         }
                     }
-            );
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return headers;
+                }
+            };
 
             JsonObjectRequest getInspectorsRequest = new JsonObjectRequest(
                     Request.Method.GET,
@@ -300,7 +311,14 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                         public void onErrorResponse(VolleyError error) {
                         }
                     }
-            );
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return headers;
+                }
+            };
 
             JsonObjectRequest getDriversRequest = new JsonObjectRequest(
                     Request.Method.GET,
@@ -321,7 +339,14 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                         public void onErrorResponse(VolleyError error) {
                         }
                     }
-            );
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return headers;
+                }
+            };
 
             JsonObjectRequest getVehicleDriverDataRequest = new JsonObjectRequest(
                     Request.Method.GET,
@@ -342,7 +367,14 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                         public void onErrorResponse(VolleyError error) {
                         }
                     }
-            );
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return headers;
+                }
+            };
 
             JsonObjectRequest getTrailerRequest = new JsonObjectRequest(
                     Request.Method.GET,
@@ -363,7 +395,14 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                         public void onErrorResponse(VolleyError error) {
                         }
                     }
-            );
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return headers;
+                }
+            };
 
             JsonObjectRequest getVehicleTrailerDataRequest = new JsonObjectRequest(
                     Request.Method.GET,
@@ -384,7 +423,14 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                         public void onErrorResponse(VolleyError error) {
                         }
                     }
-            );
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return headers;
+                }
+            };
 
             StringRequest getVehicleAdditionalDetailsRequest = new StringRequest(
                     Request.Method.GET,
@@ -405,17 +451,52 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
 
                         }
                     }
-            );
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return headers;
+                }
+            };
 
-            JsonObjectRequest getInspectionDataRequest = new JsonObjectRequest(
+//            JsonObjectRequest getVehicleDataRequest = new JsonObjectRequest(
+//                    Request.Method.GET,
+//                    String.format(Contents.API_GET_VEHICLE_DATA, Contents.PHONE_NUMBER, vPlate),
+//                    null,
+//                    new Response.Listener<JSONObject>() {
+//                        @Override
+//                        public void onResponse(JSONObject response) {
+//                            if (isSuccessResponse(response)){
+//                                JsonHelper.saveJsonObject(response, Contents.JsonTruckInspectionJson.FILE_PATH);
+//                            }else{
+//                                successAllRequests = false;
+//                            }
+//                        }
+//                    },
+//                    new Response.ErrorListener() {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//                        }
+//                    }
+//            ){
+//                @Override
+//                public Map<String, String> getHeaders() throws AuthFailureError {
+//                    HashMap<String, String> headers = new HashMap<String, String>();
+//                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+//                    return headers;
+//                }
+//            };
+
+            JsonObjectRequest getTruckInpsectionJsonRequest = new JsonObjectRequest(
                     Request.Method.GET,
-                    String.format(Contents.API_GET_INSPECTION_DATA, Contents.PHONE_NUMBER, vPlate),
+                    String.format(Contents.API_GET_TRUCK_INSPECTION_JSON, Contents.PHONE_NUMBER),
                     null,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             if (isSuccessResponse(response)){
-                                JsonHelper.saveJsonObject(response, Contents.JsonInspectionData.FILE_PATH);
+                                JsonHelper.saveJsonObject(response, Contents.JsonTruckInspectionJson.FILE_PATH);
                             }else{
                                 successAllRequests = false;
                             }
@@ -426,7 +507,42 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                         public void onErrorResponse(VolleyError error) {
                         }
                     }
-            );
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return headers;
+                }
+            };
+
+            JsonObjectRequest getTrailerInspectionJsonRequest = new JsonObjectRequest(
+                    Request.Method.GET,
+                    String.format(Contents.API_GET_TRAILER_INSPECTION_JSON, Contents.PHONE_NUMBER),
+                    null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            if (isSuccessResponse(response)){
+                                JsonHelper.saveJsonObject(response, Contents.JsonTrailerInspectionJson.FILE_PATH);
+                            }else{
+                                successAllRequests = false;
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                        }
+                    }
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return headers;
+                }
+            };
 
             JsonObjectRequest getDateAndPictureRequest = new JsonObjectRequest(
                     Request.Method.GET,
@@ -447,7 +563,14 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                         public void onErrorResponse(VolleyError error) {
                         }
                     }
-            );
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return headers;
+                }
+            };
 
             JsonObjectRequest getFileTypeEnumRequest = new JsonObjectRequest(
                     Request.Method.GET,
@@ -468,7 +591,14 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                         public void onErrorResponse(VolleyError error) {
                         }
                     }
-            );
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return headers;
+                }
+            };
 
             volleyHelper.add(getVehicleDataRequest);
             volleyHelper.add(getInspectorsRequest);
@@ -477,7 +607,8 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
             volleyHelper.add(getTrailerRequest);
             volleyHelper.add(getVehicleTrailerDataRequest);
             volleyHelper.add(getVehicleAdditionalDetailsRequest);
-            volleyHelper.add(getInspectionDataRequest);
+            volleyHelper.add(getTruckInpsectionJsonRequest);
+            volleyHelper.add(getTrailerInspectionJsonRequest);
             volleyHelper.add(getDateAndPictureRequest);
             volleyHelper.add(getFileTypeEnumRequest);
         }

@@ -16,6 +16,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.annotation.NonNull;
+
+import com.android.volley.error.AuthFailureError;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
@@ -46,8 +48,11 @@ import com.coretal.carinspection.utils.MyPreference;
 import com.coretal.carinspection.utils.VolleyHelper;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -114,8 +119,10 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
         switch (menuId) {
             case R.id.navigation_home:
                 return homeFragment;
-            case R.id.navigation_inspection:
+            case R.id.navigation_truck:
                 return inspectionFragment;
+//            case R.id.navigation_trailer:
+//                return inspectionFragment;
             case R.id.navigation_camera:
                 return vehicleDateAndPicturesFragment;
             case R.id.navigation_notes:
@@ -132,8 +139,10 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
             case R.id.navigation_home:
                 homeFragment = HomeFragment.newInstance();
                 return homeFragment;
-            case R.id.navigation_inspection:
+            case R.id.navigation_truck:
                 inspectionFragment = InspectionFragment.newInstance();
+//            case R.id.navigation_trailer:
+//                inspectionFragment = InspectionFragment.newInstance();
                 return inspectionFragment;
             case R.id.navigation_camera:
                 vehicleDateAndPicturesFragment = VehicleDateAndPicturesFragment.newInstance();
@@ -225,11 +234,7 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
         }else{
             Contents.configAPIs(this);
             Contents.PHONE_NUMBER = phoneNumber;
-            if(myPreference.isGettedConfig()){
-                resetConfigOnlyRequiredFields();
-            }else{
-                getConfigFile();
-            }
+            registerDevice();
         }
     }
 
@@ -285,6 +290,63 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
         setupAfterPermissions();
     }
 
+    private void registerDevice() {
+        Log.d("Kangtle", "Register device, getting token...");
+        JsonObjectRequest getRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                String.format(Contents.API_REGISTER_DEVICE, Contents.PHONE_NUMBER),
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (response.has("error")){
+                            String error = response.optString("error");
+                            Log.d("Kangtle", error);
+                            AlertHelper.message(MainActivity.this, "Error", error, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getAPI_PhoneNumberWithDialog();
+                                }
+                            });
+                        } else {
+                            Log.d("Kangtle", "Getted token successfully");
+                            try {
+                                String token = response.getString(Contents.TOKEN_KEY);
+                                Contents.TOKEN = token;
+                                Log.d("****Token****", Contents.TOKEN);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            // This is Old Code // Must Watch out.
+//                            if(myPreference.isGettedConfig()){
+//                                resetConfigOnlyRequiredFields();
+//                            }else{
+//                                getConfigFile();
+//                            }
+
+
+                            // Temporary Code
+                            getConfigFile();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Kangtle", error.toString());
+                        AlertHelper.message(MainActivity.this, "Error", error.toString(), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                getAPI_PhoneNumberWithDialog();
+                            }
+                        });
+                    }
+                }
+        );
+        volleyHelper.add(getRequest);
+    }
+
     private void getConfigFile() {
         Log.d("Kangtle", "Getting config file...");
         progressDialog.setMessage("Getting config file...");
@@ -328,7 +390,14 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
                         });
                     }
                 }
-        );
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                return headers;
+            }
+        };
         volleyHelper.add(getRequest);
     }
 
@@ -353,7 +422,14 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
                         Log.d("Kangtle", "Can't get config file.");
                     }
                 }
-        );
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                return headers;
+            }
+        };
         volleyHelper.add(getRequest);
     }
 

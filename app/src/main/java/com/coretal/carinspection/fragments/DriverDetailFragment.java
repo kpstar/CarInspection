@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.error.AuthFailureError;
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.JsonObjectRequest;
 import com.coretal.carinspection.R;
@@ -35,6 +36,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -264,7 +266,14 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
                             progressDialog.hide();
                         }
                     }
-            );
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return headers;
+                }
+            };
             VolleyHelper volleyHelper = new VolleyHelper(getContext());
             volleyHelper.add(getDriverDataRequest);
         }else{

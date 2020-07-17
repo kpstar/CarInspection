@@ -73,6 +73,7 @@
     <string name="missing_document">Missing document:</string>
     <string name="vehicle">Vehicle</string>
     <string name="driver">Driver</string>
+    <string name="truck">Truck</string>
     <string name="trailer">Trailer</string>
     <string name="required_date_field">Required the date field</string>
     <string name="required_location_field">Required the location field</string>

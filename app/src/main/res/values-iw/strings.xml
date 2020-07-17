@@ -73,6 +73,7 @@
     <string name="missing_document">מסמכים חסרים:</string>
     <string name="vehicle">רכב</string>
     <string name="driver">נהג</string>
+    <string name="truck">מַשָׂאִית</string>
     <string name="trailer">נגרר</string>
     <string name="required_date_field">תאריך בדיקה חסר</string>
     <string name="required_location_field">מיקום הבדיקה חסר</string>
