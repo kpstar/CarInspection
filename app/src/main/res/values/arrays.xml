@@ -31,4 +31,9 @@
         <item>GALERY</item>
         <item>BOTH</item>
     </string-array>
+    <string-array name="submission_actions">
+        <item>@string/reset</item>
+        <item>@string/clear</item>
+        <item>@string/send</item>
+    </string-array>
 </resources>

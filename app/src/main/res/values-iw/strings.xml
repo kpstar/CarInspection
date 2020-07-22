@@ -75,8 +75,27 @@
     <string name="driver">נהג</string>
     <string name="truck">מַשָׂאִית</string>
     <string name="trailer">נגרר</string>
+    <string name="trailer_check_desc">שלח בדיקת קרוואן</string>
     <string name="required_date_field">תאריך בדיקה חסר</string>
     <string name="required_location_field">מיקום הבדיקה חסר</string>
     <string name="required_odometer_field">מד אוץ חסר</string>
     <string name="enter_another_vehicle_number">קיימת כבר בדיקה עבור רכב זה, יש להמתין 24 שעות. ניתן להזין מס רכב אחר</string>
+    <string name="driver_id">מזהה נהג</string>
+    <string name="license_number">מספר רשיון</string>
+    <string name="name">שֵׁם</string>
+    <string name="license_type">סוג רישיון</string>
+    <string name="reset">אִתחוּל</string>
+    <string name="clear">ברור</string>
+    <string name="send">לִשְׁלוֹחַ</string>
+
+    <string name="id">מזהה</string>
+    <string name="month">חוֹדֶשׁ</string>
+    <string name="date">תַאֲרִיך</string>
+    <string name="type">סוּג</string>
+    <string name="status">סטָטוּס</string>
+    <string name="error_detail">פירוט שגיאה</string>
+    <string name="num_try">לנסות מספר</string>
+    <string name="notes">הערות</string>
+    <string name="started_at">התחיל ב</string>
+    <string name="ended_at">הסתיים בשעה</string>
 </resources>

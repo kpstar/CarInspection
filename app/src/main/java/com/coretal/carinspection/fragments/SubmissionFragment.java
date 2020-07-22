@@ -59,7 +59,7 @@ public class SubmissionFragment extends Fragment {
         tableView.setAdapter(mTableViewAdapter);
 
         actionSpinner = view.findViewById(R.id.action_spinner);
-        String[] actions = {"Reset", "Clear", "Send"};
+        String[] actions = {getString(R.string.reset), getString(R.string.clear), getString(R.string.send)};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, actions);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         actionSpinner.setAdapter(adapter);
@@ -192,17 +192,17 @@ public class SubmissionFragment extends Fragment {
         List<SubmissionTableViewAdapter.ColumnHeader> list = new ArrayList<>();
 
         // Create Column Headers
-        list.add(new SubmissionTableViewAdapter.ColumnHeader("Id"));
-        list.add(new SubmissionTableViewAdapter.ColumnHeader("Vehicle"));
-        list.add(new SubmissionTableViewAdapter.ColumnHeader("Month"));
-        list.add(new SubmissionTableViewAdapter.ColumnHeader("Date"));
-        list.add(new SubmissionTableViewAdapter.ColumnHeader("Type"));
-        list.add(new SubmissionTableViewAdapter.ColumnHeader("Status"));
-        list.add(new SubmissionTableViewAdapter.ColumnHeader("Error Detail"));
-        list.add(new SubmissionTableViewAdapter.ColumnHeader("Num Try"));
-        list.add(new SubmissionTableViewAdapter.ColumnHeader("Notes"));
-        list.add(new SubmissionTableViewAdapter.ColumnHeader("Started At"));
-        list.add(new SubmissionTableViewAdapter.ColumnHeader("Ended At"));
+        list.add(new SubmissionTableViewAdapter.ColumnHeader(getString(R.string.id)));
+        list.add(new SubmissionTableViewAdapter.ColumnHeader(getString(R.string.vehicle)));
+        list.add(new SubmissionTableViewAdapter.ColumnHeader(getString(R.string.month)));
+        list.add(new SubmissionTableViewAdapter.ColumnHeader(getString(R.string.date)));
+        list.add(new SubmissionTableViewAdapter.ColumnHeader(getString(R.string.type)));
+        list.add(new SubmissionTableViewAdapter.ColumnHeader(getString(R.string.status)));
+        list.add(new SubmissionTableViewAdapter.ColumnHeader(getString(R.string.error_detail)));
+        list.add(new SubmissionTableViewAdapter.ColumnHeader(getString(R.string.num_try)));
+        list.add(new SubmissionTableViewAdapter.ColumnHeader(getString(R.string.notes)));
+        list.add(new SubmissionTableViewAdapter.ColumnHeader(getString(R.string.started_at)));
+        list.add(new SubmissionTableViewAdapter.ColumnHeader(getString(R.string.ended_at)));
 
         return list;
     }

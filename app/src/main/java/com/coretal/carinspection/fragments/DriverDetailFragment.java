@@ -2,6 +2,8 @@ package com.coretal.carinspection.fragments;
 
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -16,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -165,11 +168,42 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         driverIDs.add("");
         Collections.addAll(driverIDs, drivers.keySet().toArray(new String[drivers.size()]));
         driverNames = new ArrayList<>(drivers.values());
-        driverNames.add(0, "");
+        driverNames.add(0, "CREATE NEW DRIVER");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, driverNames);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        driverSpinner.setAdapter(adapter);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, driverNames);
+
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, driverNames) {
+
+//            @Override
+//            public boolean isEnabled(int position) {
+//                return position != 0;
+//            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent){
+                View v = convertView;
+                if (v == null) {
+                    Context mContext = this.getContext();
+                    LayoutInflater vi = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    v = vi.inflate(R.layout.spinner_item, null);
+                }
+
+                TextView tv = (TextView) v.findViewById(R.id.spinnerTarget);
+                tv.setText(driverNames.get(position));
+
+                switch (position) {
+                    case 0:
+                        tv.setTextColor(Color.RED);
+                        break;
+                    default:
+                        tv.setTextColor(Color.BLACK);
+                        break;
+                }
+                return v;
+            }
+        };
+//        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        driverSpinner.setAdapter(spinnerAdapter);
 
         JSONObject driverDataJson = JsonHelper.readJsonFromFile(Contents.JsonVehicleDriverData.FILE_PATH);
         if (driverDataJson == null){
@@ -239,7 +273,6 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position > 0) {
             String driverId = driverIDs.get(position);
-
             progressDialog.show();
             Log.d("Kangtle", "getting driver data.");
             JsonObjectRequest getDriverDataRequest = new JsonObjectRequest(
@@ -277,8 +310,9 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
             VolleyHelper volleyHelper = new VolleyHelper(getContext());
             volleyHelper.add(getDriverDataRequest);
         }else{
-            FileHelper.deleteFile(Contents.JsonVehicleDriverData.FILE_PATH);
-            setValuesFromFile();
+//            FileHelper.deleteFile(Contents.JsonVehicleDriverData.FILE_PATH);
+//            setValuesFromFile();
+            Toast.makeText(getContext(), "Create new driver", Toast.LENGTH_SHORT).show();
         }
     }
 

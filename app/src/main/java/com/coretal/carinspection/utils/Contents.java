@@ -36,14 +36,16 @@ public class Contents {
     public static String API_GET_TRAILER = API_ROOT + "/trailer/getTrailerData/%s/%s";//phone_number/trailer_id
     public static String API_GET_VEHICLE_TRAILER_DATA = API_ROOT + "/trailer/getVhicleTrailerData/%s/%s";//phone_number/v_plate
     public static String API_GET_VEHICLE_ADDITIONAL_DETAILS = API_ROOT + "/vehicle/getAdditionalDetails/%s/%s";//phone_number/v_plate
-    public static String API_GET_TRUCK_INSPECTION_JSON = API_ROOT + "inspection/getTruckInspectionJson/%s";//phone_number
-    public static String API_GET_TRAILER_INSPECTION_JSON = API_ROOT + "inspection/getTrailerInspectionJson/%s";//phone_number
+    public static String API_GET_TRUCK_INSPECTION_JSON = API_ROOT + "/inspection/getTruckInspectionJson/%s";//phone_number
+    public static String API_GET_TRAILER_INSPECTION_JSON = API_ROOT + "/inspection/getTrailerInspectionJson/%s";//phone_number
+    public static String API_GET_TRUCK_INPSECTIONS = API_ROOT + "/vehicle/getTruckInspections/%s/%s";//phone_number/v_plate
+    public static String API_GET_VEHICLE_INPSECTIONS = API_ROOT + "/vehicle/getVehicleInspections/%s/%s";//phone_number/v_plate
     public static String API_GET_DATE_AND_PICTURES = API_ROOT + "/vehicle/getVehicleDateAndPictureInfo/%s/%s";//phone_number/v_plate
     public static String API_GET_PICTURE_BY_ID = API_ROOT + "/image/getPictureById/%s/%s";//phone_number/picture id
     public static String API_GET_CONFIG = API_ROOT + "/configuration/getConfigurationFile/%s";//phone number
-    public static String API_GET_CONFIG_FILE_TYPES_EMUM = API_ROOT + "/configuration/getPictureAndData/%s";//phone number
+    public static String API_GET_CONFIG_FILE_TYPES_EMUM = API_ROOT + "/configuration/getPictureAndDataCategoryJson/%s";//phone number
     public static String API_SUBMIT_PICTURE = API_ROOT + "/submitPicture/fileupload";
-    public static String API_SUBMIT_INSPECTION = API_ROOT + "/submitInspection";
+    public static String API_SUBMIT_INSPECTION = API_ROOT + "/submitInspectionV2";
     public static String API_SERVICE_STATUS = API_ROOT + "/serviceStatus";
 
     public static String EXTERNAL_JSON_DIR = "Json";
@@ -358,10 +360,12 @@ public class Contents {
         API_GET_VEHICLE_ADDITIONAL_DETAILS = API_ROOT + "/vehicle/getAdditionalDetails/%s/%s";//phone_number/v_plate
         API_GET_TRUCK_INSPECTION_JSON = API_ROOT + "/inspection/getTruckInspectionJson/%s";//phone_number
         API_GET_TRAILER_INSPECTION_JSON = API_ROOT + "/inspection/getTrailerInspectionJson/%s";//phone_number
+        API_GET_VEHICLE_INPSECTIONS = API_ROOT + "/vehicle/getVehicleInspections/%s/%s";//phone_number/v_plate
+        API_GET_TRUCK_INPSECTIONS = API_ROOT + "/vehicle/getTruckInspections/%s/%s";//phone_number/v_plate
         API_GET_DATE_AND_PICTURES = API_ROOT + "/vehicle/getVehicleDateAndPictureInfo/%s/%s";//phone_number/v_plate
         API_GET_PICTURE_BY_ID = API_ROOT + "/image/getPictureById/%s/%s";//phone_number/picture id
         API_GET_CONFIG = API_ROOT + "/configuration/getConfigurationFile/%s";//phone number
-        API_GET_CONFIG_FILE_TYPES_EMUM = API_ROOT + "/configuration/getPictureAndData/%s";//phone number
+        API_GET_CONFIG_FILE_TYPES_EMUM = API_ROOT + "/configuration/getPictureAndDataCategoryJson/%s";//phone number
         API_SUBMIT_PICTURE = API_ROOT + "/submitPicture/fileupload";
         API_SUBMIT_INSPECTION = API_ROOT + "/submitInspection";
         API_SERVICE_STATUS = API_ROOT + "/serviceStatus";

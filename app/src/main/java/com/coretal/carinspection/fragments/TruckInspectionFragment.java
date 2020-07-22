@@ -175,7 +175,7 @@ public class TruckInspectionFragment extends Fragment {
         try {
             JSONArray sectionsArray = new JSONArray();
             allSectionObject.put(Contents.JsonTruckInspectionJson.SECTIONS, sectionsArray);
-            for (InspectionRecyclerViewAdapter.SectionHeader header: sectionHeaders){
+            for (InspectionRecyclerViewAdapter.SectionHeader header: sectionHeaders) {
                 String sectionId = header.sectionId;
                 String sectionCaption = header.sectionCaption;
                 int sectionOrder = header.sectionOrder;
@@ -186,28 +186,24 @@ public class TruckInspectionFragment extends Fragment {
                 sectionObject.put(Contents.JsonTruckInspectionJson.CAPTION, sectionCaption);
                 sectionObject.put(Contents.JsonTruckInspectionJson.ORDER, sectionOrder);
 
-                HashMap<String, JSONObject> subsectionsMap = new HashMap<>();
-                for (InspectionRecyclerViewAdapter.SectionContent sectionContent: sectionContents){
+                JSONArray questionArray = new JSONArray();
+                for (InspectionRecyclerViewAdapter.SectionContent sectionContent : sectionContents) {
                     String questionId = sectionContent.questionId;
                     String questionCaption = sectionContent.questionCaption;
                     String questionNotes = sectionContent.questionNotes;
+                    int questionOrder = sectionContent.questionOrder;
                     boolean isChecked = sectionContent.isChecked;
-
-                    if(!subsectionsMap.containsKey(questionId)){
-                        JSONObject subsectionObject = new JSONObject();
-                        subsectionObject.put(Contents.JsonTruckInspectionJson.QUESTIONS, new JSONArray());
-                        subsectionsMap.put(questionId, subsectionObject);
-                    }
 
                     JSONObject questionObject = new JSONObject();
                     questionObject.put(Contents.JsonTruckInspectionJson.IDENTIFIER, questionId);
                     questionObject.put(Contents.JsonTruckInspectionJson.CAPTION, questionCaption);
                     questionObject.put(Contents.JsonTruckInspectionJson.NOTES, questionNotes);
                     questionObject.put(Contents.JsonTruckInspectionJson.STATUS, isChecked);
+                    questionObject.put(Contents.JsonTruckInspectionJson.ORDER, questionOrder);
 
-                    JSONArray questionArray = subsectionsMap.get(questionId).getJSONArray(Contents.JsonTruckInspectionJson.QUESTIONS);
                     questionArray.put(questionObject);
                 }
+                sectionObject.put(Contents.JsonTruckInspectionJson.QUESTIONS, questionArray);
                 sectionsArray.put(sectionObject);
             }
         } catch (JSONException e) {

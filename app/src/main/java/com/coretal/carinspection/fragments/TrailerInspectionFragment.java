@@ -186,28 +186,24 @@ public class TrailerInspectionFragment extends Fragment {
                 sectionObject.put(Contents.JsonTrailerInspectionJson.CAPTION, sectionCaption);
                 sectionObject.put(Contents.JsonTrailerInspectionJson.ORDER, sectionOrder);
 
-                HashMap<String, JSONObject> subsectionsMap = new HashMap<>();
+                JSONArray questionArray = new JSONArray();
                 for (InspectionRecyclerViewAdapter.SectionContent sectionContent: sectionContents){
                     String questionId = sectionContent.questionId;
                     String questionCaption = sectionContent.questionCaption;
                     String questionNotes = sectionContent.questionNotes;
+                    int questionOrder = sectionContent.questionOrder;
                     boolean isChecked = sectionContent.isChecked;
-
-                    if(!subsectionsMap.containsKey(questionId)){
-                        JSONObject subsectionObject = new JSONObject();
-                        subsectionObject.put(Contents.JsonTrailerInspectionJson.QUESTIONS, new JSONArray());
-                        subsectionsMap.put(questionId, subsectionObject);
-                    }
 
                     JSONObject questionObject = new JSONObject();
                     questionObject.put(Contents.JsonTrailerInspectionJson.IDENTIFIER, questionId);
                     questionObject.put(Contents.JsonTrailerInspectionJson.CAPTION, questionCaption);
                     questionObject.put(Contents.JsonTrailerInspectionJson.NOTES, questionNotes);
                     questionObject.put(Contents.JsonTrailerInspectionJson.STATUS, isChecked);
+                    questionObject.put(Contents.JsonTrailerInspectionJson.ORDER, questionOrder);
 
-                    JSONArray questionArray = subsectionsMap.get(questionId).getJSONArray(Contents.JsonTrailerInspectionJson.QUESTIONS);
                     questionArray.put(questionObject);
                 }
+                sectionObject.put(Contents.JsonTrailerInspectionJson.QUESTIONS, questionArray);
                 sectionsArray.put(sectionObject);
             }
         } catch (JSONException e) {

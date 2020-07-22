@@ -75,8 +75,27 @@
     <string name="driver">Driver</string>
     <string name="truck">Truck</string>
     <string name="trailer">Trailer</string>
+    <string name="trailer_check_desc">SEND TRAILER INSPECTION</string>
     <string name="required_date_field">Required the date field</string>
     <string name="required_location_field">Required the location field</string>
     <string name="required_odometer_field">Required the odometer field</string>
     <string name="enter_another_vehicle_number">There is a submission for the vehicle number to do submit Please enter another one.</string>
+    <string name="driver_id">Driver id</string>
+    <string name="license_number">License number</string>
+    <string name="name">Name</string>
+    <string name="license_type">License type</string>
+    <string name="reset">Reset</string>
+    <string name="clear">Clear</string>
+    <string name="send">Send</string>
+
+    <string name="id">ID</string>
+    <string name="month">Month</string>
+    <string name="date">Date</string>
+    <string name="type">Type</string>
+    <string name="status">Status</string>
+    <string name="error_detail">Error Detail</string>
+    <string name="num_try">Num Try</string>
+    <string name="notes">Notes</string>
+    <string name="started_at">Started At</string>
+    <string name="ended_at">Ended At</string>
 </resources>
