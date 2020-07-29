@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -27,6 +29,8 @@ import com.android.volley.error.VolleyError;
 import com.android.volley.request.JsonObjectRequest;
 import com.coretal.carinspection.R;
 import com.coretal.carinspection.controls.DateEditText;
+import com.coretal.carinspection.dialogs.AddDriverDialog;
+import com.coretal.carinspection.dialogs.PhotoViewDialog;
 import com.coretal.carinspection.utils.Contents;
 import com.coretal.carinspection.utils.FileHelper;
 import com.coretal.carinspection.utils.JsonHelper;
@@ -45,7 +49,7 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DriverDetailFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class DriverDetailFragment extends Fragment implements AdapterView.OnItemSelectedListener, AddDriverDialog.Callback {
     private MyPreference myPref;
 
     Spinner driverSpinner;
@@ -168,16 +172,9 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         driverIDs.add("");
         Collections.addAll(driverIDs, drivers.keySet().toArray(new String[drivers.size()]));
         driverNames = new ArrayList<>(drivers.values());
-        driverNames.add(0, "CREATE NEW DRIVER");
-
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, driverNames);
+        driverNames.add(0, getString(R.string.create_new_driver));
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, driverNames) {
-
-//            @Override
-//            public boolean isEnabled(int position) {
-//                return position != 0;
-//            }
 
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent){
@@ -310,9 +307,9 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
             VolleyHelper volleyHelper = new VolleyHelper(getContext());
             volleyHelper.add(getDriverDataRequest);
         }else{
-//            FileHelper.deleteFile(Contents.JsonVehicleDriverData.FILE_PATH);
-//            setValuesFromFile();
-            Toast.makeText(getContext(), "Create new driver", Toast.LENGTH_SHORT).show();
+            DialogFragment fragment = AddDriverDialog.newInstance(DriverDetailFragment.this);
+            fragment.show(getFragmentManager(), "add_driver_dialog");
+            driverSpinner.setSelection(1);
         }
     }
 
@@ -331,5 +328,10 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
     public void onStop() {
         super.onStop();
         progressDialog.dismiss();
+    }
+
+    @Override
+    public void onSubmitPhoneNumberDialog(String apiRoot, String phoneNumber) {
+
     }
 }

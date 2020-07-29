@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.android.volley.Request;
@@ -70,8 +71,9 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
     private Fragment vehicleDateAndPicturesFragment;
     private Fragment notesFragment;
     private Fragment settingFragment;
-
+    public static Menu menu;
     private Fragment selectedFragment;
+    public static Context mContext;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -113,6 +115,19 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
         selectedFragment = fragment;
 
         transaction.commit();
+    }
+
+    public static void changeInspectionMenu(int code) {
+
+        if (code == 0) {
+            menu.findItem(R.id.navigation_truck).setVisible(false);
+        } else if (code == 1) {
+            menu.findItem(R.id.navigation_truck).setTitle(mContext.getString(R.string.truck));
+        } else if (code == 2) {
+            menu.findItem(R.id.navigation_truck).setTitle(mContext.getString(R.string.trailer));
+        } else {
+            menu.findItem(R.id.navigation_truck).setTitle(mContext.getString(R.string.Inspection));
+        }
     }
 
     private Fragment getFragmentByMenuId(int menuId) {
@@ -178,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mContext = this;
         volleyHelper = new VolleyHelper(this);
         myPreference = new MyPreference(this);
 
@@ -191,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
         navigation.setItemIconTintList(ColorStateList.valueOf(myPreference.getColorButton()));
         navigation.setItemTextColor(ColorStateList.valueOf(myPreference.getColorButton()));
 
-        Menu menu = navigation.getMenu();
+        menu = navigation.getMenu();
         selectFragment(menu.getItem(0));
 
         startConnectivityTimer();
@@ -229,6 +245,8 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
     private void setupAfterPermissions(){
         String apiRoot = myPreference.getAPIBaseURL();
         String phoneNumber = myPreference.getPhoneNumber();
+        String truckType = myPreference.getTruckType();
+        Contents.TRUCK_TYPE = truckType;
         if (phoneNumber.isEmpty() || apiRoot.isEmpty()){
             getAPI_PhoneNumberWithDialog();
         }else{

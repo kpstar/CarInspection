@@ -5,6 +5,9 @@ import android.content.res.ColorStateList;
 import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.core.widget.CompoundButtonCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,10 +18,14 @@ import android.view.animation.RotateAnimation;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.coretal.carinspection.R;
+import com.coretal.carinspection.dialogs.API_PhoneNumberDialog;
+import com.coretal.carinspection.dialogs.RemarksDialog;
+import com.coretal.carinspection.fragments.TruckInspectionFragment;
 import com.coretal.carinspection.utils.DrawableHelper;
 import com.coretal.carinspection.utils.MyPreference;
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
@@ -39,10 +46,12 @@ public class InspectionRecyclerViewAdapter
                 extends ExpandableRecyclerViewAdapter<InspectionRecyclerViewAdapter.HeaderViewHolder, InspectionRecyclerViewAdapter.ContentViewHolder> {
     private final Context context;
     private MyPreference myPref;
+    private FragmentManager fragmentManager;
 
-    public InspectionRecyclerViewAdapter(Context context, List<? extends ExpandableGroup> groups) {
+    public InspectionRecyclerViewAdapter(Context context, FragmentManager fragmentManager, List<? extends ExpandableGroup> groups) {
         super(groups);
         this.context = context;
+        this.fragmentManager = fragmentManager;
         myPref = new MyPreference(context);
     }
 
@@ -147,12 +156,14 @@ public class InspectionRecyclerViewAdapter
         }
     }
 
-    public class ContentViewHolder extends ChildViewHolder implements CompoundButton.OnCheckedChangeListener, TextWatcher {
+    public class ContentViewHolder extends ChildViewHolder implements CompoundButton.OnCheckedChangeListener, TextWatcher, View.OnClickListener, RemarksDialog.Callback {
 
         private CheckBox checkBox;
         private TextView editTextTitle;
         private TextView editTextSubTitle;
         private EditText editTextRemarks;
+        private ImageButton btnRemarks;
+        private DialogFragment fragment;
 
         private SectionContent content;
 
@@ -164,7 +175,11 @@ public class InspectionRecyclerViewAdapter
             editTextTitle = itemView.findViewById(R.id.title);
             editTextSubTitle = itemView.findViewById(R.id.sub_title);
             editTextRemarks = itemView.findViewById(R.id.remarks);
+            btnRemarks = itemView.findViewById(R.id.btn_remarks);
+
+            btnRemarks.setOnClickListener(this);
             checkBox.setOnCheckedChangeListener(this);
+
             editTextRemarks.addTextChangedListener(this);
             int states[][] = {{android.R.attr.state_checked}, {}};
             int colors[] = {myPref.getColorCheck(), myPref.getColorUncheck()};
@@ -208,6 +223,18 @@ public class InspectionRecyclerViewAdapter
         @Override
         public void afterTextChanged(Editable s) {
 
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            fragment = RemarksDialog.newInstance(ContentViewHolder.this);
+            ((DialogFragment) fragment).show(fragmentManager, "dialog_remarks");
+        }
+
+        @Override
+        public void onSubmitRemarks(String remarks) {
+            fragment.dismiss();
         }
     }
 

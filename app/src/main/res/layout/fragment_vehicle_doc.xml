@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragments.VehicleDocFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <RadioGroup
+        android:checkedButton="@+id/truck"
+        android:id="@+id/toggle"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/outline"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
+            android:layout_marginLeft="1dp"
+            android:id="@+id/truck"
+            android:background="@drawable/toggle_widget_background"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:gravity="center"
+            android:text="@string/truck"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:layout_marginRight="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
+            android:id="@+id/trailer"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/toggle_widget_background"
+            android:button="@null"
+            android:gravity="center"
+            android:text="@string/trailer"
+            android:textColor="@color/white" />
+    </RadioGroup>
+    <com.github.barteksc.pdfviewer.PDFView
+        android:id="@+id/pdfVehicle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+</LinearLayout>

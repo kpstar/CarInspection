@@ -30,6 +30,18 @@
             android:textSize="18sp"
             android:gravity="center_vertical"
             android:background="#0000" />
+
+        <ImageButton
+            android:id="@+id/btn_remarks"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:tint="@color/colorPrimary"
+            android:layout_marginRight="5dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:background="#fff"
+            android:src="@drawable/ic_remarks"
+            android:text="" />
     </LinearLayout>
 
     <TextView
@@ -38,7 +50,6 @@
         android:layout_height="match_parent"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:textSize="18sp"
         android:gravity="center_vertical"
         android:background="#0000"/>
@@ -53,6 +64,7 @@
         android:layout_marginBottom="8dp"
         android:padding="8dp"
         android:background="@color/lightGray"
+        android:visibility="gone"
         android:gravity="top"
         android:lines="5"
         android:textColorHint="@android:color/darker_gray"

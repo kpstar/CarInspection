@@ -1,6 +1,7 @@
 package com.coretal.carinspection.fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 
 import com.coretal.carinspection.R;
 import com.coretal.carinspection.adapters.InspectionRecyclerViewAdapter;
+import com.coretal.carinspection.dialogs.RemarksDialog;
 import com.coretal.carinspection.utils.Contents;
 import com.coretal.carinspection.utils.JsonHelper;
 import com.coretal.carinspection.utils.MyPreference;
@@ -31,13 +33,14 @@ import java.util.HashMap;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TruckInspectionFragment extends Fragment {
+public class TruckInspectionFragment extends Fragment{
 
 
     private MyPreference myPreference;
     private InspectionRecyclerViewAdapter adapter;
     private RecyclerView recyclerView;
     private EditText searchEditText;
+    private TruckInspectionFragment mContext;
 
     public ArrayList<InspectionRecyclerViewAdapter.SectionHeader> sectionHeaders;
     public ArrayList<InspectionRecyclerViewAdapter.SectionHeader> searchedSectionHeaders;
@@ -54,6 +57,7 @@ public class TruckInspectionFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_truck_inspection, container, false);
 
+        mContext = this;
         myPreference = new MyPreference(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         searchEditText = view.findViewById(R.id.search);
@@ -119,7 +123,7 @@ public class TruckInspectionFragment extends Fragment {
 
         searchedSectionHeaders.clear();
         searchedSectionHeaders.addAll(sectionHeaders);
-        adapter = new InspectionRecyclerViewAdapter(getContext(), searchedSectionHeaders);
+        adapter = new InspectionRecyclerViewAdapter(getContext(), getFragmentManager(), searchedSectionHeaders);
         recyclerView.setAdapter(adapter);
         recyclerView.scrollToPosition(500);
     }
@@ -217,5 +221,4 @@ public class TruckInspectionFragment extends Fragment {
         super.onPause();
         saveValuesToFile();
     }
-
 }

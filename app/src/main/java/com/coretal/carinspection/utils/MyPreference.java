@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,6 +31,7 @@ public class MyPreference {
 
     private static String IS_GETTED_CONFIG = "IS_GETTED_CONFIG";
     private static String PHONE_NUMBER = "PHONE_NUMBER";
+    public static String VEHICLE_TYPE = "VEHICLE_TYPE";
     private static String API_ROOT = "API_ROOT";
 
     public MyPreference(Context context){
@@ -42,12 +44,38 @@ public class MyPreference {
         configEditor.putString(PHONE_NUMBER, phoneNumber).apply();
     }
 
+    public void setCompanyId(int id){
+        configEditor.putInt(Contents.JsonVehicleData.COMPANYID, id).apply();
+    }
+
+    public void setTruckType(String code, String trailerId){
+        String truckType = "NO_TYPE";
+        if (Arrays.asList(Contents.TYPES_TRAILER).contains(code)) {
+            truckType = "TRAILER";
+        } else if (Arrays.asList(Contents.TYPES_TRUCK).contains(code)) {
+            if (trailerId.isEmpty()) {
+                truckType = "TRUCK";
+            } else {
+                truckType = "TRUCK&TRAILER";
+            }
+        }
+        configEditor.putString(VEHICLE_TYPE, truckType).apply();
+    }
+
+    public void setAddDriverJson(String driver){
+        configEditor.putString(Contents.Config.CONF_ADD_DRIVER_JSON, driver).apply();
+    }
+
     public void setAPIRoot(String rootURL) {
         configEditor.putString(Contents.Config.WS_CONFIG_URL, rootURL).apply();
     }
 
     public String getPhoneNumber(){
         return configSP.getString(PHONE_NUMBER, "");
+    }
+
+    public String getTruckType(){
+        return configSP.getString(VEHICLE_TYPE, "NO_TYPE");
     }
 
     public String getAppNotesLayout(){
@@ -113,6 +141,10 @@ public class MyPreference {
         return configSP.getInt(Contents.Config.CONF_APP_SCHEMA_COLOR_BUTTON, 0xff417EB0);
     }
 
+    public int getCompanyId(){
+        return configSP.getInt(Contents.JsonVehicleData.COMPANYID, 0);
+    }
+
     public int getColorCheck(){
         return configSP.getInt(Contents.Config.CONF_APP_SCHEMA_COLOR_CHECK, 0xff00ff00);
     }
@@ -153,6 +185,11 @@ public class MyPreference {
         Map<String, ?> allConfigs = getAllConfigs();
         Gson gson = new Gson();
         return gson.toJson(allConfigs);
+    }
+
+    public String getDriverJson() {
+        String driverJson = configSP.getString(Contents.Config.CONF_ADD_DRIVER_JSON, "");
+        return driverJson;
     }
 
     public String getConfigToFormatString(){

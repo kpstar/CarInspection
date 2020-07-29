@@ -33,6 +33,7 @@
                     android:layout_height="40dp"
                     android:background="@color/lightGray"
                     android:hint=""
+                    android:inputType="number"
                     android:paddingEnd="4dp"
                     android:paddingStart="4dp" />
             </LinearLayout>
@@ -54,6 +55,7 @@
                     android:layout_height="40dp"
                     android:background="@color/lightGray"
                     android:hint=""
+                    android:inputType="number"
                     android:paddingEnd="4dp"
                     android:paddingStart="4dp" />
             </LinearLayout>
@@ -142,33 +144,134 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
                         <TextView
+                            android:text="lic_a2"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                        </TextView>
+                        <CheckBox
+                            android:id="@+id/chk_a2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="A2" />
+                        <CheckBox
+                            android:id="@+id/chk_a1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="A1" />
+                        <CheckBox
+                            android:id="@+id/chk_a"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="A" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
                         </TextView>
+                        <CheckBox
+                            android:id="@+id/chk_b"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="B" />
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
 
+                        </TextView>
+                        <CheckBox
+                            android:id="@+id/chk_c1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="C1" />
+                        <CheckBox
+                            android:id="@+id/chk_c"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="C" />
+                        <CheckBox
+                            android:id="@+id/chk_c_e"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="C+E" />
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
 
+                        </TextView>
+                        <CheckBox
+                            android:id="@+id/chk_d1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="D1" />
+                        <CheckBox
+                            android:id="@+id/chk_d"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="D" />
+                        <CheckBox
+                            android:id="@+id/chk_d3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="D3" />
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
 
+                        </TextView>
+                        <CheckBox
+                            android:id="@+id/chk_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1" />
                     </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/desc" />
+
+                <EditText
+                    android:id="@+id/edit_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:background="@color/lightGray"
+                    android:hint=""
+                    android:padding="4dp"
+                    android:gravity="start"
+                    android:paddingEnd="4dp"
+                    android:paddingStart="4dp" />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -183,7 +286,7 @@
                     android:layout_weight="0.5"
                     android:layout_margin="3dp"
                     android:background="@xml/round_button"
-                    android:text="@string/submit"
+                    android:text="@string/save_driver"
                     android:textColor="@color/white"/>
                 <Button
                     android:id="@+id/btn_cancel"
@@ -192,7 +295,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="3dp"
                     android:background="@xml/round_button"
-                    android:text="@string/submit"
+                    android:text="@string/cancel"
                     android:textColor="@color/white"/>
             </LinearLayout>
         </LinearLayout>

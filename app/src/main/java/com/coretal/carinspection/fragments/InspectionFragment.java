@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 
 import com.coretal.carinspection.R;
 import com.coretal.carinspection.adapters.InspectionRecyclerViewAdapter;
+import com.coretal.carinspection.utils.AlertHelper;
 import com.coretal.carinspection.utils.Contents;
 import com.coretal.carinspection.utils.JsonHelper;
 import com.coretal.carinspection.utils.MyHelper;
@@ -39,7 +40,7 @@ public class InspectionFragment extends Fragment {
 
     private Fragment truckInspectionFragment;
     private Fragment trailerInspectionFragment;
-
+    private MyPreference myPreference;
     private Fragment selectedFragment;
 
     public InspectionFragment() {
@@ -121,15 +122,35 @@ public class InspectionFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_inspection, container, false);
-
+        myPreference = new MyPreference(getContext());
         tabLayout = view.findViewById(R.id.tabLayout);
         if (!MyHelper.isConnectedInternet(getActivity())){
             disableTab();
         }
         tabLayout.addOnTabSelectedListener(tabSelectedListener);
         selectTab(0);
+        checkTruckType();
 
         return view;
+    }
+
+    private void checkTruckType() {
+        String truckType = myPreference.getTruckType();
+        switch (truckType) {
+            case "TRUCK":
+                selectTab(0);
+                tabLayout.setVisibility(View.GONE);
+                break;
+            case "TRAILER":
+                selectTab(1);
+                tabLayout.setVisibility(View.GONE);
+                break;
+            case "TRUCK&TRAILER":
+                break;
+            default:
+                disableTab();
+                break;
+        }
     }
 
     private void disableTab(){

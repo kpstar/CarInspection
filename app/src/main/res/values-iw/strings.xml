@@ -12,6 +12,7 @@
     <string name="driver_details">נהג</string>
     <string name="vehicle_details">רכב</string>
     <string name="trailer_details">גרור</string>
+    <string name="doc_details">מסמך</string>
     <string name="vehicle_info">מידע</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -26,6 +27,8 @@
     <string name="inspection_location">מיקום בדיקה</string>
     <string name="inspector">קצין בטיחות</string>
     <string name="submit">שלח נתונים</string>
+    <string name="save_driver">שמור נהג</string>
+    <string name="cancel">לְבַטֵל</string>
     <string name="v_driver">נהג</string>
     <string name="driver_license_number">מספר רשיון</string>
     <string name="address">כתובת</string>
@@ -80,20 +83,22 @@
     <string name="required_location_field">מיקום הבדיקה חסר</string>
     <string name="required_odometer_field">מד אוץ חסר</string>
     <string name="enter_another_vehicle_number">קיימת כבר בדיקה עבור רכב זה, יש להמתין 24 שעות. ניתן להזין מס רכב אחר</string>
-    <string name="driver_id">מזהה נהג</string>
-    <string name="license_number">מספר רשיון</string>
-    <string name="name">שֵׁם</string>
-    <string name="license_type">סוג רישיון</string>
+    <string name="driver_id">מזהה נהג*</string>
+    <string name="license_number">מספר רשיון*</string>
+    <string name="name">שֵׁם*</string>
+    <string name="license_type">סוג רישיון*</string>
     <string name="reset">אִתחוּל</string>
     <string name="clear">ברור</string>
     <string name="send">לִשְׁלוֹחַ</string>
-
+    <string name="desc">תיאור</string>
+    <string name="create_new_driver">ליצור מנהל התקן חדש</string>
     <string name="id">מזהה</string>
     <string name="month">חוֹדֶשׁ</string>
     <string name="date">תַאֲרִיך</string>
     <string name="type">סוּג</string>
     <string name="status">סטָטוּס</string>
     <string name="error_detail">פירוט שגיאה</string>
+    <string name="error">שְׁגִיאָה!</string>
     <string name="num_try">לנסות מספר</string>
     <string name="notes">הערות</string>
     <string name="started_at">התחיל ב</string>

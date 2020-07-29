@@ -4,6 +4,7 @@ package com.coretal.carinspection.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.coretal.carinspection.R;
@@ -38,6 +40,7 @@ public class TrailerInspectionFragment extends Fragment {
     private InspectionRecyclerViewAdapter adapter;
     private RecyclerView recyclerView;
     private EditText searchEditText;
+    private FragmentManager fragmentManager;
 
     public ArrayList<InspectionRecyclerViewAdapter.SectionHeader> sectionHeaders;
     public ArrayList<InspectionRecyclerViewAdapter.SectionHeader> searchedSectionHeaders;
@@ -60,6 +63,17 @@ public class TrailerInspectionFragment extends Fragment {
 
         sectionHeaders = new ArrayList<>();
         searchedSectionHeaders = new ArrayList<>();
+
+        CheckBox chkSend = view.findViewById(R.id.trailerCheck);
+        chkSend.setVisibility(View.GONE);
+        String truckType = myPreference.getTruckType();
+        if (truckType == "TRUCK&TRAILER") {
+            chkSend.setVisibility(View.VISIBLE);
+        } else {
+            chkSend.setVisibility(View.GONE);
+        }
+
+        fragmentManager = getFragmentManager();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -119,7 +133,7 @@ public class TrailerInspectionFragment extends Fragment {
 
         searchedSectionHeaders.clear();
         searchedSectionHeaders.addAll(sectionHeaders);
-        adapter = new InspectionRecyclerViewAdapter(getContext(), searchedSectionHeaders);
+        adapter = new InspectionRecyclerViewAdapter(getContext(), fragmentManager, searchedSectionHeaders);
         recyclerView.setAdapter(adapter);
         recyclerView.scrollToPosition(500);
     }

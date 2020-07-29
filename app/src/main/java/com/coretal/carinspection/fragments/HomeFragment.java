@@ -22,7 +22,7 @@ public class HomeFragment extends Fragment {
 
     private Fragment vehicleDetailFragment;
     private Fragment driverDetailFragment;
-    private Fragment trailerDetailFragment;
+    private Fragment vehicleDocFragment;
     private Fragment vehicleInfoFragment;
 
     private Fragment selectedFragment;
@@ -72,9 +72,9 @@ public class HomeFragment extends Fragment {
                 return vehicleDetailFragment;
             case 1:
                 return driverDetailFragment;
-//            case 2:
-//                return trailerDetailFragment;
             case 2:
+                return vehicleDocFragment;
+            case 3:
                 return vehicleInfoFragment;
             default:
                 return null;
@@ -89,10 +89,10 @@ public class HomeFragment extends Fragment {
             case 1:
                 driverDetailFragment = DriverDetailFragment.newInstance();
                 return driverDetailFragment;
-//            case 2:
-//                trailerDetailFragment = TrailerDetailFragment.newInstance();
-//                return trailerDetailFragment;
             case 2:
+                vehicleDocFragment = VehicleDocFragment.newInstance();
+                return vehicleDocFragment;
+            case 3:
                 vehicleInfoFragment = VehicleInfoFragment.newInstance();
                 return vehicleInfoFragment;
             default:

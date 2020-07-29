@@ -12,6 +12,7 @@
     <string name="driver_details">Driver</string>
     <string name="vehicle_details">Vehicle</string>
     <string name="trailer_details">Trailer</string>
+    <string name="doc_details">Doc</string>
     <string name="vehicle_info">Info</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -26,6 +27,8 @@
     <string name="inspection_location">Inspection Location</string>
     <string name="inspector">Inspector</string>
     <string name="submit">Submit</string>
+    <string name="save_driver">Save Driver</string>
+    <string name="cancel">Cancel</string>
     <string name="v_driver">V Driver</string>
     <string name="driver_license_number">Driver Licence Number</string>
     <string name="address">Address</string>
@@ -80,20 +83,22 @@
     <string name="required_location_field">Required the location field</string>
     <string name="required_odometer_field">Required the odometer field</string>
     <string name="enter_another_vehicle_number">There is a submission for the vehicle number to do submit Please enter another one.</string>
-    <string name="driver_id">Driver id</string>
-    <string name="license_number">License number</string>
-    <string name="name">Name</string>
-    <string name="license_type">License type</string>
+    <string name="driver_id">Driver id*</string>
+    <string name="license_number">License number*</string>
+    <string name="name">Name*</string>
+    <string name="license_type">License type*</string>
     <string name="reset">Reset</string>
     <string name="clear">Clear</string>
     <string name="send">Send</string>
-
+    <string name="desc">Description</string>
+    <string name="create_new_driver">Create New Driver</string>
     <string name="id">ID</string>
     <string name="month">Month</string>
     <string name="date">Date</string>
     <string name="type">Type</string>
     <string name="status">Status</string>
     <string name="error_detail">Error Detail</string>
+    <string name="error">Error!</string>
     <string name="num_try">Num Try</string>
     <string name="notes">Notes</string>
     <string name="started_at">Started At</string>

@@ -31,10 +31,10 @@ public class Contents {
     public static String API_GET_INSPECTORS = API_ROOT + "/inspector/getInspectors/%s";//phone_number
     public static String API_GET_DRIVERS = API_ROOT + "/driver/getDriversData/%s/%s";//phone_number/v_plate
     public static String API_GET_DRIVER = API_ROOT + "/driver/getDriverData/%s/%s";//phone_number/driver_id
-    public static String API_GET_VEHICLE_DRIVER_DATA = API_ROOT + "/driver/getVhicleDriverData/%s/%s";//phone_number/v_plate
+    public static String API_GET_VEHICLE_DRIVER_DATA = API_ROOT + "/driver/getVehicleDriverData/%s/%s";//phone_number/v_plate
     public static String API_GET_TRAILERS = API_ROOT + "/trailer/getTrailersData/%s/%s";//phone_number/v_plate
     public static String API_GET_TRAILER = API_ROOT + "/trailer/getTrailerData/%s/%s";//phone_number/trailer_id
-    public static String API_GET_VEHICLE_TRAILER_DATA = API_ROOT + "/trailer/getVhicleTrailerData/%s/%s";//phone_number/v_plate
+    public static String API_GET_VEHICLE_TRAILER_DATA = API_ROOT + "/trailer/getVehicleTrailerData/%s/%s";//phone_number/v_plate
     public static String API_GET_VEHICLE_ADDITIONAL_DETAILS = API_ROOT + "/vehicle/getAdditionalDetails/%s/%s";//phone_number/v_plate
     public static String API_GET_TRUCK_INSPECTION_JSON = API_ROOT + "/inspection/getTruckInspectionJson/%s";//phone_number
     public static String API_GET_TRAILER_INSPECTION_JSON = API_ROOT + "/inspection/getTrailerInspectionJson/%s";//phone_number
@@ -46,12 +46,14 @@ public class Contents {
     public static String API_GET_CONFIG_FILE_TYPES_EMUM = API_ROOT + "/configuration/getPictureAndDataCategoryJson/%s";//phone number
     public static String API_SUBMIT_PICTURE = API_ROOT + "/submitPicture/fileupload";
     public static String API_SUBMIT_INSPECTION = API_ROOT + "/submitInspectionV2";
+    public static String API_SUBMIT_NEW_DRIVER = API_ROOT + "/driver/addNewDriver";
     public static String API_SERVICE_STATUS = API_ROOT + "/serviceStatus";
 
     public static String EXTERNAL_JSON_DIR = "Json";
     public static String EXTERNAL_JSON_DIR_PATH;
     public static String EXTERNAL_PICTURES_DIR_PATH;
     public static String PHONE_NUMBER;
+    public static String TRUCK_TYPE;
     public static String TOKEN;
     public static String CURRENT_VEHICLE_NUMBER;
 
@@ -60,11 +62,8 @@ public class Contents {
     public static String TOKEN_KEY = "registerDevice";
     public static String HEADER_KEY = "peled-guid";
 
-    public static Map<String, String> getHeaders() {
-        HashMap<String, String> headers = new HashMap<String, String>();
-        headers.put("key", "Value");
-        return headers;
-    }
+    public static String[] TYPES_TRUCK = {"N3_MASA", "N3_MASA_RACHIN", "N3_MASA_TOMECH", "N3_MOVILIT", "N3_HOMAS", "N3_HIDRAULIC", "N3_MANOF", "N3_RAMSA", "N2_MASA", "N2_HOMAS"};
+    public static String[] TYPES_TRAILER = {"O1_GAROR_NITMACH", "O2_GAROR_NITMACH", "O3_GAROR_NITMACH", "O4_GAROR_NITMACH", "O3_GAROR_NITMACH_HOMAS", "O4_GAROR_NITMACH_HOMAS"};
 
     public static class JsonVehicleData {
         public static String VEHICLE_PLATE = "vehiclePlate";
@@ -75,10 +74,12 @@ public class Contents {
         public static String DRIVERID = "driverId";
         public static String DRIVERNAME = "driverName";
         public static String COMPANYNAME = "companyName";
-        public static String DATESANDPICTURES = "datesAndPictures";
+        public static String COMPANYID = "companyId";
         public static String INSPECTION_ID = "inspectorId";
         public static String INSPECTION_NAME = "inspectorName";
         public static String INSPECTION_MONTH = "inspectionMonth";
+        public static String TYPE_CODE = "vehicleTypeCode";
+        public static String TRAILER_ID = "trailerId";
         public static String INSPECTION_DATE = "inspectionDate";
         public static String INSPECTION_VALID_UNTIL_DATE = "inspectionValidUntilDate";
         public static String INSPECTION_LOCATION = "inspectionLocation";
@@ -117,6 +118,38 @@ public class Contents {
         }
     }
 
+    public static class JsonVehicleInspect {
+        public static String MONGOID = "mongoId";
+        public static String INSPECTIONID = "inspectionId";
+        public static String INSPECTORID = "inspectorId";
+        public static String INSPECTIONDATE = "inspectionDate";
+        public static String INSPECTIONMONTH = "inspectionMonth";
+        public static String TRUCKPLATE = "truckPlate";
+        public static String INSPECTIONTYPE = "inspectionType";
+        public static String FILE_NAME = "vehicleinspect.json";
+        public static String FILE_PATH;
+
+//        public static Map<String, String> getInspectors(){
+//            Map<String, String> inspectors = new LinkedHashMap<>();
+//            JSONObject inspectorsJson = JsonHelper.readJsonFromFile(FILE_PATH);
+//            if (inspectorsJson == null) return inspectors;
+//            try {
+//                JSONArray driversArray = inspectorsJson.getJSONArray(INSPECTORSDATA);
+//                if (driversArray != null) {
+//                    for (int i=0;i<driversArray.length();i++){
+//                        JSONObject jsonObject = driversArray.getJSONObject(i);
+//                        String id = jsonObject.getString(INSPECTOR_ID);
+//                        String name = jsonObject.getString(INSPECTOR_NAME);
+//                        inspectors.put(id, name);
+//                    }
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            return inspectors;
+//        }
+    }
+
     public static class JsonDrivers {
         public static String DRIVERSDATA = "driversData";
         public static String DRIVERS = "drivers";
@@ -145,6 +178,18 @@ public class Contents {
             return drivers;
         }
     }
+
+    public static class NewDriverJson {
+        public static String DRIVER_FORM = "driverForm";
+        public static String LICENSE_NUMBER = "licenceNumber";
+        public static String NAME = "name";
+        public static String ADDRESS = "address";
+        public static String PHONE_NUMBER = "phoneNumber";
+        public static String DESCRIPTION = "description";
+        public static String INSPECTOR_PHONE_NUMBER = "inspectorPhoneNumber";
+        public static String ID = "id";
+    }
+
 
     public static class JsonVehicleDriverData {
         public static String DRIVER_ID = "driverId";
@@ -319,6 +364,7 @@ public class Contents {
         public static final String CONF_TRUCK_MANDATORY_DOCUMENTS = "CONF_TRUCK_MANDATORY_DOCUMENTS";
         public static final String CONF_TRAILER_MANDATORY_DOCUMENTS = "CONF_TRAILER_MANDATORY_DOCUMENTS";
         public static final String CONF_DRIVER_MANDATORY_DOCUMENTS = "CONF_DRIVER_MANDATORY_DOCUMENTS";
+        public static final String CONF_ADD_DRIVER_JSON = "CONF_ADD_DRIVER_JSON";
 
         public static String FILE_NAME = "config.bkp";
         public static String FILE_PATH;
@@ -330,6 +376,7 @@ public class Contents {
         EXTERNAL_PICTURES_DIR_PATH = MyApp.getContext().getExternalFilesDir(CURRENT_VEHICLE_NUMBER) + "/" + Environment.DIRECTORY_PICTURES;
 
         JsonVehicleData.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonVehicleData.FILE_NAME;
+        JsonVehicleInspect.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonVehicleInspect.FILE_NAME;
         JsonInspectors.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonInspectors.FILE_NAME;
         JsonDrivers.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonDrivers.FILE_NAME;
         JsonVehicleDriverData.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonVehicleDriverData.FILE_NAME;
@@ -353,10 +400,10 @@ public class Contents {
         API_GET_INSPECTORS = API_ROOT + "/inspector/getInspectors/%s";//phone_number
         API_GET_DRIVERS = API_ROOT + "/driver/getDriversData/%s/%s";//phone_number/v_plate
         API_GET_DRIVER = API_ROOT + "/driver/getDriverData/%s/%s";//phone_number/driver_id
-        API_GET_VEHICLE_DRIVER_DATA = API_ROOT + "/driver/getVhicleDriverData/%s/%s";//phone_number/v_plate
+        API_GET_VEHICLE_DRIVER_DATA = API_ROOT + "/driver/getVehicleDriverData/%s/%s";//phone_number/v_plate
         API_GET_TRAILERS = API_ROOT + "/trailer/getTrailersData/%s/%s";//phone_number/v_plate
         API_GET_TRAILER = API_ROOT + "/trailer/getTrailerData/%s/%s";//phone_number/trailer_id
-        API_GET_VEHICLE_TRAILER_DATA = API_ROOT + "/trailer/getVhicleTrailerData/%s/%s";//phone_number/v_plate
+        API_GET_VEHICLE_TRAILER_DATA = API_ROOT + "/trailer/getVehicleTrailerData/%s/%s";//phone_number/v_plate
         API_GET_VEHICLE_ADDITIONAL_DETAILS = API_ROOT + "/vehicle/getAdditionalDetails/%s/%s";//phone_number/v_plate
         API_GET_TRUCK_INSPECTION_JSON = API_ROOT + "/inspection/getTruckInspectionJson/%s";//phone_number
         API_GET_TRAILER_INSPECTION_JSON = API_ROOT + "/inspection/getTrailerInspectionJson/%s";//phone_number

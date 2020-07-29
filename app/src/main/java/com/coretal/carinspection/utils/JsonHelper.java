@@ -2,6 +2,7 @@ package com.coretal.carinspection.utils;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,11 +15,26 @@ public class JsonHelper {
         FileHelper.writeStringToFile(jsonObject.toString(), path);
     }
 
+    public static void saveJsonArray(JSONArray jsonArray, String path){
+        FileHelper.writeStringToFile(jsonArray.toString(), path);
+    }
+
     public static JSONObject readJsonFromFile(String path){
         String jsonString = FileHelper.readStringFromFile(path);
         if (jsonString.isEmpty()) return null;
         try {
             return new JSONObject(jsonString);
+        } catch (Exception e) {
+            Log.e("JsonHelper", "Failed to parse the json", e);
+            return null;
+        }
+    }
+
+    public static JSONArray readJsonArrayFromFile(String path){
+        String jsonString = FileHelper.readStringFromFile(path);
+        if (jsonString.isEmpty()) return null;
+        try {
+            return new JSONArray(jsonString);
         } catch (Exception e) {
             Log.e("JsonHelper", "Failed to parse the json", e);
             return null;
