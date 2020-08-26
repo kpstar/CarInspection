@@ -47,6 +47,7 @@ public class InspectionRecyclerViewAdapter
     private final Context context;
     private MyPreference myPref;
     private FragmentManager fragmentManager;
+    public boolean isClickable = true;
 
     public InspectionRecyclerViewAdapter(Context context, FragmentManager fragmentManager, List<? extends ExpandableGroup> groups) {
         super(groups);
@@ -130,6 +131,9 @@ public class InspectionRecyclerViewAdapter
         }
 
         private void animateExpand() {
+            if (! isClickable) {
+                return;
+            }
             RotateAnimation rotate =
                     new RotateAnimation(360, 180, RELATIVE_TO_SELF, 0.5f, RELATIVE_TO_SELF, 0.5f);
             rotate.setDuration(300);
@@ -138,6 +142,9 @@ public class InspectionRecyclerViewAdapter
         }
 
         private void animateCollapse() {
+            if (! isClickable) {
+                return;
+            }
             RotateAnimation rotate =
                     new RotateAnimation(180, 360, RELATIVE_TO_SELF, 0.5f, RELATIVE_TO_SELF, 0.5f);
             rotate.setDuration(300);

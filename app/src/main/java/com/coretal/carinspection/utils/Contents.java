@@ -5,6 +5,7 @@ import android.os.Environment;
 
 import com.coretal.carinspection.BuildConfig;
 import com.coretal.carinspection.MyApp;
+import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 public class Contents {
     public static boolean IS_STARTED_INSPECTION = false;
+    public static String IS_SET_URL = "IS_SET_URL";
     public static String API_ROOT =
             BuildConfig.DEBUG ?
                     "http://24.30.63.116:8080/Peled_v6/restful" :
@@ -44,7 +46,9 @@ public class Contents {
     public static String API_GET_PICTURE_BY_ID = API_ROOT + "/image/getPictureById/%s/%s";//phone_number/picture id
     public static String API_GET_CONFIG = API_ROOT + "/configuration/getConfigurationFile/%s";//phone number
     public static String API_GET_CONFIG_FILE_TYPES_EMUM = API_ROOT + "/configuration/getPictureAndDataCategoryJson/%s";//phone number
-    public static String API_SUBMIT_PICTURE = API_ROOT + "/submitPicture/fileupload";
+    public static String API_SUBMIT_PICTURE = API_ROOT + "/submitPicture/fileUpload";
+    public static String API_REMOVE_PICTURE = API_ROOT + "/submitPicture/fileRemove/%s/%s";
+    public static String API_MODIFY_PICTURE = API_ROOT + "/submitPicture/fileModify";
     public static String API_SUBMIT_INSPECTION = API_ROOT + "/submitInspectionV2";
     public static String API_SUBMIT_NEW_DRIVER = API_ROOT + "/driver/addNewDriver";
     public static String API_SERVICE_STATUS = API_ROOT + "/serviceStatus";
@@ -56,9 +60,11 @@ public class Contents {
     public static String TRUCK_TYPE;
     public static String TOKEN;
     public static String CURRENT_VEHICLE_NUMBER;
+    public static String SECOND_VEHICLE_NUMBER;
+    public static String DRIVER_ID;
 
     public static String DEFAULT_DATE_FORMAT = "dd/MM/yyyy";
-    public static String DATE_PREFIX = "#";
+    public static String DATE_PREFIX = "";
     public static String TOKEN_KEY = "registerDevice";
     public static String HEADER_KEY = "peled-guid";
 
@@ -129,25 +135,25 @@ public class Contents {
         public static String FILE_NAME = "vehicleinspect.json";
         public static String FILE_PATH;
 
-//        public static Map<String, String> getInspectors(){
-//            Map<String, String> inspectors = new LinkedHashMap<>();
-//            JSONObject inspectorsJson = JsonHelper.readJsonFromFile(FILE_PATH);
-//            if (inspectorsJson == null) return inspectors;
-//            try {
-//                JSONArray driversArray = inspectorsJson.getJSONArray(INSPECTORSDATA);
-//                if (driversArray != null) {
-//                    for (int i=0;i<driversArray.length();i++){
-//                        JSONObject jsonObject = driversArray.getJSONObject(i);
-//                        String id = jsonObject.getString(INSPECTOR_ID);
-//                        String name = jsonObject.getString(INSPECTOR_NAME);
-//                        inspectors.put(id, name);
-//                    }
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            return inspectors;
-//        }
+        public static String SEC_FILE_NAME = "secvehicleinspect.json";
+        public static String SEC_FILE_PATH;
+
+        public static JSONArray getTruckDocs() {
+            JSONArray truckDocs = JsonHelper.readJsonArrayFromFile(FILE_PATH);
+            JSONArray sendDocs = new JSONArray();
+            if (truckDocs ==  null) return null;
+            for (int i=0;i<truckDocs.length(); i++) {
+                try {
+                    JSONObject jsonObject = truckDocs.getJSONObject(i);
+                    int id = jsonObject.getInt(INSPECTIONID);
+                    String month = jsonObject.getString(INSPECTIONMONTH);
+                    String type = jsonObject.getString(INSPECTIONTYPE);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return truckDocs;
+        }
     }
 
     public static class JsonDrivers {
@@ -254,7 +260,8 @@ public class Contents {
         public static String NOTES = "notes";
         public static String ORDER = "order";
         public static String CAPTION = "caption";
-        public static String STATUS = "checked"; //status == checked
+        public static String CHECKED = "checked"; //status == checked
+        public static String STATUS = "status";
         public static String ASSET_FILE_NAME = "full_truck_inspection_structure.json";
         public static String FILE_NAME = "truck_inspection_json.json";
         public static String FILE_PATH;
@@ -377,6 +384,7 @@ public class Contents {
 
         JsonVehicleData.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonVehicleData.FILE_NAME;
         JsonVehicleInspect.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonVehicleInspect.FILE_NAME;
+        JsonVehicleInspect.SEC_FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonVehicleInspect.SEC_FILE_NAME;
         JsonInspectors.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonInspectors.FILE_NAME;
         JsonDrivers.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonDrivers.FILE_NAME;
         JsonVehicleDriverData.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonVehicleDriverData.FILE_NAME;
@@ -413,8 +421,10 @@ public class Contents {
         API_GET_PICTURE_BY_ID = API_ROOT + "/image/getPictureById/%s/%s";//phone_number/picture id
         API_GET_CONFIG = API_ROOT + "/configuration/getConfigurationFile/%s";//phone number
         API_GET_CONFIG_FILE_TYPES_EMUM = API_ROOT + "/configuration/getPictureAndDataCategoryJson/%s";//phone number
-        API_SUBMIT_PICTURE = API_ROOT + "/submitPicture/fileupload";
-        API_SUBMIT_INSPECTION = API_ROOT + "/submitInspection";
+        API_SUBMIT_PICTURE = API_ROOT + "/submitPicture/fileUpload";
+        API_REMOVE_PICTURE = API_ROOT + "/submitPicture/fileRemove/%s/%s";
+        API_MODIFY_PICTURE = API_ROOT + "/submitPicture/fileModify";
+        API_SUBMIT_INSPECTION = API_ROOT + "/submitInspectionV2";
         API_SERVICE_STATUS = API_ROOT + "/serviceStatus";
     }
 }

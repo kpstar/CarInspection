@@ -68,10 +68,10 @@ public class VPlateDialog extends DialogFragment {
             public void onClick(View v) {
                 String vPlate = vPlateEdit.getText().toString();
                 if (vPlate.isEmpty()) return;
-                if (dbHelper.checkUnsubmittedSubmission(vPlate)){
-                    AlertHelper.message(getContext(), "Warning", getString(R.string.enter_another_vehicle_number));
-                    return;
-                }
+//                if (dbHelper.checkUnsubmittedSubmission(vPlate)){
+//                    AlertHelper.message(getContext(), "Warning", getString(R.string.enter_another_vehicle_number));
+//                    return;
+//                }
                 MyHelper.hideKeyBoard(getActivity(), vPlateEdit);
                 alertDialog.dismiss();
                 callback.onSubmitVPlateDialog(vPlateEdit.getText().toString());

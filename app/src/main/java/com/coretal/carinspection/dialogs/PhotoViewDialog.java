@@ -15,7 +15,10 @@ import android.view.Window;
 import android.widget.Button;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.coretal.carinspection.R;
+import com.coretal.carinspection.utils.Contents;
 import com.coretal.carinspection.utils.DrawableHelper;
 import com.coretal.carinspection.utils.MyPreference;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -65,8 +68,9 @@ public class PhotoViewDialog extends DialogFragment {
         });
 
         PhotoView photoView = dialogView.findViewById(R.id.photo_view);
+        GlideUrl glideUrl = new GlideUrl(photoUrl, new LazyHeaders.Builder().addHeader(Contents.HEADER_KEY, Contents.TOKEN).build());
         Glide.with(getActivity())
-                .load(photoUrl)
+                .load(glideUrl)
                 .into(photoView);
 
         myPref = new MyPreference(getContext());

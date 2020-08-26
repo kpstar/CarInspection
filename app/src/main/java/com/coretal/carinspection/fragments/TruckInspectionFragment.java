@@ -202,7 +202,7 @@ public class TruckInspectionFragment extends Fragment{
                     questionObject.put(Contents.JsonTruckInspectionJson.IDENTIFIER, questionId);
                     questionObject.put(Contents.JsonTruckInspectionJson.CAPTION, questionCaption);
                     questionObject.put(Contents.JsonTruckInspectionJson.NOTES, questionNotes);
-                    questionObject.put(Contents.JsonTruckInspectionJson.STATUS, isChecked);
+                    questionObject.put(Contents.JsonTruckInspectionJson.CHECKED, isChecked);
                     questionObject.put(Contents.JsonTruckInspectionJson.ORDER, questionOrder);
 
                     questionArray.put(questionObject);

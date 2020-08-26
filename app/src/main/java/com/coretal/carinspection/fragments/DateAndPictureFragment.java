@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+
+import com.coretal.carinspection.activities.MainActivity;
+import com.coretal.carinspection.services.API;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -33,7 +36,7 @@ import java.util.ArrayList;
  * <p/>
  * interface.
  */
-public class DateAndPictureFragment extends Fragment implements DateAndPictureDialog.Callback, DateAndPictureRecyclerViewAdapter.Callback {
+public class DateAndPictureFragment extends Fragment implements DateAndPictureDialog.Callback, DateAndPictureRecyclerViewAdapter.Callback, API.Callback {
 
     private static final String ARG_CATEGORY = "category";
     private static final String ARG_JSON_STRING = "json_string";
@@ -42,6 +45,9 @@ public class DateAndPictureFragment extends Fragment implements DateAndPictureDi
     private DateAndPictureRecyclerViewAdapter adapter;
     private String category;
     private MyPreference myPref;
+    private API api;
+    private DateAndPicture removeItem;
+    public int removeIndex;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -93,6 +99,7 @@ public class DateAndPictureFragment extends Fragment implements DateAndPictureDi
         View view = inflater.inflate(R.layout.fragment_dateandpicture_list, container, false);
 
         Context context = view.getContext();
+        api = new API(context, this);
         final RecyclerView recyclerView = view.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         adapter = new DateAndPictureRecyclerViewAdapter(getActivity(), dateAndPictures, this, category);
@@ -109,21 +116,18 @@ public class DateAndPictureFragment extends Fragment implements DateAndPictureDi
                 AlertHelper.question(getContext(), "Delete", "Are you sure to delete it?", "Yes", "No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        synchronized(adapter){
-                            int index = viewHolder.getAdapterPosition();
-                            DateAndPicture item = dateAndPictures.remove(index);
-                            if (!item.status.equals(DateAndPicture.STATUS_NEW)){
-                                if (item.status.equals(DateAndPicture.STATUS_CHANGED)){
-                                    item.pictureId = item.oldPictureId;
-                                    item.oldPictureId = "";
-                                }
-                                item.status = DateAndPicture.STATUS_DELETED;
-                                deletedItems.add(item);
-                            }
-                            adapter.notifyItemRemoved(index);
-                            adapter.notifyItemRangeChanged(index, dateAndPictures.size());
-                        }
                         dialog.dismiss();
+                        synchronized(adapter){
+                            removeIndex = viewHolder.getAdapterPosition();
+                            removeItem = dateAndPictures.remove(removeIndex);
+                            if (!removeItem.status.equals(DateAndPicture.STATUS_NEW)){
+                                if (removeItem.status.equals(DateAndPicture.STATUS_CHANGED)){
+                                    removeItem.pictureId = removeItem.oldPictureId;
+                                    removeItem.oldPictureId = "";
+                                }
+                                api.removePicture(removeItem);
+                            }
+                        }
                     }
                 }, new DialogInterface.OnClickListener() {
                     @Override
@@ -167,8 +171,9 @@ public class DateAndPictureFragment extends Fragment implements DateAndPictureDi
     @Override
     public void onDoneDateAndPictureDialog(DateAndPicture item, boolean isNew) {
         Log.d("Kangtle", "on done date and picture dialog");
-        if(isNew)
+        if(isNew) {
             dateAndPictures.add(item);
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -199,5 +204,18 @@ public class DateAndPictureFragment extends Fragment implements DateAndPictureDi
         }
 
         return jsonArray;
+    }
+
+    @Override
+    public void onProcessImage(String okay, String error) {
+        removeItem.status = DateAndPicture.STATUS_DELETED;
+        deletedItems.add(removeItem);
+        if (error.isEmpty()) {
+            adapter.notifyItemRemoved(removeIndex);
+            adapter.notifyItemRangeChanged(removeIndex, dateAndPictures.size());
+            AlertHelper.message(getContext(), "Success", okay);
+        } else {
+            AlertHelper.message(getContext(), "Error", error);
+        }
     }
 }

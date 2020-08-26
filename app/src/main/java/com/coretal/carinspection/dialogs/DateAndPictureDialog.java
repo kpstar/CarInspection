@@ -28,11 +28,14 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.coretal.carinspection.R;
 import com.coretal.carinspection.controls.DateEditText;
 import com.coretal.carinspection.db.DBHelper;
 import com.coretal.carinspection.models.DateAndPicture;
+import com.coretal.carinspection.services.API;
 import com.coretal.carinspection.utils.AlertHelper;
 import com.coretal.carinspection.utils.Contents;
 import com.coretal.carinspection.utils.DateHelper;
@@ -53,11 +56,12 @@ import java.util.Map;
  * Created by Kangtle_R on 1/24/2018.
  */
 
-public class DateAndPictureDialog extends DialogFragment implements SelectPictureSourceDialog.Callback {
+public class DateAndPictureDialog extends DialogFragment implements SelectPictureSourceDialog.Callback, API.Callback {
     private String category;
     private List<String> fileTypeKeys;
     private List<String> fileTypeValues;
     private MyPreference myPref;
+    private API api;
 
     public interface Callback{
         public void onDoneDateAndPictureDialog(DateAndPicture item, boolean isNew);
@@ -71,12 +75,14 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
     private ImageView imageView;
     private Spinner typeSpinner;
     private DateEditText dateEditText;
+    private AlertDialog alertDialog;
 
     private String newPictureID = "";
 
     private DBHelper dbHelper;
 
     public DateAndPicture editingItem;
+    public DateAndPicture newItem;
 
     private Callback callback;
 
@@ -92,6 +98,7 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         dbHelper = new DBHelper(getActivity());
         myPref = new MyPreference(getActivity());
+        api = new API(getContext(), this);
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -104,7 +111,7 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
         Button btnDone = (Button) dialogView.findViewById(R.id.btn_done);
         ImageButton btnCancel = dialogView.findViewById(R.id.btn_cancel);
 
-        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog = dialogBuilder.create();
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         Map<String, String> fileTypes = Contents.JsonFileTypesEnum.getTypesByCategory(category);
@@ -121,8 +128,9 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
             dateEditText.setDateString(editingItem.dateStr);
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.placeholder(R.drawable.ic_camera_48);
+            GlideUrl glideUrl = new GlideUrl(editingItem.pictureURL, new LazyHeaders.Builder().addHeader(Contents.HEADER_KEY, Contents.TOKEN).build());
             Glide.with(getActivity())
-                    .load(editingItem.pictureURL)
+                    .load(glideUrl)
                     .apply(requestOptions)
                     .into(imageView);
         }
@@ -141,16 +149,12 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
                         editingItem.setPictureId(newPictureID);
                         dbHelper.setFileType(dbHelper.getLastInsertFileId(), type);
                     }
-                    if (!editingItem.status.equals(DateAndPicture.STATUS_NEW)){
-                        editingItem.status = DateAndPicture.STATUS_CHANGED;
-                    }
-                    callback.onDoneDateAndPictureDialog(editingItem, false);
+                    api.editPicture(editingItem, type);
                 }else{
                     String status = DateAndPicture.STATUS_NEW;
-                    DateAndPicture item = new DateAndPicture(dateStr, newPictureID, type, status);
-                    callback.onDoneDateAndPictureDialog(item, true);
+                    newItem = new DateAndPicture(dateStr, newPictureID, type, status);
+                    api.uploadPicture(newItem, type);
                 }
-                alertDialog.dismiss();
             }
         });
 
@@ -201,6 +205,29 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
         DrawableHelper.setColor(btnDone.getBackground(), myPref.getColorButton());
 
         return alertDialog;
+    }
+
+    @Override
+    public void onProcessImage(String okay, String error) {
+        if (error.isEmpty()) {
+            alertDialog.dismiss();
+            AlertHelper.message(getContext(), "Success", okay, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (editingItem != null) {
+                        if (!editingItem.status.equals(DateAndPicture.STATUS_NEW)){
+                            editingItem.status = DateAndPicture.STATUS_CHANGED;
+                        }
+                        callback.onDoneDateAndPictureDialog(editingItem, false);
+                    }else{
+                        String status = DateAndPicture.STATUS_NEW;
+                        callback.onDoneDateAndPictureDialog(newItem, true);
+                    }
+                }
+            });
+        } else {
+            AlertHelper.message(getContext(), "Error", error);
+        }
     }
 
     @Override

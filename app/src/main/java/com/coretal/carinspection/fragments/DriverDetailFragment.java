@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -62,6 +63,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
     private DateEditText homasDateEdit;
     private DateEditText manofDateEdit;
     private Switch isKavuaSwitch;
+    private boolean isSpinnerTouched = false;
 
     DateAndPictureFragment dateAndPictureFragment;
 
@@ -126,6 +128,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         if (!Contents.IS_STARTED_INSPECTION) return;
         if(!hidden){
             setValuesFromFile();
+
         }else{
             saveValuesToFile();
         }
@@ -235,6 +238,13 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         }
 
         driverSpinner.setOnItemSelectedListener(null);
+        driverSpinner.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                isSpinnerTouched = true;
+                return false;
+            }
+        });
         driverSpinner.setSelection(driverIDs.indexOf(driverID));
         driverSpinner.post(new Runnable() {
             @Override
@@ -244,6 +254,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         });
 
         driverLicenceNumberLabel.setText(licence);
+        Contents.DRIVER_ID = licence;
         licenceDateEdit.setDateString(licenceDateStr);
         hatzharatnahagDateEdit.setDateString(hatzharatnahagDateStr);
         homasDateEdit.setDateString(homasDateStr);
@@ -268,9 +279,10 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (!isSpinnerTouched) return;
         if (position > 0) {
             String driverId = driverIDs.get(position);
-            progressDialog.show();
+//            progressDialog.show();
             Log.d("Kangtle", "getting driver data.");
             JsonObjectRequest getDriverDataRequest = new JsonObjectRequest(
                     Request.Method.GET,
@@ -279,7 +291,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            progressDialog.hide();
+//                            progressDialog.hide();
                             if (!response.has("error")) {
                                 Log.d("Kangtle", "got driver data succcessfully.");
                                 JsonHelper.saveJsonObject(response, Contents.JsonVehicleDriverData.FILE_PATH);
@@ -293,7 +305,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.d("Kangtle", "error while getting driver data.");
-                            progressDialog.hide();
+//                            progressDialog.hide();
                         }
                     }
             ){
@@ -327,7 +339,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
     @Override
     public void onStop() {
         super.onStop();
-        progressDialog.dismiss();
+//        progressDialog.dismiss();
     }
 
     @Override

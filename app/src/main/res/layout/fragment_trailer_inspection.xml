@@ -23,6 +23,7 @@
         <CheckBox
             android:id="@+id/trailerCheck"
             android:layout_width="wrap_content"
+            android:checked="true"
             android:layout_height="wrap_content">
 
         </CheckBox>
@@ -34,8 +35,18 @@
         android:drawableEnd="@android:drawable/ic_search_category_default"
         android:hint="@string/search"
         android:drawableTint="@color/colorPrimary" />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <View
+            android:id="@+id/disableSearch"
+            android:layout_width="match_parent"
+            android:clickable="false"
+            android:layout_height="match_parent">
+        </View>
+    </FrameLayout>
 </LinearLayout>

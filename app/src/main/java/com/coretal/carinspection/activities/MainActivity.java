@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
 
         new Handler().postDelayed(checkRunnable, 200);
 
-        startAlarmReceiver();
+//        startAlarmReceiver();
     }
 
     @Override
@@ -244,25 +244,33 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
 
     private void setupAfterPermissions(){
         String apiRoot = myPreference.getAPIBaseURL();
+        boolean isSetURL = myPreference.getURLSet();
         String phoneNumber = myPreference.getPhoneNumber();
         String truckType = myPreference.getTruckType();
+        String guid = myPreference.getGUID();
+        Contents.TOKEN = guid;
         Contents.TRUCK_TYPE = truckType;
-        if (phoneNumber.isEmpty() || apiRoot.isEmpty()){
+        if (phoneNumber.isEmpty() || !isSetURL || guid.isEmpty()){
             getAPI_PhoneNumberWithDialog();
         }else{
             Contents.configAPIs(this);
             Contents.PHONE_NUMBER = phoneNumber;
-            registerDevice();
+
+            if(!myPreference.isGettedConfig()){
+                getConfigFile();
+            }
+//            registerDevice();
         }
     }
 
-    private void startAlarmReceiver(){
+    public void startAlarmReceiver(){
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
 
         AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 15000, pendingIntent);
+        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 150000, pendingIntent);
     }
+
 
     private boolean hasPermissions(String... permissions){
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permissions != null) {
@@ -303,66 +311,54 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
 
     }
 
+//    private void registerDevice() {
+//        JsonObjectRequest getRequest = new JsonObjectRequest(
+//                Request.Method.GET,
+//                String.format(Contents.API_REGISTER_DEVICE, Contents.PHONE_NUMBER),
+//                null,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        if (response.has("error")){
+//                            String error = response.optString("error");
+//                            Log.d("Kangtle", error);
+//                        } else {
+//                            try {
+//                                String token = response.getString(Contents.TOKEN_KEY);
+//                                myPreference.setGUID(token);
+//                                Contents.TOKEN = token;
+//
+//                                if(myPreference.isGettedConfig()){
+//                                    resetConfigOnlyRequiredFields();
+//                                }else{
+//                                    getConfigFile();
+//                                }
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Log.d("Kangtle", error.toString());
+//                        AlertHelper.message(MainActivity.this, "ErrorToken", error.toString(), new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                getAPI_PhoneNumberWithDialog();
+//                            }
+//                        });
+//                    }
+//                }
+//        );
+//        volleyHelper.add(getRequest);
+//    }
+
     @Override
     public void onSubmitPhoneNumberDialog(String apiRoot, String phoneNumber) {
+
         setupAfterPermissions();
-    }
-
-    private void registerDevice() {
-        Log.d("Kangtle", "Register device, getting token...");
-        JsonObjectRequest getRequest = new JsonObjectRequest(
-                Request.Method.GET,
-                String.format(Contents.API_REGISTER_DEVICE, Contents.PHONE_NUMBER),
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        if (response.has("error")){
-                            String error = response.optString("error");
-                            Log.d("Kangtle", error);
-                            AlertHelper.message(MainActivity.this, "Error", error, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    getAPI_PhoneNumberWithDialog();
-                                }
-                            });
-                        } else {
-                            Log.d("Kangtle", "Getted token successfully");
-                            try {
-                                String token = response.getString(Contents.TOKEN_KEY);
-                                Contents.TOKEN = token;
-                                Log.d("****Token****", Contents.TOKEN);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                            // This is Old Code // Must Watch out.
-//                            if(myPreference.isGettedConfig()){
-//                                resetConfigOnlyRequiredFields();
-//                            }else{
-//                                getConfigFile();
-//                            }
-
-
-                            // Temporary Code
-                            getConfigFile();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("Kangtle", error.toString());
-                        AlertHelper.message(MainActivity.this, "Error", error.toString(), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                getAPI_PhoneNumberWithDialog();
-                            }
-                        });
-                    }
-                }
-        );
-        volleyHelper.add(getRequest);
     }
 
     private void getConfigFile() {

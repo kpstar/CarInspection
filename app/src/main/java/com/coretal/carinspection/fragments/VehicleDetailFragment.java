@@ -34,6 +34,7 @@ import com.coretal.carinspection.dialogs.SignatureDialog;
 import com.coretal.carinspection.dialogs.VPlateDialog;
 import com.coretal.carinspection.models.DateAndPicture;
 import com.coretal.carinspection.models.Submission;
+import com.coretal.carinspection.services.API;
 import com.coretal.carinspection.utils.AlertHelper;
 import com.coretal.carinspection.utils.Contents;
 import com.coretal.carinspection.utils.DateHelper;
@@ -43,6 +44,8 @@ import com.coretal.carinspection.utils.JsonHelper;
 import com.coretal.carinspection.utils.MyHelper;
 import com.coretal.carinspection.utils.MyPreference;
 import com.coretal.carinspection.utils.VolleyHelper;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -76,6 +79,8 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
     private DateEditText inspectionDateEdit;
     private DateEditText inspectionValidUntilDateEdit;
     private Button submitButton;
+
+    private API api;
 
     private DBHelper dbHelper;
 
@@ -130,6 +135,8 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
         inspectionDateEdit = view.findViewById(R.id.edit_inspect_date);
         inspectionValidUntilDateEdit = view.findViewById(R.id.edit_inspect_valid_until_date);
         submitButton = view.findViewById(R.id.btn_submit);
+
+        api = new API(getContext(), null);
 
         inspectorSpinner.setEnabled(false);
 
@@ -257,6 +264,7 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
 
         this.vPlate = vPlate;
         Contents.CURRENT_VEHICLE_NUMBER = vPlate;
+        Contents.SECOND_VEHICLE_NUMBER = myPreference.getSecondVehiclePlate();
         Contents.setVehicleNumber(vPlate);
 
         Submission submission = dbHelper.getDraftSubmission();
@@ -297,9 +305,58 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                                 String vehicleTypeCode = response.optString(Contents.JsonVehicleData.TYPE_CODE);
                                 String trailerId = response.optString(Contents.JsonVehicleData.TRAILER_ID);
 
+                                if (!trailerId.isEmpty()) {
+                                    JsonArrayRequest getTrailerInspectionsRequest = new JsonArrayRequest(
+                                            Request.Method.GET,
+                                            String.format(Contents.API_GET_VEHICLE_INPSECTIONS, Contents.PHONE_NUMBER, trailerId),
+                                            null,
+                                            new Response.Listener<JSONArray>() {
+                                                @Override
+                                                public void onResponse(JSONArray response) {
+                                                    JsonHelper.saveJsonArray(response, Contents.JsonVehicleInspect.SEC_FILE_PATH);
+                                                }
+                                            },
+                                            new Response.ErrorListener() {
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
+                                                    try {
+                                                        String respTxt = new String(error.networkResponse.data, "UTF-8");
+                                                        JSONObject resp = new JSONObject(respTxt);
+                                                        AlertHelper.message(getContext(), getString(R.string.error), resp.optString("message"), new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                startInspection();
+                                                            }
+                                                        });
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            }
+                                    ){
+                                        @Override
+                                        public Map<String, String> getHeaders() throws AuthFailureError {
+                                            HashMap<String, String> headers = new HashMap<String, String>();
+                                            headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                                            return headers;
+                                        }
+                                    };
+
+                                    volleyHelper.add(getTrailerInspectionsRequest);
+                                }
+
                                 myPreference.setTruckType(vehicleTypeCode, trailerId);
                                 checkTruckType();
-                                JsonHelper.saveJsonObject(response, Contents.JsonVehicleData.FILE_PATH);
+
+                                JsonObject obj = new JsonParser().parse(String.valueOf(response)).getAsJsonObject();
+                                obj.remove("companyId");
+                                obj.remove("vehicleTypeCode");
+                                try {
+                                    JSONObject resp = new JSONObject(obj.toString());
+                                    JsonHelper.saveJsonObject(resp, Contents.JsonVehicleData.FILE_PATH);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }else{
                                 successAllRequests = false;
                             }
@@ -350,14 +407,14 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             try {
-                                String respTxt = new String(error.networkResponse.data, "UTF-8");
-                                JSONObject resp = new JSONObject(respTxt);
-                                AlertHelper.message(getContext(), getString(R.string.error), resp.optString("message"), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        startInspection();
-                                    }
-                                });
+//                                String respTxt = new String(error.networkResponse.data, "UTF-8");
+//                                JSONObject resp = new JSONObject(respTxt);
+//                                AlertHelper.message(getContext(), getString(R.string.error), resp.optString("message"), new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        startInspection();
+//                                    }
+//                                });
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -484,34 +541,6 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                 }
             };
 
-            JsonObjectRequest getVehicleTrailerDataRequest = new JsonObjectRequest(
-                    Request.Method.GET,
-                    String.format(Contents.API_GET_VEHICLE_TRAILER_DATA, Contents.PHONE_NUMBER, vPlate),
-                    null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            if (isSuccessResponse(response)){
-                                JsonHelper.saveJsonObject(response, Contents.JsonVehicleTrailerData.FILE_PATH);
-                            }else{
-//                                successAllRequests = false;
-                            }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                        }
-                    }
-            ){
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
-                    return headers;
-                }
-            };
-
             StringRequest getVehicleAdditionalDetailsRequest = new StringRequest(
                     Request.Method.GET,
                     String.format(Contents.API_GET_VEHICLE_ADDITIONAL_DETAILS, Contents.PHONE_NUMBER, vPlate),
@@ -548,7 +577,12 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                         @Override
                         public void onResponse(JSONObject response) {
                             if (isSuccessResponse(response)){
-                                JsonHelper.saveJsonObject(response, Contents.JsonTruckInspectionJson.FILE_PATH);
+                                try {
+                                    JSONObject object = new JSONObject(response.toString().replace("\"status\":","\"checked\":"));
+                                    JsonHelper.saveJsonObject(object, Contents.JsonTruckInspectionJson.FILE_PATH);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }else{
                                 successAllRequests = false;
                             }
@@ -652,7 +686,6 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
             volleyHelper.add(getDriversRequest);
             volleyHelper.add(getVehicleDriverDataRequest);
             volleyHelper.add(getTrailerRequest);
-//            volleyHelper.add(getVehicleTrailerDataRequest);
             volleyHelper.add(getVehicleAdditionalDetailsRequest);
             volleyHelper.add(getTruckInpsectionJsonRequest);
             volleyHelper.add(getTrailerInspectionJsonRequest);
@@ -869,8 +902,9 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         MainActivity activity = (MainActivity)getActivity();
-                        activity.refresh();
-                        startInspection();
+                        api.submitInspection();
+//                        activity.refresh();
+//                        startInspection();
                     }
                 }
         );

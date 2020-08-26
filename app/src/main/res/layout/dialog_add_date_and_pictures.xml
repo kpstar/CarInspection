@@ -57,6 +57,7 @@
                     android:layout_height="50dp"
                     android:background="@xml/spinner_bg"
                     android:layout_marginBottom="4dp"
+                    android:descendantFocusability="beforeDescendants"
                     android:paddingEnd="16dp"
                     />
 

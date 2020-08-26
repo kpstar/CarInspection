@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.coretal.carinspection.R;
 import com.coretal.carinspection.dialogs.PhotoViewDialog;
@@ -87,8 +89,9 @@ public class DateAndPictureRecyclerViewAdapter extends RecyclerView.Adapter<Date
         });
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.placeholder(R.drawable.ic_camera_48);
+        GlideUrl glideUrl = new GlideUrl(holder.mItem.pictureURL, new LazyHeaders.Builder().addHeader(Contents.HEADER_KEY, Contents.TOKEN).build());
         Glide.with(activity)
-                .load(holder.mItem.pictureURL)
+                .load(glideUrl)
                 .apply(requestOptions)
                 .into(holder.imageView);
     }

@@ -31,7 +31,9 @@ public class MyPreference {
 
     private static String IS_GETTED_CONFIG = "IS_GETTED_CONFIG";
     private static String PHONE_NUMBER = "PHONE_NUMBER";
+    private static String GUID = "PELED_GUID";
     public static String VEHICLE_TYPE = "VEHICLE_TYPE";
+    public static String SECOND_VEHICLE_PLATE = "SECOND_VEHICLE_PLATE";
     private static String API_ROOT = "API_ROOT";
 
     public MyPreference(Context context){
@@ -42,6 +44,10 @@ public class MyPreference {
 
     public void setPhoneNumber(String phoneNumber){
         configEditor.putString(PHONE_NUMBER, phoneNumber).apply();
+    }
+
+    public void setGUID(String guid){
+        configEditor.putString(GUID, guid).apply();
     }
 
     public void setCompanyId(int id){
@@ -59,6 +65,7 @@ public class MyPreference {
                 truckType = "TRUCK&TRAILER";
             }
         }
+        configEditor.putString(SECOND_VEHICLE_PLATE, trailerId);
         configEditor.putString(VEHICLE_TYPE, truckType).apply();
     }
 
@@ -70,12 +77,24 @@ public class MyPreference {
         configEditor.putString(Contents.Config.WS_CONFIG_URL, rootURL).apply();
     }
 
+    public void setIsSetUrl() {
+        configEditor.putBoolean(Contents.IS_SET_URL, true).apply();
+    }
+
     public String getPhoneNumber(){
         return configSP.getString(PHONE_NUMBER, "");
     }
 
+    public String getGUID(){
+        return configSP.getString(GUID, "");
+    }
+
     public String getTruckType(){
         return configSP.getString(VEHICLE_TYPE, "NO_TYPE");
+    }
+
+    public String getSecondVehiclePlate(){
+        return configSP.getString(SECOND_VEHICLE_PLATE, "");
     }
 
     public String getAppNotesLayout(){
@@ -84,6 +103,10 @@ public class MyPreference {
 
     public String getAPIBaseURL(){
         return configSP.getString(Contents.Config.WS_CONFIG_URL, Contents.API_ROOT);
+    }
+
+    public boolean getURLSet(){
+        return configSP.getBoolean(Contents.IS_SET_URL, false);
     }
 
     public String getAppHash(){

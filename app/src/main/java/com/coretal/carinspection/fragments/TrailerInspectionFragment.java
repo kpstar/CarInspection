@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import com.coretal.carinspection.R;
@@ -41,6 +42,7 @@ public class TrailerInspectionFragment extends Fragment {
     private RecyclerView recyclerView;
     private EditText searchEditText;
     private FragmentManager fragmentManager;
+    private View filterView;
 
     public ArrayList<InspectionRecyclerViewAdapter.SectionHeader> sectionHeaders;
     public ArrayList<InspectionRecyclerViewAdapter.SectionHeader> searchedSectionHeaders;
@@ -60,18 +62,33 @@ public class TrailerInspectionFragment extends Fragment {
         myPreference = new MyPreference(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         searchEditText = view.findViewById(R.id.search);
+        filterView = view.findViewById(R.id.disableSearch);
 
         sectionHeaders = new ArrayList<>();
         searchedSectionHeaders = new ArrayList<>();
 
         CheckBox chkSend = view.findViewById(R.id.trailerCheck);
-        chkSend.setVisibility(View.GONE);
         String truckType = myPreference.getTruckType();
-        if (truckType == "TRUCK&TRAILER") {
+        if (truckType.equals("TRUCK&TRAILER")) {
             chkSend.setVisibility(View.VISIBLE);
         } else {
             chkSend.setVisibility(View.GONE);
         }
+
+        chkSend.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                recyclerView.setEnabled(isChecked);
+                if (isChecked) {
+                    recyclerView.setAlpha(1);
+                    filterView.setClickable(false);
+                } else {
+                    recyclerView.setAlpha(0.7F);
+                    filterView.setClickable(true);
+                }
+                adapter.isClickable = isChecked;
+            }
+        });
 
         fragmentManager = getFragmentManager();
 
