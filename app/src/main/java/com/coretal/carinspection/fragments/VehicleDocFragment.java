@@ -88,30 +88,21 @@ public class VehicleDocFragment extends Fragment {
                 }
             }
         });
-        setValuesFromFile(true);
         return view;
     }
 
     private void checkTruckType() {
-
-        String type = myPref.getTruckType();
-        switch (type) {
-            case "TRUCK&TRAILER":
-                radioGroup.setVisibility(View.VISIBLE);
-                btnTruck.setVisibility(View.VISIBLE);
-                btnTrailer.setVisibility(View.VISIBLE);
+        radioGroup.setVisibility(View.VISIBLE);
+        switch (Contents.TRUCK_TYPE) {
+            case 1:
+                if (Contents.SECOND_VEHICLE_NUMBER.isEmpty()) {
+                    radioGroup.setVisibility(View.GONE);
+                }
+                setValuesFromFile(true);
                 break;
-            case "TRUCK":
-                radioGroup.setVisibility(View.VISIBLE);
-                btnTruck.setVisibility(View.VISIBLE);
-                btnTruck.setChecked(true);
-                btnTrailer.setVisibility(View.GONE);
-                break;
-            case "TRAILER":
-                radioGroup.setVisibility(View.VISIBLE);
-                btnTruck.setVisibility(View.GONE);
-                btnTrailer.setVisibility(View.VISIBLE);
-                btnTrailer.setChecked(true);
+            case 2:
+                radioGroup.setVisibility(View.GONE);
+                setValuesFromFile(true);
                 break;
             default:
                 radioGroup.setVisibility(View.GONE);
@@ -162,6 +153,7 @@ public class VehicleDocFragment extends Fragment {
         recDocs.setLayoutManager(linearManager);
         recDocs.setItemAnimator(new DefaultItemAnimator());
         recDocs.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
 }

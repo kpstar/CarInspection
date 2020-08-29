@@ -99,7 +99,7 @@ public class DateAndPictureFragment extends Fragment implements DateAndPictureDi
         View view = inflater.inflate(R.layout.fragment_dateandpicture_list, container, false);
 
         Context context = view.getContext();
-        api = new API(context, this);
+        api = new API(context, DateAndPictureFragment.this);
         final RecyclerView recyclerView = view.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         adapter = new DateAndPictureRecyclerViewAdapter(getActivity(), dateAndPictures, this, category);
@@ -125,8 +125,9 @@ public class DateAndPictureFragment extends Fragment implements DateAndPictureDi
                                     removeItem.pictureId = removeItem.oldPictureId;
                                     removeItem.oldPictureId = "";
                                 }
-                                api.removePicture(removeItem);
                             }
+                            api = new API(getContext(), DateAndPictureFragment.this);
+                            api.removePicture(removeItem);
                         }
                     }
                 }, new DialogInterface.OnClickListener() {
@@ -207,13 +208,13 @@ public class DateAndPictureFragment extends Fragment implements DateAndPictureDi
     }
 
     @Override
-    public void onProcessImage(String okay, String error) {
+    public void onProcessImage(int okay, String error) {
         removeItem.status = DateAndPicture.STATUS_DELETED;
         deletedItems.add(removeItem);
         if (error.isEmpty()) {
             adapter.notifyItemRemoved(removeIndex);
             adapter.notifyItemRangeChanged(removeIndex, dateAndPictures.size());
-            AlertHelper.message(getContext(), "Success", okay);
+            AlertHelper.message(getContext(), "Success", "Removed Ok!");
         } else {
             AlertHelper.message(getContext(), "Error", error);
         }

@@ -35,6 +35,7 @@ public class MyPreference {
     public static String VEHICLE_TYPE = "VEHICLE_TYPE";
     public static String SECOND_VEHICLE_PLATE = "SECOND_VEHICLE_PLATE";
     private static String API_ROOT = "API_ROOT";
+    private static String SAVED_DATE = "LAST_SUBMIT_DATE";
 
     public MyPreference(Context context){
         this.context = context;
@@ -54,19 +55,12 @@ public class MyPreference {
         configEditor.putInt(Contents.JsonVehicleData.COMPANYID, id).apply();
     }
 
-    public void setTruckType(String code, String trailerId){
-        String truckType = "NO_TYPE";
-        if (Arrays.asList(Contents.TYPES_TRAILER).contains(code)) {
-            truckType = "TRAILER";
-        } else if (Arrays.asList(Contents.TYPES_TRUCK).contains(code)) {
-            if (trailerId.isEmpty()) {
-                truckType = "TRUCK";
-            } else {
-                truckType = "TRUCK&TRAILER";
-            }
-        }
-        configEditor.putString(SECOND_VEHICLE_PLATE, trailerId);
-        configEditor.putString(VEHICLE_TYPE, truckType).apply();
+    public void setVehicleType(int id){
+        configEditor.putInt(Contents.JsonVehicleData.INSPECTION_TYPE, id).apply();
+    }
+
+    public void setSecondPlate(String trailerId){
+        configEditor.putString(SECOND_VEHICLE_PLATE, trailerId).apply();
     }
 
     public void setAddDriverJson(String driver){
@@ -75,6 +69,10 @@ public class MyPreference {
 
     public void setAPIRoot(String rootURL) {
         configEditor.putString(Contents.Config.WS_CONFIG_URL, rootURL).apply();
+    }
+
+    public void setSubmissionDate() {
+        configEditor.putLong(SAVED_DATE, System.currentTimeMillis()).apply();
     }
 
     public void setIsSetUrl() {
@@ -91,6 +89,10 @@ public class MyPreference {
 
     public String getTruckType(){
         return configSP.getString(VEHICLE_TYPE, "NO_TYPE");
+    }
+
+    public int getVehicleType(){
+        return configSP.getInt(Contents.JsonVehicleData.INSPECTION_TYPE, 0);
     }
 
     public String getSecondVehiclePlate(){
@@ -174,6 +176,14 @@ public class MyPreference {
 
     public int getColorUncheck(){
         return configSP.getInt(Contents.Config.CONF_APP_SCHEMA_COLOR_UNCHECK, 0xffff0000);
+    }
+
+    public boolean canSubmit() {
+        long savedDate = configSP.getLong(SAVED_DATE, 0);
+        if ((savedDate + (24 * 60 * 60 * 1000)) < System.currentTimeMillis()) {
+            return true;
+        }
+        return false;
     }
 
     public int getColorBackground(){

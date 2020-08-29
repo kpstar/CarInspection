@@ -28,6 +28,7 @@ import com.coretal.carinspection.utils.MyPreference;
 
 public class RemarksDialog extends DialogFragment {
     private MyPreference myPref;
+    private String text;
 
     public interface Callback {
         public void onSubmitRemarks(String remarks);
@@ -36,9 +37,10 @@ public class RemarksDialog extends DialogFragment {
     private RemarksDialog.Callback callback;
     private DBHelper dbHelper;
 
-    public static RemarksDialog newInstance(RemarksDialog.Callback callback){
+    public static RemarksDialog newInstance(RemarksDialog.Callback callback, String text){
         RemarksDialog dialog = new RemarksDialog();
         dialog.callback = callback;
+        dialog.text = text;
 //        dialog.setCancelable(false);
         return dialog;
     }
@@ -57,6 +59,7 @@ public class RemarksDialog extends DialogFragment {
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         Button btnSubmit = (Button) dialogView.findViewById(R.id.btn_submit);
         final EditText remarksEdit = (EditText) dialogView.findViewById(R.id.edit_remarks);
+        remarksEdit.setText(text);
 //
 //        Submission draft = dbHelper.getDraftSubmission();
 //        if(draft != null) {

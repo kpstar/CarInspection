@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.coretal.carinspection.R;
 import com.coretal.carinspection.adapters.InspectionRecyclerViewAdapter;
@@ -43,6 +44,7 @@ public class TrailerInspectionFragment extends Fragment {
     private EditText searchEditText;
     private FragmentManager fragmentManager;
     private View filterView;
+    private LinearLayout layout;
 
     public ArrayList<InspectionRecyclerViewAdapter.SectionHeader> sectionHeaders;
     public ArrayList<InspectionRecyclerViewAdapter.SectionHeader> searchedSectionHeaders;
@@ -63,16 +65,14 @@ public class TrailerInspectionFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         searchEditText = view.findViewById(R.id.search);
         filterView = view.findViewById(R.id.disableSearch);
+        layout = view.findViewById(R.id.layout);
 
         sectionHeaders = new ArrayList<>();
         searchedSectionHeaders = new ArrayList<>();
 
         CheckBox chkSend = view.findViewById(R.id.trailerCheck);
-        String truckType = myPreference.getTruckType();
-        if (truckType.equals("TRUCK&TRAILER")) {
-            chkSend.setVisibility(View.VISIBLE);
-        } else {
-            chkSend.setVisibility(View.GONE);
+        if (Contents.TRUCK_TYPE == 2) {
+            layout.setVisibility(View.GONE);
         }
 
         chkSend.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -86,6 +86,7 @@ public class TrailerInspectionFragment extends Fragment {
                     recyclerView.setAlpha(0.7F);
                     filterView.setClickable(true);
                 }
+                Contents.IS_TRAILER_CHECKED = isChecked;
                 adapter.isClickable = isChecked;
             }
         });
@@ -176,7 +177,7 @@ public class TrailerInspectionFragment extends Fragment {
                     String questionCaption = questionObject.getString(Contents.JsonTrailerInspectionJson.CAPTION);
                     String questionNotes = questionObject.optString(Contents.JsonTrailerInspectionJson.NOTES);
                     int questionOrder = questionObject.getInt(Contents.JsonTrailerInspectionJson.ORDER);
-                    String questionStatus = questionObject.optString(Contents.JsonTrailerInspectionJson.STATUS);
+                    String questionStatus = questionObject.optString(Contents.JsonTrailerInspectionJson.CHECKED);
                     boolean isChecked = questionStatus.equals("true");
 
                     InspectionRecyclerViewAdapter.SectionContent sectionContent =

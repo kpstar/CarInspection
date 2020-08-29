@@ -149,11 +149,11 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
                         editingItem.setPictureId(newPictureID);
                         dbHelper.setFileType(dbHelper.getLastInsertFileId(), type);
                     }
-                    api.editPicture(editingItem, type);
+                    api.editPicture(editingItem, category);
                 }else{
                     String status = DateAndPicture.STATUS_NEW;
                     newItem = new DateAndPicture(dateStr, newPictureID, type, status);
-                    api.uploadPicture(newItem, type);
+                    api.uploadPicture(newItem, category);
                 }
             }
         });
@@ -208,10 +208,19 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
     }
 
     @Override
-    public void onProcessImage(String okay, String error) {
+    public void onProcessImage(final int okay, String error) {
         if (error.isEmpty()) {
+            if (editingItem != null) {
+                if (okay > 0) {
+                    editingItem.pictureId = String.valueOf(okay);
+                }
+            }else{
+                if (okay > 0)
+                    newItem.pictureId = String.valueOf(okay);
+            }
             alertDialog.dismiss();
-            AlertHelper.message(getContext(), "Success", okay, new DialogInterface.OnClickListener() {
+            String message = "Saved Okay!!";
+            AlertHelper.message(getContext(), "Success", message, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (editingItem != null) {
@@ -220,7 +229,6 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
                         }
                         callback.onDoneDateAndPictureDialog(editingItem, false);
                     }else{
-                        String status = DateAndPicture.STATUS_NEW;
                         callback.onDoneDateAndPictureDialog(newItem, true);
                     }
                 }

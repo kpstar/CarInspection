@@ -128,28 +128,28 @@ public class InspectionFragment extends Fragment {
             disableTab();
         }
         tabLayout.addOnTabSelectedListener(tabSelectedListener);
-        selectTab(0);
-        checkTruckType();
 
         return view;
     }
 
     private void checkTruckType() {
-        String truckType = myPreference.getTruckType();
-        switch (truckType) {
-            case "TRUCK":
-                selectTab(0);
+        if (Contents.TRUCK_TYPE == 2) {
+            selectTab(1);
+            tabLayout.setVisibility(View.GONE);
+        } else {
+            selectTab(0);
+            if (Contents.SECOND_VEHICLE_NUMBER.isEmpty()) {
                 tabLayout.setVisibility(View.GONE);
-                break;
-            case "TRAILER":
-                selectTab(1);
-                tabLayout.setVisibility(View.GONE);
-                break;
-            case "TRUCK&TRAILER":
-                break;
-            default:
-                disableTab();
-                break;
+            }
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+
+        if (!hidden) {
+            checkTruckType();
         }
     }
 

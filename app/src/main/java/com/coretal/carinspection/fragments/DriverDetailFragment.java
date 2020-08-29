@@ -245,7 +245,11 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
                 return false;
             }
         });
-        driverSpinner.setSelection(driverIDs.indexOf(driverID));
+        if (driverID.isEmpty()) {
+            driverSpinner.setSelection(1);
+        } else {
+            driverSpinner.setSelection(driverIDs.indexOf(driverID));
+        }
         driverSpinner.post(new Runnable() {
             @Override
             public void run() {

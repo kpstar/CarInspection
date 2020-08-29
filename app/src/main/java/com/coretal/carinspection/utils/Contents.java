@@ -23,6 +23,7 @@ import java.util.Map;
 
 public class Contents {
     public static boolean IS_STARTED_INSPECTION = false;
+    public static boolean IS_TRAILER_CHECKED = true;
     public static String IS_SET_URL = "IS_SET_URL";
     public static String API_ROOT =
             BuildConfig.DEBUG ?
@@ -57,7 +58,7 @@ public class Contents {
     public static String EXTERNAL_JSON_DIR_PATH;
     public static String EXTERNAL_PICTURES_DIR_PATH;
     public static String PHONE_NUMBER;
-    public static String TRUCK_TYPE;
+    public static int TRUCK_TYPE;
     public static String TOKEN;
     public static String CURRENT_VEHICLE_NUMBER;
     public static String SECOND_VEHICLE_NUMBER;
@@ -85,6 +86,7 @@ public class Contents {
         public static String INSPECTION_NAME = "inspectorName";
         public static String INSPECTION_MONTH = "inspectionMonth";
         public static String TYPE_CODE = "vehicleTypeCode";
+        public static String INSPECTION_TYPE = "vehicleInspectionType";
         public static String TRAILER_ID = "trailerId";
         public static String INSPECTION_DATE = "inspectionDate";
         public static String INSPECTION_VALID_UNTIL_DATE = "inspectionValidUntilDate";
@@ -274,7 +276,8 @@ public class Contents {
         public static String NOTES = "notes";
         public static String ORDER = "order";
         public static String CAPTION = "caption";
-        public static String STATUS = "checked"; //status == checked
+        public static String CHECKED = "checked";
+        public static String STATUS = "status"; //status == checked
         public static String ASSET_FILE_NAME = "full_trailer_inspection_structure.json";
         public static String FILE_NAME = "trailer_inspection_json.json";
         public static String FILE_PATH;

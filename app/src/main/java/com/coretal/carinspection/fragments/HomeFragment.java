@@ -3,6 +3,7 @@ package com.coretal.carinspection.fragments;
 
 import android.os.Bundle;
 
+import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -23,6 +24,7 @@ public class HomeFragment extends Fragment {
     private Fragment vehicleDetailFragment;
     private Fragment driverDetailFragment;
     private Fragment vehicleDocFragment;
+    private Fragment trailerFragment;
     private Fragment vehicleInfoFragment;
 
     private Fragment selectedFragment;
@@ -43,7 +45,7 @@ public class HomeFragment extends Fragment {
 
         }
     };
-    private TabLayout tabLayout;
+    public static TabLayout tabLayout;
 
     private void selectTab(int position) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -66,6 +68,10 @@ public class HomeFragment extends Fragment {
 
     }
 
+    public static void hideTrailerTab() {
+        tabLayout.removeTab(tabLayout.getTabAt(3));
+    }
+
     private Fragment getFragmentByPosition(int position) {
         switch (position) {
             case 0:
@@ -75,6 +81,8 @@ public class HomeFragment extends Fragment {
             case 2:
                 return vehicleDocFragment;
             case 3:
+                return trailerFragment;
+            case 4:
                 return vehicleInfoFragment;
             default:
                 return null;
@@ -93,6 +101,9 @@ public class HomeFragment extends Fragment {
                 vehicleDocFragment = VehicleDocFragment.newInstance();
                 return vehicleDocFragment;
             case 3:
+                trailerFragment = TrailerDetailFragment.newInstance();
+                return trailerFragment;
+            case 4:
                 vehicleInfoFragment = VehicleInfoFragment.newInstance();
                 return vehicleInfoFragment;
             default:

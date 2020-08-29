@@ -144,7 +144,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
                         <TextView
-                            android:text="lic_a2"
+                            android:text="A"
                             android:textAlignment="center"
                             android:textColor="@color/colorPrimary"
                             android:layout_width="match_parent"
@@ -171,10 +171,11 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-
-                        </TextView>
+                            android:text="B"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
                         <CheckBox
                             android:id="@+id/chk_b"
                             android:layout_width="wrap_content"
@@ -186,10 +187,11 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-
-                        </TextView>
+                            android:text="C"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
                         <CheckBox
                             android:id="@+id/chk_c1"
                             android:layout_width="wrap_content"
@@ -211,10 +213,11 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-
-                        </TextView>
+                            android:text="D"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
                         <CheckBox
                             android:id="@+id/chk_d1"
                             android:layout_width="wrap_content"
@@ -236,10 +239,11 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-
-                        </TextView>
+                            android:text="1"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
                         <CheckBox
                             android:id="@+id/chk_1"
                             android:layout_width="wrap_content"

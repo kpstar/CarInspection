@@ -117,27 +117,12 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
         transaction.commit();
     }
 
-    public static void changeInspectionMenu(int code) {
-
-        if (code == 0) {
-            menu.findItem(R.id.navigation_truck).setVisible(false);
-        } else if (code == 1) {
-            menu.findItem(R.id.navigation_truck).setTitle(mContext.getString(R.string.truck));
-        } else if (code == 2) {
-            menu.findItem(R.id.navigation_truck).setTitle(mContext.getString(R.string.trailer));
-        } else {
-            menu.findItem(R.id.navigation_truck).setTitle(mContext.getString(R.string.Inspection));
-        }
-    }
-
     private Fragment getFragmentByMenuId(int menuId) {
         switch (menuId) {
             case R.id.navigation_home:
                 return homeFragment;
             case R.id.navigation_truck:
                 return inspectionFragment;
-//            case R.id.navigation_trailer:
-//                return inspectionFragment;
             case R.id.navigation_camera:
                 return vehicleDateAndPicturesFragment;
             case R.id.navigation_notes:
@@ -156,8 +141,6 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
                 return homeFragment;
             case R.id.navigation_truck:
                 inspectionFragment = InspectionFragment.newInstance();
-//            case R.id.navigation_trailer:
-//                inspectionFragment = InspectionFragment.newInstance();
                 return inspectionFragment;
             case R.id.navigation_camera:
                 vehicleDateAndPicturesFragment = VehicleDateAndPicturesFragment.newInstance();
@@ -246,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
         String apiRoot = myPreference.getAPIBaseURL();
         boolean isSetURL = myPreference.getURLSet();
         String phoneNumber = myPreference.getPhoneNumber();
-        String truckType = myPreference.getTruckType();
+        int truckType = myPreference.getVehicleType();
         String guid = myPreference.getGUID();
         Contents.TOKEN = guid;
         Contents.TRUCK_TYPE = truckType;
@@ -261,14 +244,6 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
             }
 //            registerDevice();
         }
-    }
-
-    public void startAlarmReceiver(){
-        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
-
-        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 150000, pendingIntent);
     }
 
 

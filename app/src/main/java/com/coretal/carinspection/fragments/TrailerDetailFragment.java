@@ -181,7 +181,7 @@ public class TrailerDetailFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position > 0) {
-            String trailer = trailers.get(position);
+            final String trailer = trailers.get(position);
 
             progressDialog.show();
             Log.d("Kangtle", "getting trailer data.");
@@ -196,6 +196,7 @@ public class TrailerDetailFragment extends Fragment implements AdapterView.OnIte
                             if (!response.has("error")){
                                 Log.d("Kangtle", "got trailer data successfully.");
                                 JsonHelper.saveJsonObject(response, Contents.JsonVehicleTrailerData.FILE_PATH);
+                                Contents.SECOND_VEHICLE_NUMBER = trailer;
                                 setValuesFromFile();
                             }else{
                                 Log.d("Kangtle", "error while getting trailer data.");
@@ -221,6 +222,7 @@ public class TrailerDetailFragment extends Fragment implements AdapterView.OnIte
             volleyHelper.add(getTrailerDataRequest);
 
         }else{
+            Contents.SECOND_VEHICLE_NUMBER = "";
             FileHelper.deleteFile(Contents.JsonVehicleTrailerData.FILE_PATH);
             setValuesFromFile();
         }

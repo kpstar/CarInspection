@@ -16,6 +16,7 @@ import com.coretal.carinspection.db.DBHelper;
 import com.coretal.carinspection.models.DateAndPicture;
 import com.coretal.carinspection.models.Submission;
 import com.coretal.carinspection.models.SubmissionFile;
+import com.coretal.carinspection.utils.AlertHelper;
 import com.coretal.carinspection.utils.Contents;
 import com.coretal.carinspection.utils.FileHelper;
 import com.coretal.carinspection.utils.JsonHelper;
@@ -41,7 +42,7 @@ public class API implements VolleyHelper.Callback {
     static public ProgressDialog progressDialog;
 
     public interface Callback{
-        public void onProcessImage(String okay, String error);
+        public void onProcessImage(int number, String error);
     }
 
     public API(Context context, Callback callback) {
@@ -54,6 +55,7 @@ public class API implements VolleyHelper.Callback {
     }
 
     static public void submitInspection() {
+        progressDialog.show();
         dbHelper = new DBHelper(context);
         myPreference = new MyPreference(context);
         List<Submission> submissions = dbHelper.getSubmissionsToSubmit();
@@ -70,9 +72,12 @@ public class API implements VolleyHelper.Callback {
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
+                    progressDialog.hide();
                     Log.d("Kangtle", "API_SUBMIT_INSPECTION: " + response.toString());
 
                     submission.status = Submission.STATUS_SUBMITTED;
+                    AlertHelper.message(context, "Success", "Successfully submitted");
+                    myPreference.setSubmissionDate();
                     Log.d("Kangtle", "success to submit " + submission.vehiclePlate);
                     dbHelper.setSubmissionStatus(submission);
                 }
@@ -80,11 +85,24 @@ public class API implements VolleyHelper.Callback {
             new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    progressDialog.hide();
                     Log.e("Kangtle", "API_SUBMIT_INSPECTION: onErrorResponse");
 
                     submission.failedCount ++;
 //                                        submission.errorDetail = "API_SUBMIT_INSPECTION: onErrorResponse";
                     submission.status = Submission.STATUS_FAILED;
+                    try {
+                        String respStr = new String(error.networkResponse.data, "UTF-8");
+                        JSONObject json = new JSONObject(respStr);
+                        if (json.has("error")) {
+                            callback.onProcessImage(0, json.optString("message"));
+                        } else {
+                            callback.onProcessImage(0, error.toString());
+                        }
+                    } catch (Exception e) {
+                        callback.onProcessImage(0, e.toString());
+                        e.printStackTrace();
+                    }
 
                     Log.d("Kangtle", "failed to submit " + submission.vehiclePlate);
                     dbHelper.setSubmissionStatus(submission);
@@ -127,9 +145,9 @@ public class API implements VolleyHelper.Callback {
                         Log.d("Kangtle", "API_SUBMIT_PICTURE: " + response);
                         try {
                             JSONObject json = new JSONObject(response);
-                            callback.onProcessImage(json.optString("message"), "");
+                            callback.onProcessImage(json.optInt("message"), "");
                         } catch (JSONException e) {
-                            callback.onProcessImage("Saved Okay!", "");
+                            callback.onProcessImage(0, "");
                             e.printStackTrace();
                         }
                     }
@@ -139,14 +157,15 @@ public class API implements VolleyHelper.Callback {
                 Log.e("Kangtle", "API_SUBMIT_PICTURE: onErrorResponse " + error.toString());
                 progressDialog.hide();
                 try {
-                    JSONObject json = new JSONObject(String.valueOf(error.networkResponse.data));
+                    String respStr = new String(error.networkResponse.data, "UTF-8");
+                    JSONObject json = new JSONObject(respStr);
                     if (json.has("error")) {
-                        callback.onProcessImage("", json.optString("message"));
+                        callback.onProcessImage(0, json.optString("message"));
                     } else {
-                        callback.onProcessImage("", error.toString());
+                        callback.onProcessImage(0, error.toString());
                     }
-                } catch (JSONException e) {
-                    callback.onProcessImage("", error.toString());
+                } catch (Exception e) {
+                    callback.onProcessImage(0, e.toString());
                     e.printStackTrace();
                 }
             }
@@ -190,9 +209,9 @@ public class API implements VolleyHelper.Callback {
                         Log.d("Kangtle", "API_MODIFY_PICTURE: " + response);
                         try {
                             JSONObject json = new JSONObject(response);
-                            callback.onProcessImage(json.optString("message"), "");
+                            callback.onProcessImage(json.optInt("message"), "");
                         } catch (JSONException e) {
-                            callback.onProcessImage("Saved Okay!", "");
+                            callback.onProcessImage(0, "");
                             e.printStackTrace();
                         }
                     }
@@ -202,14 +221,15 @@ public class API implements VolleyHelper.Callback {
                 Log.e("Kangtle", "API_MODIFY_PICTURE: onErrorResponse " + error.toString());
                 progressDialog.hide();
                 try {
-                    JSONObject json = new JSONObject(String.valueOf(error.networkResponse.data));
+                    String respStr = new String(error.networkResponse.data, "UTF-8");
+                    JSONObject json = new JSONObject(respStr);
                     if (json.has("error")) {
-                        callback.onProcessImage("", json.optString("message"));
+                        callback.onProcessImage(0, json.optString("message"));
                     } else {
-                        callback.onProcessImage("", error.toString());
+                        callback.onProcessImage(0, error.toString());
                     }
-                } catch (JSONException e) {
-                    callback.onProcessImage("", error.toString());
+                } catch (Exception e) {
+                    callback.onProcessImage(0, e.toString());
                     e.printStackTrace();
                 }
             }
@@ -251,7 +271,7 @@ public class API implements VolleyHelper.Callback {
                     public void onResponse(JSONObject response) {
                         progressDialog.hide();
                         Log.d("Kangtle", "API_REMOVE_PICTURE: " + response);
-                        callback.onProcessImage(response.optString("message"), "");
+                        callback.onProcessImage(0, "");
                     }
                 },
                 new Response.ErrorListener() {
@@ -260,14 +280,15 @@ public class API implements VolleyHelper.Callback {
                         Log.e("Kangtle", "API_REMOVE_PICTURE: onErrorResponse " + error.toString());
                         progressDialog.hide();
                         try {
-                            JSONObject json = new JSONObject(String.valueOf(error.networkResponse.data));
+                            String respStr = new String(error.networkResponse.data, "UTF-8");
+                            JSONObject json = new JSONObject(respStr);
                             if (json.has("error")) {
-                                callback.onProcessImage("", json.optString("message"));
+                                callback.onProcessImage(0, json.optString("message"));
                             } else {
-                                callback.onProcessImage("", error.toString());
+                                callback.onProcessImage(0, error.toString());
                             }
-                        } catch (JSONException e) {
-                            callback.onProcessImage("", error.toString());
+                        } catch (Exception e) {
+                            callback.onProcessImage(0, "Error occured");
                             e.printStackTrace();
                         }
                     }
@@ -287,7 +308,7 @@ public class API implements VolleyHelper.Callback {
         String jsonDir = context.getExternalFilesDir(submission.vehiclePlate) + "/" + Contents.EXTERNAL_JSON_DIR;
 
         JSONObject truckInspectionDataJson = JsonHelper.readJsonFromFile(jsonDir + "/" + Contents.JsonTruckInspectionJson.FILE_NAME);
-//        JSONObject trailerInspectionDataJson = JsonHelper.readJsonFromFile(jsonDir + "/" + Contents.JsonTrailerInspectionJson.FILE_NAME);
+        JSONObject trailerInspectionDataJson = JsonHelper.readJsonFromFile(jsonDir + "/" + Contents.JsonTrailerInspectionJson.FILE_NAME);
         JSONObject driverDataJson = JsonHelper.readJsonFromFile(jsonDir + "/" + Contents.JsonVehicleDriverData.FILE_NAME);
         JSONObject vehicleDataJson = JsonHelper.readJsonFromFile(jsonDir + "/" + Contents.JsonVehicleData.FILE_NAME);
         JSONObject dateAndPicturesJson = JsonHelper.readJsonFromFile(jsonDir + "/" + Contents.JsonDateAndPictures.FILE_NAME);
@@ -319,7 +340,8 @@ public class API implements VolleyHelper.Callback {
             inspectionNotesObject.put("notePictureId", notesPictureID);
 
             submitData.put("truckInspectionData", truckInspectionDataJson);
-//            submitData.put("trailerInspectionData", trailerInspectionDataJson);
+            if (Contents.IS_TRAILER_CHECKED)
+                submitData.put("trailerInspectionData", trailerInspectionDataJson);
             submitData.put("driverData", driverDataJson);
             submitData.put("trailerData", trailerDataJson);
             submitData.put("vehicleData", vehicleDataJson);

@@ -235,12 +235,13 @@ public class InspectionRecyclerViewAdapter
         @Override
         public void onClick(View v) {
 
-            fragment = RemarksDialog.newInstance(ContentViewHolder.this);
+            fragment = RemarksDialog.newInstance(ContentViewHolder.this, editTextRemarks.getText().toString());
             ((DialogFragment) fragment).show(fragmentManager, "dialog_remarks");
         }
 
         @Override
         public void onSubmitRemarks(String remarks) {
+            editTextRemarks.setText(remarks);
             fragment.dismiss();
         }
     }

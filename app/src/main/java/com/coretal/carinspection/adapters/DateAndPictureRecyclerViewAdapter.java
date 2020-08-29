@@ -89,11 +89,18 @@ public class DateAndPictureRecyclerViewAdapter extends RecyclerView.Adapter<Date
         });
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.placeholder(R.drawable.ic_camera_48);
-        GlideUrl glideUrl = new GlideUrl(holder.mItem.pictureURL, new LazyHeaders.Builder().addHeader(Contents.HEADER_KEY, Contents.TOKEN).build());
-        Glide.with(activity)
-                .load(glideUrl)
-                .apply(requestOptions)
-                .into(holder.imageView);
+        if (holder.mItem.pictureURL.contains("http")) {
+            GlideUrl glideUrl = new GlideUrl(holder.mItem.pictureURL, new LazyHeaders.Builder().addHeader(Contents.HEADER_KEY, Contents.TOKEN).build());
+            Glide.with(activity)
+                    .load(glideUrl)
+                    .apply(requestOptions)
+                    .into(holder.imageView);
+        } else {
+            Glide.with(activity)
+                    .load(holder.mItem.pictureURL)
+                    .apply(requestOptions)
+                    .into(holder.imageView);
+        }
     }
 
     @Override
