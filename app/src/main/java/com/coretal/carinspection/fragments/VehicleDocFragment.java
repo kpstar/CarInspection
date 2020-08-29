@@ -110,15 +110,14 @@ public class VehicleDocFragment extends Fragment {
         }
     }
 
-//    @Override
-//    public void onHiddenChanged(boolean hidden) {
-//        super.onHiddenChanged(hidden);
-//        Log.d("Kangtle", "on hidden vehicle doc fragment");
-//        if (!Contents.IS_STARTED_INSPECTION) return;
-//        if(!hidden){
-//            setValuesFromFile();
-//        }
-//    }
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+
+        if (!hidden) {
+            checkTruckType();
+        }
+    }
 
     private void setValuesFromFile(boolean isTruck){
         if(!Contents.IS_STARTED_INSPECTION) return;

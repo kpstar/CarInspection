@@ -128,11 +128,13 @@ public class InspectionFragment extends Fragment {
             disableTab();
         }
         tabLayout.addOnTabSelectedListener(tabSelectedListener);
+        checkTruckType();
 
         return view;
     }
 
     private void checkTruckType() {
+        tabLayout.setVisibility(View.VISIBLE);
         if (Contents.TRUCK_TYPE == 2) {
             selectTab(1);
             tabLayout.setVisibility(View.GONE);

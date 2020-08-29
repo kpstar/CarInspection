@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 import com.coretal.carinspection.R;
+import com.coretal.carinspection.utils.VolleyHelper;
 
 import java.util.ArrayList;
 
@@ -22,10 +23,12 @@ public class VehicleDocAdapter extends RecyclerView.Adapter<VehicleDocAdapter.Vi
 
     private Context context;
     private ArrayList<DocContent> docs;
+    public VolleyHelper volleyHelper;
 
     public VehicleDocAdapter(Context context, ArrayList<DocContent> docs) {
         this.context = context;
         this.docs = docs;
+        volleyHelper = new VolleyHelper(context);
     }
 
 

@@ -100,6 +100,9 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
     private String lastError;
     private String vPlate;
 
+    private int vehicleError = 0;
+    private String errorString = "";
+
     public VehicleDetailFragment() {
         // Required empty public constructor
     }
@@ -274,6 +277,8 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
         Contents.SECOND_VEHICLE_NUMBER = "";
         Contents.setVehicleNumber(vPlate);
         Contents.TRUCK_TYPE = myPreference.getVehicleType();
+        errorString = "";
+        vehicleError = 0;
 
         Submission submission = dbHelper.getDraftSubmission();
         vPlateLabel.setText(vPlate);
@@ -317,18 +322,15 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                                 String vehicleCode = response.optString(Contents.JsonVehicleData.TYPE_CODE);
                                 String trailerId = response.optString(Contents.JsonVehicleData.TRAILER_ID);
 
+                                if (vehicleType == 0) {
+                                    vehicleError = 2;
+                                    errorString = vehicleCode;
+                                    successAllRequests = false;
+                                    return;
+                                }
                                 myPreference.setCompanyId(companyId);
                                 myPreference.setVehicleType(vehicleType);
                                 myPreference.setSecondPlate(trailerId);
-                                if (vehicleType == 0) {
-                                    AlertHelper.message(getContext(), "Error", "UNSUPPORTED Vehicle type " + vehicleCode, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            startInspection();
-                                        }
-                                    });
-                                    return;
-                                }
                                 Contents.TRUCK_TYPE = vehicleType;
                                 changeWholeMenu();
 
@@ -392,15 +394,11 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             try {
-                                successAllRequests = false;
+                                vehicleError = 1;
                                 String respTxt = new String(error.networkResponse.data, "UTF-8");
                                 JSONObject resp = new JSONObject(respTxt);
-                                AlertHelper.message(getContext(), getString(R.string.error), resp.optString("message"), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        startInspection();
-                                    }
-                                });
+                                errorString = resp.optString("message");
+                                successAllRequests = false;
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -759,12 +757,17 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
             Contents.IS_STARTED_INSPECTION = true;
             setValuesFromJsonFiles();
         }else{
-//            AlertHelper.message(getContext(), "Error", lastError, new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    startInspection();
-//                }
-//            });
+            if (vehicleError == 1) {
+                errorString = "UNSUPPORTED Vehicle type " + errorString;
+            } else if (vehicleError == 0) {
+                errorString = lastError;
+            }
+            AlertHelper.message(getContext(), "Error", errorString, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    startInspection();
+                }
+            });
         }
     }
 

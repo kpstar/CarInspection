@@ -43,6 +43,7 @@ public class Contents {
     public static String API_GET_TRAILER_INSPECTION_JSON = API_ROOT + "/inspection/getTrailerInspectionJson/%s";//phone_number
     public static String API_GET_TRUCK_INPSECTIONS = API_ROOT + "/vehicle/getTruckInspections/%s/%s";//phone_number/v_plate
     public static String API_GET_VEHICLE_INPSECTIONS = API_ROOT + "/vehicle/getVehicleInspections/%s/%s";//phone_number/v_plate
+    public static String API_VEHICLE_PDF = API_ROOT + "/vehicle/getVehicleInspection/%s/%s"; //phone_number/inspection_id
     public static String API_GET_DATE_AND_PICTURES = API_ROOT + "/vehicle/getVehicleDateAndPictureInfo/%s/%s";//phone_number/v_plate
     public static String API_GET_PICTURE_BY_ID = API_ROOT + "/image/getPictureById/%s/%s";//phone_number/picture id
     public static String API_GET_CONFIG = API_ROOT + "/configuration/getConfigurationFile/%s";//phone number
@@ -419,6 +420,7 @@ public class Contents {
         API_GET_TRUCK_INSPECTION_JSON = API_ROOT + "/inspection/getTruckInspectionJson/%s";//phone_number
         API_GET_TRAILER_INSPECTION_JSON = API_ROOT + "/inspection/getTrailerInspectionJson/%s";//phone_number
         API_GET_VEHICLE_INPSECTIONS = API_ROOT + "/vehicle/getVehicleInspections/%s/%s";//phone_number/v_plate
+        API_VEHICLE_PDF = API_ROOT + "/vehicle/getVehicleInspection/%s/%s"; //phone_number/inspection_id
         API_GET_TRUCK_INPSECTIONS = API_ROOT + "/vehicle/getTruckInspections/%s/%s";//phone_number/v_plate
         API_GET_DATE_AND_PICTURES = API_ROOT + "/vehicle/getVehicleDateAndPictureInfo/%s/%s";//phone_number/v_plate
         API_GET_PICTURE_BY_ID = API_ROOT + "/image/getPictureById/%s/%s";//phone_number/picture id
