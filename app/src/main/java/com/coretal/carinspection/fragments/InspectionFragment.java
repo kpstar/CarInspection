@@ -140,7 +140,7 @@ public class InspectionFragment extends Fragment {
             tabLayout.setVisibility(View.GONE);
         } else {
             selectTab(0);
-            if (Contents.SECOND_VEHICLE_NUMBER.isEmpty()) {
+            if (Contents.SECOND_VEHICLE_NUMBER == null || Contents.SECOND_VEHICLE_NUMBER.isEmpty()) {
                 tabLayout.setVisibility(View.GONE);
             }
         }

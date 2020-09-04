@@ -6,6 +6,7 @@ import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +25,8 @@ import android.widget.RadioGroup;
 import com.coretal.carinspection.R;
 import com.coretal.carinspection.adapters.InspectionRecyclerViewAdapter;
 import com.coretal.carinspection.adapters.VehicleDocAdapter;
+import com.coretal.carinspection.dialogs.AddDriverDialog;
+import com.coretal.carinspection.dialogs.ViewPDFDialog;
 import com.coretal.carinspection.utils.Contents;
 import com.coretal.carinspection.utils.FileHelper;
 import com.coretal.carinspection.utils.JsonHelper;
@@ -39,7 +42,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class VehicleDocFragment extends Fragment {
+public class VehicleDocFragment extends Fragment implements VehicleDocAdapter.Callback {
 
     MyPreference myPref;
     RadioGroup radioGroup;
@@ -93,6 +96,11 @@ public class VehicleDocFragment extends Fragment {
 
     private void checkTruckType() {
         radioGroup.setVisibility(View.VISIBLE);
+        if (Contents.SECOND_VEHICLE_NUMBER == null ) {
+            setValuesFromFile(true);
+            radioGroup.setVisibility(View.GONE);
+            return;
+        }
         switch (Contents.TRUCK_TYPE) {
             case 1:
                 if (Contents.SECOND_VEHICLE_NUMBER.isEmpty()) {
@@ -147,7 +155,7 @@ public class VehicleDocFragment extends Fragment {
             }
         }
 
-        VehicleDocAdapter adapter = new VehicleDocAdapter(getContext(), docs);
+        VehicleDocAdapter adapter = new VehicleDocAdapter(getContext(), docs, this);
         LinearLayoutManager linearManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recDocs.setLayoutManager(linearManager);
         recDocs.setItemAnimator(new DefaultItemAnimator());
@@ -155,4 +163,9 @@ public class VehicleDocFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onClickItem(int position) {
+        DialogFragment fragment = ViewPDFDialog.newInstance(docs.get(position));
+        fragment.show(getFragmentManager(), "view_pdf_dialog");
+    }
 }

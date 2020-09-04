@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -53,8 +54,8 @@ public class TrailerDetailFragment extends Fragment implements AdapterView.OnIte
     private String remarks;
     private String plate;
     private DateAndPictureFragment dateAndPictureFragment;
-    private ProgressDialog progressDialog;
     private JSONArray dateAndPictures;
+    private Boolean isSpinnerTouched = false;
 
     public TrailerDetailFragment() {
         // Required empty public constructor
@@ -75,9 +76,17 @@ public class TrailerDetailFragment extends Fragment implements AdapterView.OnIte
         detailsLabel = view.findViewById(R.id.details);
         remarksEdit = view.findViewById(R.id.remarks);
 
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Getting trailer data");
+//        progressDialog = new ProgressDialog(getContext());
+//        progressDialog.setCancelable(false);
+//        progressDialog.setMessage("Getting trailer data");
+
+        trailerSpinner.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                isSpinnerTouched = true;
+                return false;
+            }
+        });
 
         setValuesFromFile();
 
@@ -180,10 +189,11 @@ public class TrailerDetailFragment extends Fragment implements AdapterView.OnIte
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (!isSpinnerTouched) return;
         if (position > 0) {
             final String trailer = trailers.get(position);
 
-            progressDialog.show();
+//            progressDialog.show();
             Log.d("Kangtle", "getting trailer data.");
             JsonObjectRequest getTrailerDataRequest = new JsonObjectRequest(
                     Request.Method.GET,
@@ -192,7 +202,7 @@ public class TrailerDetailFragment extends Fragment implements AdapterView.OnIte
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            progressDialog.hide();
+//                            progressDialog.hide();
                             if (!response.has("error")){
                                 Log.d("Kangtle", "got trailer data successfully.");
                                 JsonHelper.saveJsonObject(response, Contents.JsonVehicleTrailerData.FILE_PATH);
@@ -207,7 +217,7 @@ public class TrailerDetailFragment extends Fragment implements AdapterView.OnIte
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.d("Kangtle", "error while getting trailer data.");
-                            progressDialog.hide();
+//                            progressDialog.hide();
                         }
                     }
             ){
@@ -242,6 +252,5 @@ public class TrailerDetailFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onStop() {
         super.onStop();
-        progressDialog.dismiss();
     }
 }

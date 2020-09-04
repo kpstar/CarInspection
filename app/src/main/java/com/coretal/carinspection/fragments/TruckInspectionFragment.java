@@ -149,7 +149,7 @@ public class TruckInspectionFragment extends Fragment{
                     String questionCaption = questionObject.getString(Contents.JsonTruckInspectionJson.CAPTION);
                     String questionNotes = questionObject.optString(Contents.JsonTruckInspectionJson.NOTES);
                     int questionOrder = questionObject.getInt(Contents.JsonTruckInspectionJson.ORDER);
-                    String questionStatus = questionObject.optString(Contents.JsonTruckInspectionJson.STATUS);
+                    String questionStatus = questionObject.optString(Contents.JsonTruckInspectionJson.CHECKED);
                     boolean isChecked = questionStatus.equals("true");
 
                     InspectionRecyclerViewAdapter.SectionContent sectionContent =

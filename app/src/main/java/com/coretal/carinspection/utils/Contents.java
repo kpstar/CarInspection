@@ -43,7 +43,7 @@ public class Contents {
     public static String API_GET_TRAILER_INSPECTION_JSON = API_ROOT + "/inspection/getTrailerInspectionJson/%s";//phone_number
     public static String API_GET_TRUCK_INPSECTIONS = API_ROOT + "/vehicle/getTruckInspections/%s/%s";//phone_number/v_plate
     public static String API_GET_VEHICLE_INPSECTIONS = API_ROOT + "/vehicle/getVehicleInspections/%s/%s";//phone_number/v_plate
-    public static String API_VEHICLE_PDF = API_ROOT + "/vehicle/getVehicleInspection/%s/%s"; //phone_number/inspection_id
+    public static String API_VEHICLE_PDF = API_ROOT + "/vehicle/getVehicleInspectionGet/%s/%s/%s"; //token.phone_number/inspection_id
     public static String API_GET_DATE_AND_PICTURES = API_ROOT + "/vehicle/getVehicleDateAndPictureInfo/%s/%s";//phone_number/v_plate
     public static String API_GET_PICTURE_BY_ID = API_ROOT + "/image/getPictureById/%s/%s";//phone_number/picture id
     public static String API_GET_CONFIG = API_ROOT + "/configuration/getConfigurationFile/%s";//phone number
@@ -95,7 +95,9 @@ public class Contents {
         public static String VEHICLE_MAKE = "vehicleMake";
         public static String VEHICLE_MAKE_ID = "vehicleMakeId";
         public static String FILE_NAME = "vehicle_data.json";
+        public static String PDF_NAME = "inspector.pdf";
         public static String FILE_PATH;
+        public static String PDF_PATH;
     }
 
     public static class JsonInspectors {
@@ -387,6 +389,7 @@ public class Contents {
         EXTERNAL_PICTURES_DIR_PATH = MyApp.getContext().getExternalFilesDir(CURRENT_VEHICLE_NUMBER) + "/" + Environment.DIRECTORY_PICTURES;
 
         JsonVehicleData.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonVehicleData.FILE_NAME;
+        JsonVehicleData.PDF_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonVehicleData.PDF_NAME;
         JsonVehicleInspect.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonVehicleInspect.FILE_NAME;
         JsonVehicleInspect.SEC_FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonVehicleInspect.SEC_FILE_NAME;
         JsonInspectors.FILE_PATH = EXTERNAL_JSON_DIR_PATH + "/" + JsonInspectors.FILE_NAME;
@@ -420,7 +423,7 @@ public class Contents {
         API_GET_TRUCK_INSPECTION_JSON = API_ROOT + "/inspection/getTruckInspectionJson/%s";//phone_number
         API_GET_TRAILER_INSPECTION_JSON = API_ROOT + "/inspection/getTrailerInspectionJson/%s";//phone_number
         API_GET_VEHICLE_INPSECTIONS = API_ROOT + "/vehicle/getVehicleInspections/%s/%s";//phone_number/v_plate
-        API_VEHICLE_PDF = API_ROOT + "/vehicle/getVehicleInspection/%s/%s"; //phone_number/inspection_id
+        API_VEHICLE_PDF = API_ROOT + "/vehicle/getVehicleInspectionGet/%s/%s/%s"; //token.phone_number/inspection_id
         API_GET_TRUCK_INPSECTIONS = API_ROOT + "/vehicle/getTruckInspections/%s/%s";//phone_number/v_plate
         API_GET_DATE_AND_PICTURES = API_ROOT + "/vehicle/getVehicleDateAndPictureInfo/%s/%s";//phone_number/v_plate
         API_GET_PICTURE_BY_ID = API_ROOT + "/image/getPictureById/%s/%s";//phone_number/picture id
@@ -431,5 +434,6 @@ public class Contents {
         API_MODIFY_PICTURE = API_ROOT + "/submitPicture/fileModify";
         API_SUBMIT_INSPECTION = API_ROOT + "/submitInspectionV2";
         API_SERVICE_STATUS = API_ROOT + "/serviceStatus";
+        API_SUBMIT_NEW_DRIVER = API_ROOT + "/driver/addNewDriver";
     }
 }

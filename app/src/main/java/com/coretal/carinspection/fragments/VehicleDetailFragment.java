@@ -907,10 +907,10 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                 if (status.equals(DateAndPicture.STATUS_DELETED) || !Arrays.asList(mandatoryTypes).contains(type)) continue;
 
                 existingTypes.add(type);
-                if (date.before(curDate)){
-                    Toast.makeText(getContext(), String.format("%s %s %s", getString(R.string.expired_document), translatedCategory, fileTypes.get(type)), Toast.LENGTH_SHORT).show();
-                    return false;
-                }
+//                if (date.before(curDate)){
+//                    Toast.makeText(getContext(), String.format("%s %s %s", getString(R.string.expired_document), translatedCategory, fileTypes.get(type)), Toast.LENGTH_SHORT).show();
+//                    return false;
+//                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }

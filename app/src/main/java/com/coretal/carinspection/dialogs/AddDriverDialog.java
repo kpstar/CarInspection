@@ -2,6 +2,8 @@ package com.coretal.carinspection.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -14,6 +16,7 @@ import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -22,8 +25,10 @@ import com.android.volley.error.AuthFailureError;
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.JsonObjectRequest;
 import com.coretal.carinspection.R;
+import com.coretal.carinspection.fragments.DriverDetailFragment;
 import com.coretal.carinspection.models.Submission;
 import com.coretal.carinspection.services.SyncService;
+import com.coretal.carinspection.utils.AlertHelper;
 import com.coretal.carinspection.utils.Contents;
 import com.coretal.carinspection.utils.JsonHelper;
 import com.coretal.carinspection.utils.MyPreference;
@@ -43,7 +48,7 @@ import java.util.Map;
 
 public class AddDriverDialog extends DialogFragment {
     public interface Callback {
-        public void onSubmitPhoneNumberDialog(String apiRoot, String phoneNumber);
+        public void onAddNewDriver();
     }
 
     private EditText driverId, licenseNum, name, address, phoneNum, desc;
@@ -51,10 +56,11 @@ public class AddDriverDialog extends DialogFragment {
     private CheckBox chk_a2, chk_a1, chk_a, chk_b, chk_c1, chk_c, chk_c_e, chk_d1, chk_d, chk_d3, chk_1;
     private MyPreference myPref;
     private Callback callback;
+    private ProgressDialog progressDialog;
 
     public static AddDriverDialog newInstance(Callback callback){
         AddDriverDialog dialog = new AddDriverDialog();
-//        dialog.callback = callback;
+        dialog.callback = callback;
         dialog.setCancelable(false);
         return dialog;
     }
@@ -90,6 +96,10 @@ public class AddDriverDialog extends DialogFragment {
         chk_a = dialogView.findViewById(R.id.chk_a);
         chk_a1 = dialogView.findViewById(R.id.chk_a1);
         chk_a2 = dialogView.findViewById(R.id.chk_a2);
+
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Please wait...");
 
         getConfDriverData();
 
@@ -142,6 +152,7 @@ public class AddDriverDialog extends DialogFragment {
 
                     Log.d("Kangtle", driverJson.toString());
                     myPref.setAddDriverJson(driverJson.toString());
+                    progressDialog.show();
 
                     VolleyHelper addDriverVolleyHelper = new VolleyHelper(getContext());
                     JsonObjectRequest postDriverDataRequest = new JsonObjectRequest(
@@ -151,22 +162,21 @@ public class AddDriverDialog extends DialogFragment {
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
-                                    if (getError(response).isEmpty()){
-//                                        JsonHelper.saveJsonObject(response, Contents.JsonVehicleData.FILE_PATH);
-                                        Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
-                                        myPref.setAddDriverJson("");
-                                    }else{
-                                        Toast.makeText(getContext(), getError(response), Toast.LENGTH_LONG).show();
-                                    }
+                                    progressDialog.hide();
+                                    myPref.setAddDriverJson("");
+                                    dismiss();
+                                    Toast.makeText(getContext(), response.optString("message"), Toast.LENGTH_LONG).show();
+                                    callback.onAddNewDriver();
                                 }
                             },
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
+                                    progressDialog.hide();
                                     try {
                                         String respTxt = new String(error.networkResponse.data, "UTF-8");
                                         JSONObject resp = new JSONObject(respTxt);
-                                        Toast.makeText(getContext(), resp.getString("message"), Toast.LENGTH_LONG).show();
+                                        AlertHelper.message(getContext(), getString(R.string.error), resp.optString("message"));
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -239,15 +249,6 @@ public class AddDriverDialog extends DialogFragment {
             e.printStackTrace();
         }
     }
-
-    private String getError(JSONObject response){
-        if (response.has("error")){
-            String error = response.optString("message");
-            return error;
-        }else{
-            return "";
-        }
-    };
 
     @Override
     public void onDestroy() {

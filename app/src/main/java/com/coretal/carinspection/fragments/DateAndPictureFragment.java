@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.coretal.carinspection.R;
 import com.coretal.carinspection.adapters.DateAndPictureRecyclerViewAdapter;
@@ -214,9 +215,9 @@ public class DateAndPictureFragment extends Fragment implements DateAndPictureDi
         if (error.isEmpty()) {
             adapter.notifyItemRemoved(removeIndex);
             adapter.notifyItemRangeChanged(removeIndex, dateAndPictures.size());
-            AlertHelper.message(getContext(), "Success", "Removed Ok!");
+            Toast.makeText(getContext(), "Removed Ok!", Toast.LENGTH_LONG).show();
         } else {
-            AlertHelper.message(getContext(), "Error", error);
+            Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
         }
     }
 }

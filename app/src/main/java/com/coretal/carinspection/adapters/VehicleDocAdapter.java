@@ -24,13 +24,18 @@ public class VehicleDocAdapter extends RecyclerView.Adapter<VehicleDocAdapter.Vi
     private Context context;
     private ArrayList<DocContent> docs;
     public VolleyHelper volleyHelper;
+    private Callback callback;
 
-    public VehicleDocAdapter(Context context, ArrayList<DocContent> docs) {
+    public VehicleDocAdapter(Context context, ArrayList<DocContent> docs, Callback callback) {
         this.context = context;
         this.docs = docs;
         volleyHelper = new VolleyHelper(context);
+        this.callback = callback;
     }
 
+    public interface Callback {
+        public void onClickItem(int position);
+    }
 
     @NonNull
     @Override
@@ -41,7 +46,7 @@ public class VehicleDocAdapter extends RecyclerView.Adapter<VehicleDocAdapter.Vi
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
         DocContent content = docs.get(position);
         if (position == 0) {
@@ -51,6 +56,13 @@ public class VehicleDocAdapter extends RecyclerView.Adapter<VehicleDocAdapter.Vi
         holder.docId.setText(content.id);
         holder.docMonth.setText(content.month);
         holder.docType.setText(content.type);
+
+        holder.docLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callback.onClickItem(position);
+            }
+        });
     }
 
     @Override
@@ -58,7 +70,7 @@ public class VehicleDocAdapter extends RecyclerView.Adapter<VehicleDocAdapter.Vi
         return docs.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         LinearLayout docLayout;
         TextView docId, docMonth, docType;
 
@@ -69,13 +81,6 @@ public class VehicleDocAdapter extends RecyclerView.Adapter<VehicleDocAdapter.Vi
             docMonth = itemView.findViewById(R.id.docMonth);
             docType = itemView.findViewById(R.id.docType);
             docLayout = itemView.findViewById(R.id.docLayout);
-
-            docLayout.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            Toast.makeText(context, docId.getText().toString(), Toast.LENGTH_SHORT).show();
         }
     }
 

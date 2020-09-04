@@ -84,6 +84,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
 
     private ProgressDialog progressDialog;
     private JSONArray dateAndPictures;
+    private Boolean isAdded = false;
 
     public DriverDetailFragment() {
         // Required empty public constructor
@@ -127,8 +128,11 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         Log.d("Kangtle", "on hidden driver detail fragment");
         if (!Contents.IS_STARTED_INSPECTION) return;
         if(!hidden){
-            setValuesFromFile();
-
+            if (isAdded) {
+                getDrivers();
+            } else {
+                setValuesFromFile();
+            }
         }else{
             saveValuesToFile();
         }
@@ -167,15 +171,49 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         JsonHelper.saveJsonObject(driverJsonObject, Contents.JsonVehicleDriverData.FILE_PATH);
     }
 
+    private void getDrivers() {
+        VolleyHelper helper = new VolleyHelper(requireContext());
+        JsonObjectRequest getDriversRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                String.format(Contents.API_GET_DRIVERS, Contents.PHONE_NUMBER, Contents.CURRENT_VEHICLE_NUMBER),
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        JsonHelper.saveJsonObject(response, Contents.JsonDrivers.FILE_PATH);
+                        setValuesFromFile();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                return headers;
+            }
+        };
+        helper.add(getDriversRequest);
+    }
+
     public void setValuesFromFile(){
         if(!Contents.IS_STARTED_INSPECTION) return;
 
         Map<String, String> drivers = Contents.JsonDrivers.getDrivers();
         driverIDs = new ArrayList<>();
-        driverIDs.add("");
+        driverIDs.add("new");
         Collections.addAll(driverIDs, drivers.keySet().toArray(new String[drivers.size()]));
         driverNames = new ArrayList<>(drivers.values());
         driverNames.add(0, getString(R.string.create_new_driver));
+
+        if (driverIDs.size() == 1) {
+            driverIDs.add("");
+            driverNames.add("");
+        }
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, driverNames) {
 
@@ -286,8 +324,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         if (!isSpinnerTouched) return;
         if (position > 0) {
             String driverId = driverIDs.get(position);
-//            progressDialog.show();
-            Log.d("Kangtle", "getting driver data.");
+            if (driverId.isEmpty()) return;
             JsonObjectRequest getDriverDataRequest = new JsonObjectRequest(
                     Request.Method.GET,
                     String.format(Contents.API_GET_DRIVER, Contents.PHONE_NUMBER, driverId),
@@ -295,21 +332,15 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-//                            progressDialog.hide();
                             if (!response.has("error")) {
-                                Log.d("Kangtle", "got driver data succcessfully.");
                                 JsonHelper.saveJsonObject(response, Contents.JsonVehicleDriverData.FILE_PATH);
                                 setValuesFromFile();
-                            } else {
-                                Log.d("Kangtle", "error while getting driver data.");
                             }
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Log.d("Kangtle", "error while getting driver data.");
-//                            progressDialog.hide();
                         }
                     }
             ){
@@ -329,6 +360,10 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         }
     }
 
+    public void addDriver(String id, String name) {
+
+    }
+
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
@@ -346,8 +381,9 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
 //        progressDialog.dismiss();
     }
 
-    @Override
-    public void onSubmitPhoneNumberDialog(String apiRoot, String phoneNumber) {
 
+    @Override
+    public void onAddNewDriver() {
+        getDrivers();
     }
 }

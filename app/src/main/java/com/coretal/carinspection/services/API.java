@@ -186,7 +186,10 @@ public class API implements VolleyHelper.Callback {
         if (type == Contents.JsonFileTypesEnum.CATEGORIE_DRIVER) { // DRIVERS
             multiPartRequest.addStringParam("ModuleEnum", "DRIVERS");
             multiPartRequest.addStringParam("plateOrId", Contents.DRIVER_ID);
-        } else { // TRUCKS
+        } else if (type == Contents.JsonFileTypesEnum.CATEGORIE_TRAILER) { // TRUCKS
+            multiPartRequest.addStringParam("ModuleEnum", "TRUCKS");
+            multiPartRequest.addStringParam("plateOrId", Contents.SECOND_VEHICLE_NUMBER);
+        } else {
             multiPartRequest.addStringParam("ModuleEnum", "TRUCKS");
             multiPartRequest.addStringParam("plateOrId", Contents.CURRENT_VEHICLE_NUMBER);
         }
@@ -243,7 +246,11 @@ public class API implements VolleyHelper.Callback {
             }
         };
 
-        multiPartRequest.addStringParam("existingDocumentId", item.oldPictureId);
+        if (item.oldPictureId.isEmpty()) {
+            multiPartRequest.addStringParam("existingDocumentId", item.pictureId);
+        } else {
+            multiPartRequest.addStringParam("existingDocumentId", item.oldPictureId);
+        }
         multiPartRequest.addStringParam("pictureId", item.pictureId);
         multiPartRequest.addStringParam("phoneNumber", Contents.PHONE_NUMBER);
         multiPartRequest.addStringParam("pictureDate", item.dateStr);
@@ -251,7 +258,10 @@ public class API implements VolleyHelper.Callback {
         if (type == Contents.JsonFileTypesEnum.CATEGORIE_DRIVER) { // DRIVERS
             multiPartRequest.addStringParam("ModuleEnum", "DRIVERS");
             multiPartRequest.addStringParam("plateOrId", Contents.DRIVER_ID);
-        } else { // TRUCKS
+        } else if (type == Contents.JsonFileTypesEnum.CATEGORIE_TRAILER) { // TRUCKS
+            multiPartRequest.addStringParam("ModuleEnum", "TRUCKS");
+            multiPartRequest.addStringParam("plateOrId", Contents.SECOND_VEHICLE_NUMBER);
+        } else {
             multiPartRequest.addStringParam("ModuleEnum", "TRUCKS");
             multiPartRequest.addStringParam("plateOrId", Contents.CURRENT_VEHICLE_NUMBER);
         }

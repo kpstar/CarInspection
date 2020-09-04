@@ -149,6 +149,12 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
                         editingItem.setPictureId(newPictureID);
                         dbHelper.setFileType(dbHelper.getLastInsertFileId(), type);
                     }
+                    if (editingItem.pictureURL.contains("http")) {
+                        editingItem.type = type;
+                        editingItem.dateStr = dateStr;
+                        dismiss();
+                        return;
+                    }
                     api.editPicture(editingItem, category);
                 }else{
                     String status = DateAndPicture.STATUS_NEW;
@@ -220,21 +226,17 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
             }
             alertDialog.dismiss();
             String message = "Saved Okay!!";
-            AlertHelper.message(getContext(), "Success", message, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (editingItem != null) {
-                        if (!editingItem.status.equals(DateAndPicture.STATUS_NEW)){
-                            editingItem.status = DateAndPicture.STATUS_CHANGED;
-                        }
-                        callback.onDoneDateAndPictureDialog(editingItem, false);
-                    }else{
-                        callback.onDoneDateAndPictureDialog(newItem, true);
-                    }
+            if (editingItem != null) {
+                if (!editingItem.status.equals(DateAndPicture.STATUS_NEW)){
+                    editingItem.status = DateAndPicture.STATUS_CHANGED;
                 }
-            });
+                callback.onDoneDateAndPictureDialog(editingItem, false);
+            }else{
+                callback.onDoneDateAndPictureDialog(newItem, true);
+            }
+            Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
         } else {
-            AlertHelper.message(getContext(), "Error", error);
+            Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
         }
     }
 
