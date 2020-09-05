@@ -114,9 +114,8 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Getting driver data");
 
+        myPref = new MyPreference(getContext());
         setValuesFromFile();
-
-//        myPref = new MyPreference(getContext());
 //        DrawableHelper.setColor(view.getBackground(), myPref.getColorBackground());
 
         return view;
@@ -269,7 +268,8 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
                 address = driverDataJson.getString(Contents.JsonVehicleDriverData.DRIVER_ADDRESS);
                 remarks = driverDataJson.optString(Contents.JsonVehicleDriverData.REMARKS);
                 dateAndPictures = driverDataJson.optJSONArray(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
-
+                myPref.setDriverId(driverID);
+                Contents.DRIVER_ID = driverID;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -296,7 +296,6 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         });
 
         driverLicenceNumberLabel.setText(licence);
-        Contents.DRIVER_ID = licence;
         licenceDateEdit.setDateString(licenceDateStr);
         hatzharatnahagDateEdit.setDateString(hatzharatnahagDateStr);
         homasDateEdit.setDateString(homasDateStr);
@@ -323,7 +322,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (!isSpinnerTouched) return;
         if (position > 0) {
-            String driverId = driverIDs.get(position);
+            final String driverId = driverIDs.get(position);
             if (driverId.isEmpty()) return;
             JsonObjectRequest getDriverDataRequest = new JsonObjectRequest(
                     Request.Method.GET,
@@ -333,6 +332,8 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
                         @Override
                         public void onResponse(JSONObject response) {
                             if (!response.has("error")) {
+                                myPref.setDriverId(driverId);
+                                Contents.DRIVER_ID = driverId;
                                 JsonHelper.saveJsonObject(response, Contents.JsonVehicleDriverData.FILE_PATH);
                                 setValuesFromFile();
                             }

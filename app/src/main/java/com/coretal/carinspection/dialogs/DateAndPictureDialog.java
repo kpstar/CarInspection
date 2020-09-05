@@ -139,6 +139,10 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
             @Override
             public void onClick(View v) {
                 String dateStr = dateEditText.getText().toString();
+                if (dateStr.isEmpty()) {
+                    Toast.makeText(getContext(), "Please select date.", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 String type = fileTypeKeys.get(typeSpinner.getSelectedItemPosition());
                 if (editingItem != null) {
                     editingItem.dateStr = dateStr;
@@ -149,12 +153,12 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
                         editingItem.setPictureId(newPictureID);
                         dbHelper.setFileType(dbHelper.getLastInsertFileId(), type);
                     }
-                    if (editingItem.pictureURL.contains("http")) {
-                        editingItem.type = type;
-                        editingItem.dateStr = dateStr;
-                        dismiss();
-                        return;
-                    }
+//                    if (editingItem.pictureURL.contains("http")) {
+//                        editingItem.type = type;
+//                        editingItem.dateStr = dateStr;
+//                        dismiss();
+//                        return;
+//                    }
                     api.editPicture(editingItem, category);
                 }else{
                     String status = DateAndPicture.STATUS_NEW;

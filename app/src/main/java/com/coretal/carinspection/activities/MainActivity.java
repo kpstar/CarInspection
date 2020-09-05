@@ -238,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
         }else{
             Contents.configAPIs(this);
             Contents.PHONE_NUMBER = phoneNumber;
-
             if(!myPreference.isGettedConfig()){
                 getConfigFile();
             }

@@ -34,6 +34,7 @@ public class MyPreference {
     private static String GUID = "PELED_GUID";
     public static String VEHICLE_TYPE = "VEHICLE_TYPE";
     public static String SECOND_VEHICLE_PLATE = "SECOND_VEHICLE_PLATE";
+    public static String DRIVER_ID = "DRIVER_ID";
     private static String API_ROOT = "API_ROOT";
     private static String SAVED_DATE = "LAST_SUBMIT_DATE";
 
@@ -61,6 +62,10 @@ public class MyPreference {
 
     public void setSecondPlate(String trailerId){
         configEditor.putString(SECOND_VEHICLE_PLATE, trailerId).apply();
+    }
+
+    public void setDriverId(String driverId){
+        configEditor.putString(DRIVER_ID, driverId).apply();
     }
 
     public void setAddDriverJson(String driver){
@@ -97,6 +102,10 @@ public class MyPreference {
 
     public String getSecondVehiclePlate(){
         return configSP.getString(SECOND_VEHICLE_PLATE, "");
+    }
+
+    public String getDriverId(){
+        return configSP.getString(DRIVER_ID, "");
     }
 
     public String getAppNotesLayout(){

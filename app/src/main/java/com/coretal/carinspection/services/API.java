@@ -62,7 +62,6 @@ public class API implements VolleyHelper.Callback {
 
         final Submission submission = submissions.get(submissions.size() - 1);
         Log.d("Kangtle", "started to submit submissions vPlate " + submission.vehiclePlate);
-        Log.d("Kangtle", "will submit pictures first");
 
         VolleyHelper inspectionVolleyHelper = new VolleyHelper(context);
         JsonObjectRequest postInspectionDataRequest = new JsonObjectRequest(
@@ -73,8 +72,6 @@ public class API implements VolleyHelper.Callback {
                 @Override
                 public void onResponse(JSONObject response) {
                     progressDialog.hide();
-                    Log.d("Kangtle", "API_SUBMIT_INSPECTION: " + response.toString());
-
                     submission.status = Submission.STATUS_SUBMITTED;
                     AlertHelper.message(context, "Success", "Successfully submitted");
                     myPreference.setSubmissionDate();
@@ -86,10 +83,7 @@ public class API implements VolleyHelper.Callback {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     progressDialog.hide();
-                    Log.e("Kangtle", "API_SUBMIT_INSPECTION: onErrorResponse");
-
                     submission.failedCount ++;
-//                                        submission.errorDetail = "API_SUBMIT_INSPECTION: onErrorResponse";
                     submission.status = Submission.STATUS_FAILED;
                     try {
                         String respStr = new String(error.networkResponse.data, "UTF-8");
@@ -103,8 +97,6 @@ public class API implements VolleyHelper.Callback {
                         callback.onProcessImage(0, e.toString());
                         e.printStackTrace();
                     }
-
-                    Log.d("Kangtle", "failed to submit " + submission.vehiclePlate);
                     dbHelper.setSubmissionStatus(submission);
                 }
             }
@@ -142,7 +134,6 @@ public class API implements VolleyHelper.Callback {
                     @Override
                     public void onResponse(String response) {
                         progressDialog.hide();
-                        Log.d("Kangtle", "API_SUBMIT_PICTURE: " + response);
                         try {
                             JSONObject json = new JSONObject(response);
                             callback.onProcessImage(json.optInt("message"), "");
@@ -154,7 +145,6 @@ public class API implements VolleyHelper.Callback {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("Kangtle", "API_SUBMIT_PICTURE: onErrorResponse " + error.toString());
                 progressDialog.hide();
                 try {
                     String respStr = new String(error.networkResponse.data, "UTF-8");

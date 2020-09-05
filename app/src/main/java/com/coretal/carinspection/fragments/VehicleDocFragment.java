@@ -77,16 +77,16 @@ public class VehicleDocFragment extends Fragment implements VehicleDocAdapter.Ca
         btnTruck.setOnCheckedChangeListener(new RadioButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setValuesFromFile(true);
+                if (isChecked) {
+                    setValuesFromFile(true);
+                }
             }
         });
 
         btnTrailer.setOnCheckedChangeListener(new RadioButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (Contents.SECOND_VEHICLE_NUMBER.isEmpty()) {
-                    setValuesFromFile(true);
-                } else {
+                if (isChecked) {
                     setValuesFromFile(false);
                 }
             }

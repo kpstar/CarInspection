@@ -209,11 +209,11 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!myPreference.canSubmit()) {
-                    AlertHelper.message(getContext(), "Warning", "You can submit only 1 time a day.");
-                    return;
-                }
-                if(Contents.IS_STARTED_INSPECTION) {
+//                if (!myPreference.canSubmit()) {
+//                    AlertHelper.message(getContext(), "Warning", "You can submit only 1 time a day.");
+//                    return;
+//                }
+//                if(Contents.IS_STARTED_INSPECTION) {
                     if (checkFields() && checkDocuments()) {
                         saveValuesToFile();
 
@@ -228,9 +228,9 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                         fragment.setInspectorName(inspectorName);
                         fragment.show(getFragmentManager(), "dialog_signature");
                     }
-                }else{
-                    AlertHelper.message(getContext(), "Warning", "Inspection not started yet");
-                }
+//                }else{
+//                    AlertHelper.message(getContext(), "Warning", "Inspection not started yet");
+//                }
             }
         });
 
