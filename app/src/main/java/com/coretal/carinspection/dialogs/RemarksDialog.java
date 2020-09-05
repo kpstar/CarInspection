@@ -3,8 +3,6 @@ package com.coretal.carinspection.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -12,13 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-
 import com.coretal.carinspection.R;
 import com.coretal.carinspection.db.DBHelper;
-import com.coretal.carinspection.models.Submission;
-import com.coretal.carinspection.utils.AlertHelper;
-import com.coretal.carinspection.utils.DrawableHelper;
 import com.coretal.carinspection.utils.MyHelper;
 import com.coretal.carinspection.utils.MyPreference;
 
@@ -27,7 +20,6 @@ import com.coretal.carinspection.utils.MyPreference;
  */
 
 public class RemarksDialog extends DialogFragment {
-    private MyPreference myPref;
     private String text;
 
     public interface Callback {
@@ -41,7 +33,6 @@ public class RemarksDialog extends DialogFragment {
         RemarksDialog dialog = new RemarksDialog();
         dialog.callback = callback;
         dialog.text = text;
-//        dialog.setCancelable(false);
         return dialog;
     }
 
@@ -49,7 +40,6 @@ public class RemarksDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         dbHelper = new DBHelper(getContext());
-        myPref = new MyPreference(getContext());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_remarks, null);
 
@@ -60,34 +50,16 @@ public class RemarksDialog extends DialogFragment {
         Button btnSubmit = (Button) dialogView.findViewById(R.id.btn_submit);
         final EditText remarksEdit = (EditText) dialogView.findViewById(R.id.edit_remarks);
         remarksEdit.setText(text);
-//
-//        Submission draft = dbHelper.getDraftSubmission();
-//        if(draft != null) {
-//            String draftVPlate = draft.vehiclePlate;
-//            vPlateEdit.setText(draftVPlate);
-//        }
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String remarks = remarksEdit.getText().toString();
-                if (remarks.isEmpty()) return;
-//                if (dbHelper.checkUnsubmittedSubmission(vPlate)){
-//                    AlertHelper.message(getContext(), "Warning", getString(R.string.enter_another_vehicle_number));
-//                    return;
-//                }
                 MyHelper.hideKeyBoard(getActivity(), remarksEdit);
-                callback.onSubmitRemarks(remarksEdit.getText().toString());
+                callback.onSubmitRemarks(remarks);
                 alertDialog.dismiss();
             }
         });
-
-//        LayerDrawable layerDrawable = (LayerDrawable) dialogView.getBackground();
-//        Drawable topDrawable = layerDrawable.findDrawableByLayerId(R.id.dialog_bg_top);
-//        Drawable containerDrawable = layerDrawable.findDrawableByLayerId(R.id.dialog_bg_container);
-//        DrawableHelper.setColor(topDrawable, myPref.getColorButton());
-//        DrawableHelper.setColor(containerDrawable, myPref.getColorBackground());
-//        DrawableHelper.setColor(btnSubmit.getBackground(), myPref.getColorButton());
 
         return alertDialog;
     }

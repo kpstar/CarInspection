@@ -183,7 +183,7 @@ public class InspectionRecyclerViewAdapter
             editTextSubTitle = itemView.findViewById(R.id.sub_title);
             editTextRemarks = itemView.findViewById(R.id.remarks);
             btnRemarks = itemView.findViewById(R.id.btn_remarks);
-
+            editTextRemarks.setVisibility(View.GONE);
             btnRemarks.setOnClickListener(this);
             checkBox.setOnCheckedChangeListener(this);
 
@@ -199,6 +199,9 @@ public class InspectionRecyclerViewAdapter
             checkBox.setChecked(content.isChecked);
             onBind = false;
             editTextSubTitle.setText(content.questionCaption);
+            if (!content.questionNotes.isEmpty()) {
+                editTextRemarks.setVisibility(View.VISIBLE);
+            }
             editTextRemarks.setText(content.questionNotes);
         }
 
@@ -242,6 +245,11 @@ public class InspectionRecyclerViewAdapter
         @Override
         public void onSubmitRemarks(String remarks) {
             editTextRemarks.setText(remarks);
+            if (remarks.isEmpty()) {
+                editTextRemarks.setVisibility(View.GONE);
+            } else {
+                editTextRemarks.setVisibility(View.VISIBLE);
+            }
             fragment.dismiss();
         }
     }
