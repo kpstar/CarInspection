@@ -90,6 +90,14 @@ public class TruckInspectionFragment extends Fragment{
                     for (InspectionRecyclerViewAdapter.SectionHeader header: sectionHeaders) {
                         if (header.getTitle().toLowerCase().contains(s)){
                             searchedSectionHeaders.add(header);
+                            continue;
+                        } else {
+                            for (InspectionRecyclerViewAdapter.SectionContent content: header.sectionContents) {
+                                if (content.getQuestionCaption().toLowerCase().contains(s)) {
+                                    searchedSectionHeaders.add(header);
+                                    break;
+                                }
+                            }
                         }
                     }
                 }

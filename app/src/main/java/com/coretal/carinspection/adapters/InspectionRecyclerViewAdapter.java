@@ -312,6 +312,10 @@ public class InspectionRecyclerViewAdapter
             dest.writeByte((byte) (isChecked ? 1 : 0));
         }
 
+        public String getQuestionCaption() {
+            return questionCaption;
+        }
+
         public final Creator<SectionContent> CREATOR = new Creator<SectionContent>() {
             @Override
             public SectionContent createFromParcel(Parcel in) {
