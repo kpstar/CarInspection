@@ -84,7 +84,6 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
 
     private ProgressDialog progressDialog;
     private JSONArray dateAndPictures;
-    private Boolean isAdded = false;
 
     public DriverDetailFragment() {
         // Required empty public constructor
@@ -127,11 +126,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         Log.d("Kangtle", "on hidden driver detail fragment");
         if (!Contents.IS_STARTED_INSPECTION) return;
         if(!hidden){
-            if (isAdded) {
-                getDrivers();
-            } else {
-                setValuesFromFile();
-            }
+            setValuesFromFile();
         }else{
             saveValuesToFile();
         }
@@ -204,15 +199,12 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
 
         Map<String, String> drivers = Contents.JsonDrivers.getDrivers();
         driverIDs = new ArrayList<>();
+        driverIDs.add("blank");
         driverIDs.add("new");
         Collections.addAll(driverIDs, drivers.keySet().toArray(new String[drivers.size()]));
         driverNames = new ArrayList<>(drivers.values());
-        driverNames.add(0, getString(R.string.create_new_driver));
-
-        if (driverIDs.size() == 1) {
-            driverIDs.add("");
-            driverNames.add("");
-        }
+        driverNames.add(0, "");
+        driverNames.add(1, getString(R.string.create_new_driver));
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, driverNames) {
 
@@ -229,7 +221,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
                 tv.setText(driverNames.get(position));
 
                 switch (position) {
-                    case 0:
+                    case 1:
                         tv.setTextColor(Color.RED);
                         break;
                     default:
@@ -284,7 +276,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
             }
         });
         if (driverID.isEmpty()) {
-            driverSpinner.setSelection(1);
+            driverSpinner.setSelection(0);
         } else {
             driverSpinner.setSelection(driverIDs.indexOf(driverID));
         }
@@ -321,7 +313,11 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (!isSpinnerTouched) return;
-        if (position > 0) {
+        if (position == 0) {
+
+            return;
+        }
+        if (position > 1) {
             final String driverId = driverIDs.get(position);
             if (driverId.isEmpty()) return;
             JsonObjectRequest getDriverDataRequest = new JsonObjectRequest(
@@ -357,12 +353,8 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         }else{
             DialogFragment fragment = AddDriverDialog.newInstance(DriverDetailFragment.this);
             fragment.show(getFragmentManager(), "add_driver_dialog");
-            driverSpinner.setSelection(1);
+            driverSpinner.setSelection(0);
         }
-    }
-
-    public void addDriver(String id, String name) {
-
     }
 
     @Override
@@ -379,7 +371,6 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
     @Override
     public void onStop() {
         super.onStop();
-//        progressDialog.dismiss();
     }
 
 

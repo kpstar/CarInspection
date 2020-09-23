@@ -106,9 +106,9 @@ public class AddDriverDialog extends DialogFragment {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String id = driverId.getText().toString();
+                final String id = driverId.getText().toString();
                 String lic_num = licenseNum.getText().toString();
-                String driver_name = name.getText().toString();
+                final String driver_name = name.getText().toString();
                 String driver_address = address.getText().toString();
                 String phone_num = phoneNum.getText().toString();
                 String descrip = desc.getText().toString();
@@ -124,6 +124,15 @@ public class AddDriverDialog extends DialogFragment {
                 boolean d = chk_d.isChecked();
                 boolean d3 = chk_d3.isChecked();
                 boolean a = chk_a.isChecked();
+
+                String error = "";
+                if (id.isEmpty() || lic_num.isEmpty() || driver_name.isEmpty() || driver_address.isEmpty() || phone_num.isEmpty() || descrip.isEmpty()) {
+                    error = "Please fill the blanks.";
+                }
+                if (!error.isEmpty()) {
+                    Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+                    return;
+                }
 
                 final JSONObject driverJson = new JSONObject();
                 JSONObject formJson = new JSONObject();

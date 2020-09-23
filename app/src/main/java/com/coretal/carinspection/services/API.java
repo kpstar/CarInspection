@@ -2,6 +2,7 @@ package com.coretal.carinspection.services;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.ProgressBar;
 
@@ -12,6 +13,7 @@ import com.android.volley.error.VolleyError;
 import com.android.volley.request.JsonArrayRequest;
 import com.android.volley.request.JsonObjectRequest;
 import com.android.volley.request.SimpleMultiPartRequest;
+import com.coretal.carinspection.activities.MainActivity;
 import com.coretal.carinspection.db.DBHelper;
 import com.coretal.carinspection.models.DateAndPicture;
 import com.coretal.carinspection.models.Submission;
@@ -43,6 +45,7 @@ public class API implements VolleyHelper.Callback {
 
     public interface Callback{
         public void onProcessImage(int number, String error);
+        public void onProcessSubmit(String error);
     }
 
     public API(Context context, Callback callback) {
@@ -73,10 +76,15 @@ public class API implements VolleyHelper.Callback {
                 public void onResponse(JSONObject response) {
                     progressDialog.hide();
                     submission.status = Submission.STATUS_SUBMITTED;
-                    AlertHelper.message(context, "Success", "Successfully submitted");
                     myPreference.setSubmissionDate();
                     Log.d("Kangtle", "success to submit " + submission.vehiclePlate);
                     dbHelper.setSubmissionStatus(submission);
+                    AlertHelper.message(context, "Success", "Successfully submitted", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            callback.onProcessSubmit("");
+                        }
+                    });
                 }
             },
             new Response.ErrorListener() {
@@ -85,19 +93,19 @@ public class API implements VolleyHelper.Callback {
                     progressDialog.hide();
                     submission.failedCount ++;
                     submission.status = Submission.STATUS_FAILED;
+                    dbHelper.setSubmissionStatus(submission);
                     try {
                         String respStr = new String(error.networkResponse.data, "UTF-8");
                         JSONObject json = new JSONObject(respStr);
                         if (json.has("error")) {
-                            callback.onProcessImage(0, json.optString("message"));
+                            callback.onProcessSubmit(json.optString("message"));
                         } else {
-                            callback.onProcessImage(0, error.toString());
+                            callback.onProcessSubmit(error.toString());
                         }
                     } catch (Exception e) {
-                        callback.onProcessImage(0, e.toString());
+                        callback.onProcessSubmit(e.toString());
                         e.printStackTrace();
                     }
-                    dbHelper.setSubmissionStatus(submission);
                 }
             }
         ){

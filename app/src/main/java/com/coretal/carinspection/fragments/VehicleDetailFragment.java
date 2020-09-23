@@ -64,7 +64,7 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VehicleDetailFragment extends Fragment implements VPlateDialog.Callback, VolleyHelper.Callback, SignatureDialog.Callback {
+public class VehicleDetailFragment extends Fragment implements VPlateDialog.Callback, VolleyHelper.Callback, SignatureDialog.Callback, API.Callback {
 
 
     private Spinner monthSpinner;
@@ -142,7 +142,7 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
         submitButton = view.findViewById(R.id.btn_submit);
         odometerLayout = view.findViewById(R.id.odometerLayout);
 
-        api = new API(getContext(), null);
+        api = new API(getContext(), this);
 
         inspectorSpinner.setEnabled(false);
 
@@ -222,6 +222,9 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                         JSONObject driverDataJson = JsonHelper.readJsonFromFile(Contents.JsonVehicleDriverData.FILE_PATH);
                         if(driverDataJson != null)
                              driverName = driverDataJson.optString(Contents.JsonVehicleDriverData.FULL_NAME);
+                        if (driverName.isEmpty()) {
+//                            driverName = myPreference/
+                        }
 
                         SignatureDialog fragment = SignatureDialog.newInstance(VehicleDetailFragment.this);
                         fragment.setDriverName(driverName);
@@ -236,7 +239,6 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
 
         DrawableHelper.setColor(userInputBtn.getBackground(), myPreference.getColorButton());
         DrawableHelper.setColor(submitButton.getBackground(), myPreference.getColorButton());
-//        DrawableHelper.setColor(view.getBackground(), myPreference.getColorBackground());
 
         startInspection();
 
@@ -255,9 +257,9 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
         String trailerId = myPreference.getSecondVehiclePlate();
         switch (Contents.TRUCK_TYPE) {
             case 1:
-                if (trailerId.isEmpty()) {
-                    HomeFragment.hideTrailerTab();
-                }
+//                if (trailerId.isEmpty()) {
+//                    HomeFragment.hideTrailerTab();
+//                }
                 break;
             case 2:
                 odometerLayout.setVisibility(View.GONE);
@@ -321,6 +323,7 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                                 int vehicleType = response.optInt(Contents.JsonVehicleData.INSPECTION_TYPE);
                                 String vehicleCode = response.optString(Contents.JsonVehicleData.TYPE_CODE);
                                 String trailerId = response.optString(Contents.JsonVehicleData.TRAILER_ID);
+                                final String driverId = response.optString(Contents.JsonVehicleData.DRIVERID);
 
                                 if (vehicleType == 0) {
                                     vehicleError = 2;
@@ -334,6 +337,35 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                                 Contents.TRUCK_TYPE = vehicleType;
                                 changeWholeMenu();
 
+                                if (!driverId.isEmpty()) {
+                                    JsonObjectRequest getTrailerInspectionsRequest = new JsonObjectRequest(
+                                            Request.Method.GET,
+                                            String.format(Contents.API_GET_DRIVER, Contents.PHONE_NUMBER, driverId),
+                                            null,
+                                            new Response.Listener<JSONObject>() {
+                                                @Override
+                                                public void onResponse(JSONObject response) {
+                                                    Contents.DRIVER_ID = driverId;
+                                                    JsonHelper.saveJsonObject(response, Contents.JsonVehicleDriverData.FILE_PATH);
+                                                }
+                                            },
+                                            new Response.ErrorListener() {
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
+
+                                                }
+                                            }
+                                    ){
+                                        @Override
+                                        public Map<String, String> getHeaders() throws AuthFailureError {
+                                            HashMap<String, String> headers = new HashMap<String, String>();
+                                            headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                                            return headers;
+                                        }
+                                    };
+
+                                    volleyHelper.add(getTrailerInspectionsRequest);
+                                }
                                 if (!trailerId.isEmpty()) {
                                     JsonArrayRequest getTrailerInspectionsRequest = new JsonArrayRequest(
                                             Request.Method.GET,
@@ -925,10 +957,13 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
         return true;
     }
 
+
+
     @Override
     public void onSubmitSignatures() {
         Contents.IS_STARTED_INSPECTION = false;
         dbHelper.setStatusForDraftSubmission(Submission.STATUS_READY_TO_SUBMIT);
+        api = new API(getContext(), VehicleDetailFragment.this);
         AlertHelper.message(getContext(),
                 "Ready to Submit",
                 "The submission is ready to submit \nWill start over again",
@@ -936,10 +971,7 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        MainActivity activity = (MainActivity)getActivity();
                         api.submitInspection();
-//                        activity.refresh();
-//                        startInspection();
                     }
                 }
         );
@@ -963,5 +995,21 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
     public void onDestroy() {
         super.onDestroy();
         dbHelper.close();
+    }
+
+    @Override
+    public void onProcessImage(int number, String error) {
+
+    }
+
+    @Override
+    public void onProcessSubmit(String error) {
+        if (error.isEmpty()) {
+            MainActivity activity = (MainActivity)getActivity();
+            activity.refresh();
+            startInspection();
+        } else {
+            Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+        }
     }
 }

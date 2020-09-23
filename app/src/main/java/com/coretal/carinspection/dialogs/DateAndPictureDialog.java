@@ -143,6 +143,7 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
                     Toast.makeText(getContext(), "Please select date.", Toast.LENGTH_LONG).show();
                     return;
                 }
+                api = new API(getContext(), DateAndPictureDialog.this);
                 String type = fileTypeKeys.get(typeSpinner.getSelectedItemPosition());
                 if (editingItem != null) {
                     editingItem.dateStr = dateStr;
@@ -153,12 +154,12 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
                         editingItem.setPictureId(newPictureID);
                         dbHelper.setFileType(dbHelper.getLastInsertFileId(), type);
                     }
-//                    if (editingItem.pictureURL.contains("http")) {
-//                        editingItem.type = type;
-//                        editingItem.dateStr = dateStr;
-//                        dismiss();
-//                        return;
-//                    }
+                    if (editingItem.pictureURL.contains("http")) {
+                        editingItem.type = type;
+                        editingItem.dateStr = dateStr;
+                        dismiss();
+                        return;
+                    }
                     api.editPicture(editingItem, category);
                 }else{
                     String status = DateAndPicture.STATUS_NEW;
@@ -242,6 +243,11 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
         } else {
             Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onProcessSubmit(String error) {
+
     }
 
     @Override

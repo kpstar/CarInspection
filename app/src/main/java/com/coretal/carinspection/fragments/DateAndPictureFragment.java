@@ -220,4 +220,9 @@ public class DateAndPictureFragment extends Fragment implements DateAndPictureDi
             Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
         }
     }
+
+    @Override
+    public void onProcessSubmit(String error) {
+
+    }
 }

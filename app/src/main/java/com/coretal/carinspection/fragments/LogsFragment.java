@@ -55,7 +55,7 @@ public class LogsFragment extends Fragment {
                         .withUsername(myPref.get_conf_email_user())
                         .withPassword(myPref.get_conf_email_password())
 //                        .withMailto(myPref.get_conf_email_target_email())
-                        .withMailto("xiaolin.dev@gmail.com")
+                        .withMailto("xiaolin.software@gmail.com")
                         .withType(BackgroundMail.TYPE_PLAIN)
                         .withSubject("Logs")
                         .withBody(MyHelper.getLogs())

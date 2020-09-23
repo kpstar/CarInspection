@@ -100,7 +100,6 @@ public class TrailerInspectionFragment extends Fragment {
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -114,7 +113,7 @@ public class TrailerInspectionFragment extends Fragment {
                 searchedSectionHeaders.clear();
                 if (s == "") {
                     searchedSectionHeaders.addAll(sectionHeaders);
-                }else{
+                } else {
                     for (InspectionRecyclerViewAdapter.SectionHeader header: sectionHeaders) {
                         if (header.getTitle().toLowerCase().contains(s)){
                             searchedSectionHeaders.add(header);

@@ -81,7 +81,11 @@ public class HomeFragment extends Fragment {
             case 2:
                 return vehicleDocFragment;
             case 3:
-                return trailerFragment;
+                if (tabLayout.getTabCount() > 4) {
+                    return trailerFragment;
+                } else {
+                    return vehicleInfoFragment;
+                }
             case 4:
                 return vehicleInfoFragment;
             default:
@@ -101,8 +105,13 @@ public class HomeFragment extends Fragment {
                 vehicleDocFragment = VehicleDocFragment.newInstance();
                 return vehicleDocFragment;
             case 3:
-                trailerFragment = TrailerDetailFragment.newInstance();
-                return trailerFragment;
+                if (tabLayout.getTabCount() > 4) {
+                    trailerFragment = TrailerDetailFragment.newInstance();
+                    return trailerFragment;
+                } else {
+                    vehicleInfoFragment = VehicleInfoFragment.newInstance();
+                    return vehicleInfoFragment;
+                }
             case 4:
                 vehicleInfoFragment = VehicleInfoFragment.newInstance();
                 return vehicleInfoFragment;
