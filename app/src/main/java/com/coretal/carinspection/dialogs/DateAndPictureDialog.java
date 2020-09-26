@@ -338,7 +338,7 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
                 default:
                     break;
             }
-            dbHelper.newFile(newPictureID, fileLocation);
+//            dbHelper.newFile(newPictureID, fileLocation);
         }else{
             newPictureID = "";
         }

@@ -48,7 +48,7 @@ import java.util.Map;
 
 public class AddDriverDialog extends DialogFragment {
     public interface Callback {
-        public void onAddNewDriver();
+        public void onAddNewDriver(String id, String name);
     }
 
     private EditText driverId, licenseNum, name, address, phoneNum, desc;
@@ -126,7 +126,7 @@ public class AddDriverDialog extends DialogFragment {
                 boolean a = chk_a.isChecked();
 
                 String error = "";
-                if (id.isEmpty() || lic_num.isEmpty() || driver_name.isEmpty() || driver_address.isEmpty() || phone_num.isEmpty() || descrip.isEmpty()) {
+                if (id.isEmpty() || lic_num.isEmpty() || driver_name.isEmpty() || driver_address.isEmpty() || phone_num.isEmpty()) {
                     error = "Please fill the blanks.";
                 }
                 if (!error.isEmpty()) {
@@ -175,7 +175,7 @@ public class AddDriverDialog extends DialogFragment {
                                     myPref.setAddDriverJson("");
                                     dismiss();
                                     Toast.makeText(getContext(), response.optString("message"), Toast.LENGTH_LONG).show();
-                                    callback.onAddNewDriver();
+                                    callback.onAddNewDriver(id, driver_name);
                                 }
                             },
                             new Response.ErrorListener() {

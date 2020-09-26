@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,69 +67,111 @@ public class API implements VolleyHelper.Callback {
         final Submission submission = submissions.get(submissions.size() - 1);
         Log.d("Kangtle", "started to submit submissions vPlate " + submission.vehiclePlate);
 
-        VolleyHelper inspectionVolleyHelper = new VolleyHelper(context);
-        JsonObjectRequest postInspectionDataRequest = new JsonObjectRequest(
-            Request.Method.POST,
-            Contents.API_SUBMIT_INSPECTION,
-            null,
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    progressDialog.hide();
-                    submission.status = Submission.STATUS_SUBMITTED;
-                    myPreference.setSubmissionDate();
-                    Log.d("Kangtle", "success to submit " + submission.vehiclePlate);
-                    dbHelper.setSubmissionStatus(submission);
-                    AlertHelper.message(context, "Success", "Successfully submitted", new DialogInterface.OnClickListener() {
+        VolleyHelper pictureVolleyHelper = new VolleyHelper(context, new VolleyHelper.Callback() {
+            @Override
+            public void onFinishedAllRequests() {
+                    VolleyHelper inspectionVolleyHelper = new VolleyHelper(context);
+                    JsonObjectRequest postInspectionDataRequest = new JsonObjectRequest(
+                            Request.Method.POST,
+                            Contents.API_SUBMIT_INSPECTION,
+                            null,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    progressDialog.dismiss();
+                                    submission.status = Submission.STATUS_SUBMITTED;
+                                    myPreference.setSubmissionDate();
+                                    Log.d("Kangtle", "success to submit " + submission.vehiclePlate);
+                                    dbHelper.setSubmissionStatus(submission);
+                                    AlertHelper.message(context, "Success", "Successfully submitted", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            callback.onProcessSubmit("");
+                                        }
+                                    });
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    progressDialog.dismiss();
+                                    submission.failedCount ++;
+                                    submission.status = Submission.STATUS_FAILED;
+                                    dbHelper.setSubmissionStatus(submission);
+                                    try {
+                                        String respStr = new String(error.networkResponse.data, "UTF-8");
+                                        JSONObject json = new JSONObject(respStr);
+                                        if (json.has("error")) {
+                                            callback.onProcessSubmit(json.optString("message"));
+                                        } else {
+                                            callback.onProcessSubmit(error.toString());
+                                        }
+                                    } catch (Exception e) {
+                                        callback.onProcessSubmit(e.toString());
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                    ){
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            callback.onProcessSubmit("");
+                        public byte[] getBody() {
+                            String inspectData = getSubmitInspectionData(submission);
+                            try {
+                                return inspectData.getBytes("UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                return inspectData.getBytes();
+                            }
                         }
-                    });
+
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            Map<String, String>  params = new HashMap<>();
+                            params.put("Content-Type", "application/json");
+                            params.put(Contents.HEADER_KEY, Contents.TOKEN);
+                            return params;
+                        }
+                    };
+                    inspectionVolleyHelper.add(postInspectionDataRequest);
                 }
-            },
-            new Response.ErrorListener() {
+        });
+
+        List<SubmissionFile> submissionFiles = dbHelper.getFilesForSubmissionId(submission.id);
+
+        for(final SubmissionFile submissionFile: submissionFiles){
+            if(!FileHelper.exists(submissionFile.fileLocation)){
+                Log.e("Kangtle", "Submission File " + submissionFile.fileLocation + " not exist");
+            }
+            SimpleMultiPartRequest multiPartRequest = new SimpleMultiPartRequest(
+                    Request.Method.POST,
+                    Contents.API_STAGE_PICTURE,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("Kangtle", "API_SUBMIT_PICTURE: " + submissionFile.pictureId + response);
+                        }
+                    }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    progressDialog.hide();
+                    Log.e("Kangtle", "API_SUBMIT_PICTURE: onErrorResponse " + submissionFile.pictureId);
                     submission.failedCount ++;
-                    submission.status = Submission.STATUS_FAILED;
-                    dbHelper.setSubmissionStatus(submission);
-                    try {
-                        String respStr = new String(error.networkResponse.data, "UTF-8");
-                        JSONObject json = new JSONObject(respStr);
-                        if (json.has("error")) {
-                            callback.onProcessSubmit(json.optString("message"));
-                        } else {
-                            callback.onProcessSubmit(error.toString());
-                        }
-                    } catch (Exception e) {
-                        callback.onProcessSubmit(e.toString());
-                        e.printStackTrace();
-                    }
+                    submission.errorDetail = "API_SUBMIT_PICTURE: onErrorResponse " + submissionFile.pictureId;
                 }
-            }
-        ){
-            @Override
-            public byte[] getBody() {
-                String inspectData = getSubmitInspectionData(submission);
-                try {
-                    return inspectData.getBytes("UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    return inspectData.getBytes();
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String>  params = new HashMap<>();
+                    params.put("Content-Type", "application/json");
+                    params.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return params;
                 }
-            }
+            };;
+            multiPartRequest.addStringParam("pictureId", submissionFile.pictureId);
+            multiPartRequest.addStringParam("phoneNumber", Contents.PHONE_NUMBER);
+            multiPartRequest.addFile("file", submissionFile.fileLocation);
 
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String>  params = new HashMap<>();
-                params.put("Content-Type", "application/json");
-                params.put(Contents.HEADER_KEY, Contents.TOKEN);
-                return params;
-            }
-        };
-        inspectionVolleyHelper.add(postInspectionDataRequest);
+            pictureVolleyHelper.add(multiPartRequest);
+        }
     }
 
     static public void uploadPicture(DateAndPicture item, String type) {
@@ -141,7 +184,7 @@ public class API implements VolleyHelper.Callback {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         try {
                             JSONObject json = new JSONObject(response);
                             callback.onProcessImage(json.optInt("message"), "");
@@ -153,7 +196,7 @@ public class API implements VolleyHelper.Callback {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                progressDialog.hide();
+                progressDialog.dismiss();
                 try {
                     String respStr = new String(error.networkResponse.data, "UTF-8");
                     JSONObject json = new JSONObject(respStr);
@@ -206,7 +249,7 @@ public class API implements VolleyHelper.Callback {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Log.d("Kangtle", "API_MODIFY_PICTURE: " + response);
                         try {
                             JSONObject json = new JSONObject(response);
@@ -220,7 +263,7 @@ public class API implements VolleyHelper.Callback {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("Kangtle", "API_MODIFY_PICTURE: onErrorResponse " + error.toString());
-                progressDialog.hide();
+                progressDialog.dismiss();
                 try {
                     String respStr = new String(error.networkResponse.data, "UTF-8");
                     JSONObject json = new JSONObject(respStr);
@@ -277,7 +320,7 @@ public class API implements VolleyHelper.Callback {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Log.d("Kangtle", "API_REMOVE_PICTURE: " + response);
                         callback.onProcessImage(0, "");
                     }
@@ -286,7 +329,7 @@ public class API implements VolleyHelper.Callback {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Kangtle", "API_REMOVE_PICTURE: onErrorResponse " + error.toString());
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         try {
                             String respStr = new String(error.networkResponse.data, "UTF-8");
                             JSONObject json = new JSONObject(respStr);

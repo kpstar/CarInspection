@@ -210,14 +210,14 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
     protected void onResume() {
         super.onResume();
         Log.d("Kangtle", "MainActivity onResume");
-        registerConnectivityAction();
+//        registerConnectivityAction();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         Log.d("Kangtle", "MainActivity onPause");
-        unregisterReceiver(connectivityReceiver);
+//        unregisterReceiver(connectivityReceiver);
     }
 
     public void refresh(){

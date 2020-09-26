@@ -49,6 +49,7 @@ public class Contents {
     public static String API_GET_CONFIG = API_ROOT + "/configuration/getConfigurationFile/%s";//phone number
     public static String API_GET_CONFIG_FILE_TYPES_EMUM = API_ROOT + "/configuration/getPictureAndDataCategoryJson/%s";//phone number
     public static String API_SUBMIT_PICTURE = API_ROOT + "/submitPicture/fileUpload";
+    public static String API_STAGE_PICTURE = API_ROOT + "/submitPicture/stageImage";
     public static String API_REMOVE_PICTURE = API_ROOT + "/submitPicture/fileRemove/%s/%s";
     public static String API_MODIFY_PICTURE = API_ROOT + "/submitPicture/fileModify";
     public static String API_SUBMIT_INSPECTION = API_ROOT + "/submitInspectionV2";
@@ -430,6 +431,7 @@ public class Contents {
         API_GET_CONFIG = API_ROOT + "/configuration/getConfigurationFile/%s";//phone number
         API_GET_CONFIG_FILE_TYPES_EMUM = API_ROOT + "/configuration/getPictureAndDataCategoryJson/%s";//phone number
         API_SUBMIT_PICTURE = API_ROOT + "/submitPicture/fileUpload";
+        API_STAGE_PICTURE = API_ROOT + "/submitPicture/stageImage";
         API_REMOVE_PICTURE = API_ROOT + "/submitPicture/fileRemove/%s/%s";
         API_MODIFY_PICTURE = API_ROOT + "/submitPicture/fileModify";
         API_SUBMIT_INSPECTION = API_ROOT + "/submitInspectionV2";

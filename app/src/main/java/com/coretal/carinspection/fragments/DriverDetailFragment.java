@@ -175,7 +175,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
                     @Override
                     public void onResponse(JSONObject response) {
                         JsonHelper.saveJsonObject(response, Contents.JsonDrivers.FILE_PATH);
-                        setValuesFromFile();
+                        getDriver(Contents.DRIVER_ID);
                     }
                 },
                 new Response.ErrorListener() {
@@ -231,7 +231,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
                 return v;
             }
         };
-//        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         driverSpinner.setAdapter(spinnerAdapter);
 
         JSONObject driverDataJson = JsonHelper.readJsonFromFile(Contents.JsonVehicleDriverData.FILE_PATH);
@@ -310,46 +310,54 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         fragmentTransaction.commit();
     }
 
+    private void getDriver(final String driverId) {
+        progressDialog.show();
+        JsonObjectRequest getDriverDataRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                String.format(Contents.API_GET_DRIVER, Contents.PHONE_NUMBER, driverId),
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        progressDialog.dismiss();
+                        if (!response.has("error")) {
+                            myPref.setDriverId(driverId);
+                            Contents.DRIVER_ID = driverId;
+                            JsonHelper.saveJsonObject(response, Contents.JsonVehicleDriverData.FILE_PATH);
+                            setValuesFromFile();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Kangtle", error.toString());
+                        progressDialog.dismiss();
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                return headers;
+            }
+        };
+        VolleyHelper volleyHelper = new VolleyHelper(getContext());
+        volleyHelper.add(getDriverDataRequest);
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (!isSpinnerTouched) return;
+        Log.d("Kangtle", String.format("%d selected", position));
         if (position == 0) {
-
             return;
         }
         if (position > 1) {
             final String driverId = driverIDs.get(position);
             if (driverId.isEmpty()) return;
-            JsonObjectRequest getDriverDataRequest = new JsonObjectRequest(
-                    Request.Method.GET,
-                    String.format(Contents.API_GET_DRIVER, Contents.PHONE_NUMBER, driverId),
-                    null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            if (!response.has("error")) {
-                                myPref.setDriverId(driverId);
-                                Contents.DRIVER_ID = driverId;
-                                JsonHelper.saveJsonObject(response, Contents.JsonVehicleDriverData.FILE_PATH);
-                                setValuesFromFile();
-                            }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                        }
-                    }
-            ){
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
-                    return headers;
-                }
-            };
-            VolleyHelper volleyHelper = new VolleyHelper(getContext());
-            volleyHelper.add(getDriverDataRequest);
+            getDriver(driverId);
         }else{
             DialogFragment fragment = AddDriverDialog.newInstance(DriverDetailFragment.this);
             fragment.show(getFragmentManager(), "add_driver_dialog");
@@ -366,16 +374,19 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
     public void onPause() {
         super.onPause();
         saveValuesToFile();
+        progressDialog.dismiss();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        progressDialog.dismiss();
     }
 
 
     @Override
-    public void onAddNewDriver() {
+    public void onAddNewDriver(String id, String name) {
+        Contents.DRIVER_ID = id;
         getDrivers();
     }
 }

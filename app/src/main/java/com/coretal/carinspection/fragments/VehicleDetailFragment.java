@@ -189,6 +189,7 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                                     Contents.IS_STARTED_INSPECTION = false;
                                     removeDraftSubmission();
                                     MainActivity activity = (MainActivity)getActivity();
+                                    dialog.dismiss();
                                     activity.refresh();
                                     startInspection();
                                 }
@@ -559,6 +560,7 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            Log.d("Kangtle", error.toString());
                         }
                     }
             ){
@@ -746,7 +748,7 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
             volleyHelper.add(getVehicleInspectionsRequest);
             volleyHelper.add(getInspectorsRequest);
             volleyHelper.add(getDriversRequest);
-            volleyHelper.add(getVehicleDriverDataRequest);
+//            volleyHelper.add(getVehicleDriverDataRequest);
             volleyHelper.add(getTrailerRequest);
             volleyHelper.add(getVehicleAdditionalDetailsRequest);
             volleyHelper.add(getTruckInpsectionJsonRequest);
@@ -1006,6 +1008,7 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
     public void onProcessSubmit(String error) {
         if (error.isEmpty()) {
             MainActivity activity = (MainActivity)getActivity();
+            progressDialog.dismiss();
             activity.refresh();
             startInspection();
         } else {
