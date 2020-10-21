@@ -9,113 +9,128 @@
     android:textDirection="locale"
     >
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/signature"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:tint="@color/colorPrimary"/>
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp">
-
+        android:layout_height="match_parent">
         <LinearLayout
+            android:textDirection="locale"
+            android:layout_gravity="center"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/driver_signature"
-                android:textSize="18sp" />
+                android:src="@drawable/signature"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:tint="@color/colorPrimary"/>
 
-            <ImageButton
-                android:id="@+id/driverSignClearButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="@null"
-                android:scaleType="centerInside"
-                android:src="@drawable/clear" />
-        </LinearLayout>
-
-        <com.github.gcacace.signaturepad.views.SignaturePad
-            android:id="@+id/driver_signature_pad"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="8dp"
-            android:background="@color/lightGray"
-            app:penColor="@android:color/black" />
-
-        <EditText
-            android:id="@+id/driver_name_edit"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:background="@color/lightGray"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            android:hint="@string/driver_name" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="10dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/inspector_signature"
-                android:textSize="18sp"/>
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp">
 
-            <ImageButton
-                android:id="@+id/inspectorSignClearButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="@null"
-                android:scaleType="centerInside"
-                android:src="@drawable/clear" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/driver_signature"
+                        android:textSize="18sp" />
+
+                    <ImageButton
+                        android:id="@+id/driverSignClearButton"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/clear" />
+                </LinearLayout>
+
+                <com.github.gcacace.signaturepad.views.SignaturePad
+                    android:id="@+id/driver_signature_pad"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/lightGray"
+                    app:penColor="@android:color/black" />
+
+                <EditText
+                    android:id="@+id/driver_name_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:background="@color/lightGray"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:hint="@string/driver_name" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/signatures"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/inspector_signature"
+                        android:textSize="18sp"/>
+
+                    <ImageButton
+                        android:id="@+id/inspectorSignClearButton"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/clear" />
+                </LinearLayout>
+                <com.github.gcacace.signaturepad.views.SignaturePad
+                    android:id="@+id/inspector_signature_pad"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/lightGray"
+                    app:penColor="@android:color/black" />
+
+                <EditText
+                    android:id="@+id/inspector_name_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:background="@color/lightGray"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:hint="@string/inspector_name"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@xml/round_button"
+                android:text="@string/submit"
+                android:textColor="@color/white"/>
         </LinearLayout>
-        <com.github.gcacace.signaturepad.views.SignaturePad
-            android:id="@+id/inspector_signature_pad"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="8dp"
-            android:background="@color/lightGray"
-            app:penColor="@android:color/black" />
-
-        <EditText
-            android:id="@+id/inspector_name_edit"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:background="@color/lightGray"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            android:hint="@string/inspector_name"/>
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btn_submit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@xml/round_button"
-        android:text="@string/submit"
-        android:textColor="@color/white"/>
+    </ScrollView>
 </LinearLayout>

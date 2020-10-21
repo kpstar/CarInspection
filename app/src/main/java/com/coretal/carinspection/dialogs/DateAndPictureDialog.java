@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
@@ -27,6 +28,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.SimpleMultiPartRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
@@ -44,11 +50,16 @@ import com.coretal.carinspection.utils.FileHelper;
 import com.coretal.carinspection.utils.ImageFilePath;
 import com.coretal.carinspection.utils.MyHelper;
 import com.coretal.carinspection.utils.MyPreference;
+import com.coretal.carinspection.utils.VolleyHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,7 +94,6 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
 
     public DateAndPicture editingItem;
     public DateAndPicture newItem;
-
     private Callback callback;
 
     public static DateAndPictureDialog newInstance(String category, Callback callback){
@@ -143,7 +153,7 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
                     Toast.makeText(getContext(), "Please select date.", Toast.LENGTH_LONG).show();
                     return;
                 }
-                api = new API(getContext(), DateAndPictureDialog.this);
+//                api = new API(getContext(), DateAndPictureDialog.this);
                 String type = fileTypeKeys.get(typeSpinner.getSelectedItemPosition());
                 if (editingItem != null) {
                     editingItem.dateStr = dateStr;
@@ -160,11 +170,13 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
                         dismiss();
                         return;
                     }
-                    api.editPicture(editingItem, category);
+                    callback.onDoneDateAndPictureDialog(editingItem, false);
+                    dismiss();
                 }else{
                     String status = DateAndPicture.STATUS_NEW;
                     newItem = new DateAndPicture(dateStr, newPictureID, type, status);
-                    api.uploadPicture(newItem, category);
+                    callback.onDoneDateAndPictureDialog(newItem, true);
+                    dismiss();
                 }
             }
         });
@@ -229,7 +241,7 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
                 if (okay > 0)
                     newItem.pictureId = String.valueOf(okay);
             }
-            alertDialog.dismiss();
+//            alertDialog.dismiss();
             String message = "Saved Okay!!";
             if (editingItem != null) {
                 if (!editingItem.status.equals(DateAndPicture.STATUS_NEW)){
@@ -239,9 +251,9 @@ public class DateAndPictureDialog extends DialogFragment implements SelectPictur
             }else{
                 callback.onDoneDateAndPictureDialog(newItem, true);
             }
-            Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+//            Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+//            Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
         }
     }
 

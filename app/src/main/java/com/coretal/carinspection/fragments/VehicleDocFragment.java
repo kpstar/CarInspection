@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.coretal.carinspection.R;
 import com.coretal.carinspection.adapters.InspectionRecyclerViewAdapter;
@@ -165,7 +166,13 @@ public class VehicleDocFragment extends Fragment implements VehicleDocAdapter.Ca
 
     @Override
     public void onClickItem(int position) {
-        DialogFragment fragment = ViewPDFDialog.newInstance(docs.get(position));
-        fragment.show(getFragmentManager(), "view_pdf_dialog");
+        VehicleDocAdapter.DocContent content = docs.get(position);
+
+        if (content.type.equals("FROM_APP")) {
+            DialogFragment fragment = ViewPDFDialog.newInstance(docs.get(position));
+            fragment.show(getFragmentManager(), "view_pdf_dialog");
+        } else {
+            Toast.makeText(getContext(), "Not Supported", Toast.LENGTH_LONG).show();
+        }
     }
 }

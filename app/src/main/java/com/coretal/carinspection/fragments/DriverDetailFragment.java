@@ -357,6 +357,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         if (position > 1) {
             final String driverId = driverIDs.get(position);
             if (driverId.isEmpty()) return;
+            if (driverId.equals(Contents.DRIVER_ID)) return;
             getDriver(driverId);
         }else{
             DialogFragment fragment = AddDriverDialog.newInstance(DriverDetailFragment.this);

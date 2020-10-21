@@ -3,10 +3,18 @@ package com.coretal.carinspection.fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.SimpleMultiPartRequest;
 import com.coretal.carinspection.activities.MainActivity;
 import com.coretal.carinspection.services.API;
+import com.coretal.carinspection.utils.Contents;
+import com.coretal.carinspection.utils.VolleyHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -31,6 +39,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A fragment representing a list of Items.
@@ -49,6 +59,8 @@ public class DateAndPictureFragment extends Fragment implements DateAndPictureDi
     private API api;
     private DateAndPicture removeItem;
     public int removeIndex;
+    public VolleyHelper volleyHelper;
+    public DateAndPicture item;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -120,6 +132,7 @@ public class DateAndPictureFragment extends Fragment implements DateAndPictureDi
                         dialog.dismiss();
                         synchronized(adapter){
                             removeIndex = viewHolder.getAdapterPosition();
+                            if (removeIndex >= dateAndPictures.size()) return;
                             removeItem = dateAndPictures.remove(removeIndex);
                             if (!removeItem.status.equals(DateAndPicture.STATUS_NEW)){
                                 if (removeItem.status.equals(DateAndPicture.STATUS_CHANGED)){
@@ -170,13 +183,78 @@ public class DateAndPictureFragment extends Fragment implements DateAndPictureDi
         super.onDetach();
     }
 
+    private class UploadImageTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            SimpleMultiPartRequest multiPartRequest = new SimpleMultiPartRequest(
+                    Request.Method.POST,
+                    Contents.API_SUBMIT_PICTURE,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+//                        progressDialog.dismiss();
+                            try {
+                                JSONObject json = new JSONObject(response);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String>  params = new HashMap<>();
+                    params.put("Content-Type", "application/json");
+                    params.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return params;
+                }
+            };
+            if (item == null) return "Failed";
+            volleyHelper = new VolleyHelper(getContext());
+            multiPartRequest.addStringParam("pictureId", item.pictureId);
+            multiPartRequest.addStringParam("phoneNumber", Contents.PHONE_NUMBER);
+            multiPartRequest.addStringParam("pictureDate", item.dateStr);
+            multiPartRequest.addStringParam("pictureType", item.type);
+            if (category == Contents.JsonFileTypesEnum.CATEGORIE_DRIVER) { // DRIVERS
+                multiPartRequest.addStringParam("ModuleEnum", "DRIVERS");
+                multiPartRequest.addStringParam("plateOrId", Contents.DRIVER_ID);
+            } else if (category == Contents.JsonFileTypesEnum.CATEGORIE_TRAILER) { // TRUCKS
+                multiPartRequest.addStringParam("ModuleEnum", "TRUCKS");
+                multiPartRequest.addStringParam("plateOrId", Contents.SECOND_VEHICLE_NUMBER);
+            } else {
+                multiPartRequest.addStringParam("ModuleEnum", "TRUCKS");
+                multiPartRequest.addStringParam("plateOrId", Contents.CURRENT_VEHICLE_NUMBER);
+            }
+            multiPartRequest.addFile("file", item.pictureURL);
+
+            volleyHelper.add(multiPartRequest);
+            return "Failed";
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+    }
+
     @Override
     public void onDoneDateAndPictureDialog(DateAndPicture item, boolean isNew) {
         Log.d("Kangtle", "on done date and picture dialog");
+
+        this.item = item;
         if(isNew) {
             dateAndPictures.add(item);
         }
         adapter.notifyDataSetChanged();
+        new UploadImageTask().execute("");
     }
 
     @Override

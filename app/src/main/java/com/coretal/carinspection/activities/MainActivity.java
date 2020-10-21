@@ -100,6 +100,10 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
     private void gotoFragment(int menuId){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
+        if (selectedFragment instanceof InspectionFragment && menuId == R.id.navigation_truck) {
+            return;
+        }
+
         if(selectedFragment != null) {
             transaction.hide(selectedFragment);
         }

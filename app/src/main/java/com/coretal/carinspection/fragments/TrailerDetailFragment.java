@@ -195,6 +195,7 @@ public class TrailerDetailFragment extends Fragment implements AdapterView.OnIte
 
 //            progressDialog.show();
             Log.d("Kangtle", "getting trailer data.");
+            if (trailer.equals(Contents.SECOND_VEHICLE_NUMBER)) return;
             JsonObjectRequest getTrailerDataRequest = new JsonObjectRequest(
                     Request.Method.GET,
                     String.format(Contents.API_GET_TRAILER, Contents.PHONE_NUMBER, trailer),

@@ -3,6 +3,7 @@ package com.coretal.carinspection.dialogs;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -34,6 +35,7 @@ import com.bumptech.glide.load.model.LazyHeaders;
 import com.coretal.carinspection.R;
 import com.coretal.carinspection.adapters.VehicleDocAdapter;
 import com.coretal.carinspection.fragments.VehicleDocFragment;
+import com.coretal.carinspection.utils.AlertHelper;
 import com.coretal.carinspection.utils.Contents;
 import com.coretal.carinspection.utils.DrawableHelper;
 import com.coretal.carinspection.utils.FileHelper;
@@ -118,7 +120,9 @@ public class ViewPDFDialog extends DialogFragment {
         DrawableHelper.setColor(btnDone.getBackground(), myPref.getColorButton());
 
 //        getPdf();
-        new DownloadFileFromURL().execute("http://24.30.63.116:8080/Peled_v6/restful/vehicle/getVehicleInspectionGet/038a8a7e-cc40-442d-aeca-c754ca700a54/8617165340102/53386");
+        String url = Contents.API_ROOT + "/vehicle/getVehicleInspectionGet/" + Contents.TOKEN + "/" + Contents.PHONE_NUMBER + "/" + content.id;
+        Log.d("Kangtle", url);
+        new DownloadFileFromURL().execute(url);
         return dialogView;
     }
 
@@ -177,8 +181,17 @@ public class ViewPDFDialog extends DialogFragment {
                 output.close();
                 input.close();
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 Log.e("Error: ", e.toString());
+                getActivity().runOnUiThread(new Runnable(){
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(),
+                                "Can't open PDF file",
+                                Toast.LENGTH_LONG).show();
+                        dismiss();
+                    }
+                });
             }
 
             return null;

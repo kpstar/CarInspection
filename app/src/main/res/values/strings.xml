@@ -106,4 +106,9 @@
     <string name="notes">Notes</string>
     <string name="started_at">Started At</string>
     <string name="ended_at">Ended At</string>
+    <string name="signatures">"\n"אם אבצע טיפולים תקופתיים, תיקון ליקויים או תיקונים אחרים לכלי הרכב, איידע
+\nאת קצין הבטיחות על כך ואמציא לו חשבוניות תיקון המאשרות כי כלי הרכב טופל
+במוסך שניתן לו רישיון לפי סעיף 127 לחוק רישוי שירותים ומקצועות בענף הרכב,n\
+התשע"ו 2016- .
+</string>
 </resources>
