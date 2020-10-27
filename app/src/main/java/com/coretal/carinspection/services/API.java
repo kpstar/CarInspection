@@ -418,8 +418,22 @@ public class API implements VolleyHelper.Callback {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            submitData.put("trailerData", trailerDataJson);
-            submitData.put("vehicleData", vehicleDataJson);
+            JsonObject obj1 = new JsonParser().parse(String.valueOf(trailerDataJson)).getAsJsonObject();
+            obj1.remove(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
+            try {
+                JSONObject resp1 = new JSONObject(obj1.toString());
+                submitData.put("trailerData", resp1);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JsonObject obj2 = new JsonParser().parse(String.valueOf(vehicleDataJson)).getAsJsonObject();
+            obj2.remove(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
+            try {
+                JSONObject resp2 = new JSONObject(obj2.toString());
+                submitData.put("vehicleData", resp2);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
 //            submitData.put("datesAndPictures", dateAndPicturesArray);
             submitData.put("inspectionNotes", inspectionNotesObject);
