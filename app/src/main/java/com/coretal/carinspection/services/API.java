@@ -24,6 +24,8 @@ import com.coretal.carinspection.utils.FileHelper;
 import com.coretal.carinspection.utils.JsonHelper;
 import com.coretal.carinspection.utils.MyPreference;
 import com.coretal.carinspection.utils.VolleyHelper;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -376,19 +378,19 @@ public class API implements VolleyHelper.Callback {
         JSONObject dateAndPicturesJson = JsonHelper.readJsonFromFile(jsonDir + "/" + Contents.JsonDateAndPictures.FILE_NAME);
         JSONObject trailerDataJson = JsonHelper.readJsonFromFile(jsonDir + "/" + Contents.JsonVehicleTrailerData.FILE_NAME);
 
-        JSONArray dateAndPicturesArray = null;
-        if(dateAndPicturesJson != null){
-            dateAndPicturesArray = dateAndPicturesJson.optJSONArray(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
-            fixDateAndPictureStatus(dateAndPicturesArray);
-        }
-
-        if(driverDataJson != null){
-            fixDateAndPictureStatus(driverDataJson.optJSONArray(Contents.JsonDateAndPictures.DATES_AND_PICTURES));
-        }
-
-        if(trailerDataJson != null){
-            fixDateAndPictureStatus(trailerDataJson.optJSONArray(Contents.JsonDateAndPictures.DATES_AND_PICTURES));
-        }
+//        JSONArray dateAndPicturesArray = null;
+//        if(dateAndPicturesJson != null){
+//            dateAndPicturesArray = dateAndPicturesJson.optJSONArray(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
+//            fixDateAndPictureStatus(dateAndPicturesArray);
+//        }
+//
+//        if(driverDataJson != null){
+//            fixDateAndPictureStatus(driverDataJson.optJSONArray(Contents.JsonDateAndPictures.DATES_AND_PICTURES));
+//        }
+//
+//        if(trailerDataJson != null){
+//            fixDateAndPictureStatus(trailerDataJson.optJSONArray(Contents.JsonDateAndPictures.DATES_AND_PICTURES));
+//        }
 
         JSONObject submitData = new JSONObject();
 
@@ -408,7 +410,14 @@ public class API implements VolleyHelper.Callback {
                 if (Contents.IS_TRAILER_CHECKED)
                     submitData.put("trailerInspectionData", trailerInspectionDataJson);
             }
-            submitData.put("driverData", driverDataJson);
+            JsonObject obj = new JsonParser().parse(String.valueOf(driverDataJson)).getAsJsonObject();
+            obj.remove(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
+            try {
+                JSONObject resp = new JSONObject(obj.toString());
+                submitData.put("driverData", resp);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             submitData.put("trailerData", trailerDataJson);
             submitData.put("vehicleData", vehicleDataJson);
 

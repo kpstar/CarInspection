@@ -59,7 +59,7 @@ public class SubmissionFragment extends Fragment {
         tableView.setAdapter(mTableViewAdapter);
 
         actionSpinner = view.findViewById(R.id.action_spinner);
-        String[] actions = {getString(R.string.reset), getString(R.string.clear), getString(R.string.send)};
+        String[] actions = {getString(R.string.resend), getString(R.string.clear), getString(R.string.send)};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, actions);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         actionSpinner.setAdapter(adapter);

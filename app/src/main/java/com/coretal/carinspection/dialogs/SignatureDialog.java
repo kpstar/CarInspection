@@ -134,6 +134,7 @@ public class SignatureDialog extends DialogFragment {
                 Bitmap inspectorSignature = inspectorSignaturePad.getSignatureBitmap();
 
                 Submission submission = dbHelper.getDraftSubmission();
+                if (submission == null) return;
                 int submissionId = submission.id;
                 String driverSignatureFileName = submissionId + "_" + "driver_signiture.jpg";
                 String inspectorSignatureFileName = submissionId + "_" + "inspector_signiture.jpg";

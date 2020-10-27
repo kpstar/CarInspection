@@ -91,6 +91,7 @@
     <string name="name">שֵׁם*</string>
     <string name="license_type">סוג רישיון*</string>
     <string name="reset">אִתחוּל</string>
+    <string name="resend">לשלוח שוב</string>
     <string name="clear">ברור</string>
     <string name="send">לִשְׁלוֹחַ</string>
     <string name="desc">תיאור</string>

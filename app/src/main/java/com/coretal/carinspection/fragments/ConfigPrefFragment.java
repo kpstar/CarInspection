@@ -45,7 +45,7 @@ public class ConfigPrefFragment extends PreferenceFragmentCompat implements Shar
         PreferenceManager.getDefaultSharedPreferences(getActivity()).registerOnSharedPreferenceChangeListener(this);
         PreferenceCategory appCategory = (PreferenceCategory) findPreference("category_app");
 
-        String newTitle = String.format(Locale.US, "App Configuration - v%s(%d)", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
+        String newTitle = String.format(Locale.US, "App Configuration - v%s(%d)", BuildConfig.VERSION_NAME, 0); // BuildConfig.VERSION_CODE);
         appCategory.setTitle(newTitle);
     }
 
