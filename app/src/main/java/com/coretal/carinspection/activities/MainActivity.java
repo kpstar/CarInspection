@@ -22,6 +22,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
@@ -53,6 +54,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -95,6 +97,24 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
 
     private void selectFragment(MenuItem item) {
         gotoFragment(item.getItemId());
+    }
+
+    public static void dismissAllDialogs(FragmentManager manager) {
+        List<Fragment> fragments = manager.getFragments();
+
+        if (fragments == null)
+            return;
+
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof DialogFragment) {
+                DialogFragment dialogFragment = (DialogFragment) fragment;
+                dialogFragment.dismissAllowingStateLoss();
+            }
+
+            FragmentManager childFragmentManager = fragment.getChildFragmentManager();
+            if (childFragmentManager != null)
+                dismissAllDialogs(childFragmentManager);
+        }
     }
 
     private void gotoFragment(int menuId){
@@ -217,12 +237,13 @@ public class MainActivity extends AppCompatActivity implements API_PhoneNumberDi
 //        registerConnectivityAction();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("Kangtle", "MainActivity onPause");
-//        unregisterReceiver(connectivityReceiver);
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        Log.d("Kangtle", "MainActivity onPause");
+//        dismissAllDialogs(getSupportFragmentManager());
+////        unregisterReceiver(connectivityReceiver);
+//    }
 
     public void refresh(){
         finish();

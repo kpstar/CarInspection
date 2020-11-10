@@ -119,7 +119,7 @@ public class TruckInspectionFragment extends Fragment{
         }
     }
 
-    private void saveValuesToFile(){
+    public void saveValuesToFile(){
         JSONObject jsonObject = getOutput();
         JsonHelper.saveJsonObject(jsonObject, Contents.JsonTruckInspectionJson.FILE_PATH);
     }

@@ -18,6 +18,7 @@ import com.coretal.carinspection.R;
 import com.coretal.carinspection.adapters.SubmissionTableViewAdapter;
 import com.coretal.carinspection.db.DBHelper;
 import com.coretal.carinspection.models.Submission;
+import com.coretal.carinspection.services.API;
 import com.coretal.carinspection.utils.AlertHelper;
 import com.coretal.carinspection.utils.Contents;
 import com.coretal.carinspection.utils.DateHelper;
@@ -33,14 +34,16 @@ import java.util.Locale;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SubmissionFragment extends Fragment {
+public class SubmissionFragment extends Fragment implements API.Callback {
 
 
     private SubmissionTableViewAdapter mTableViewAdapter;
     private DBHelper dbHelper;
     private MyPreference myPref;
     private Spinner actionSpinner;
+    private TableView tableView = null;
     private List<List<SubmissionTableViewAdapter.Cell>> cellList;
+    private API api;
     public SubmissionFragment() {
         // Required empty public constructor
     }
@@ -54,7 +57,7 @@ public class SubmissionFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_submission, container, false);
-        TableView tableView = view.findViewById(R.id.submission_list);
+        tableView = view.findViewById(R.id.submission_list);
         mTableViewAdapter = new SubmissionTableViewAdapter(getContext());
         tableView.setAdapter(mTableViewAdapter);
 
@@ -80,11 +83,14 @@ public class SubmissionFragment extends Fragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("Kangtle", String.valueOf(tableView.getSelectedRow()));
                 AlertHelper.question(getActivity(), "Confirm", "Are you sure?", "Yes", "No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (actionSpinner.getSelectedItemPosition()){
                             case 0: //Reset
+                                api = new API(getContext(), SubmissionFragment.this);
+                                api.resetInspection(tableView.getSelectedRow());
                                 Log.d("Kangtle", "Reset num try");
                                 dbHelper.resetNumtry();
                                 reloadSubmissions();
@@ -221,5 +227,15 @@ public class SubmissionFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         dbHelper.close();
+    }
+
+    @Override
+    public void onProcessImage(int number, String error) {
+
+    }
+
+    @Override
+    public void onProcessSubmit(String error) {
+        reloadSubmissions();
     }
 }

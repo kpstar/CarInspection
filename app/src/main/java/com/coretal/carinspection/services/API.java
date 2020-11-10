@@ -66,14 +66,14 @@ public class API implements VolleyHelper.Callback {
         myPreference = new MyPreference(context);
         List<Submission> submissions = dbHelper.getSubmissionsToSubmit();
 
-//        final Submission submission = submissions.get(submissions.size() - 1);
-//        Log.d("Kangtle", "started to submit submissions vPlate " + submission.vehiclePlate);
+        final Submission submission = submissions.get(submissions.size() - 1);
+        Log.d("Kangtle", "started to submit submissions vPlate " + submission.vehiclePlate);
 
-        for (final Submission submission : submissions) {
-            if (submission.numTry >= myPreference.get_conf_service_max_retry()){
-                Log.d("Kangtle", "Submission num try is already reached to CONF_SERVICE_MAX_RETRY. vehiclePlate: " + submission.vehiclePlate);
-                continue;
-            }
+//        for (final Submission submission : submissions) {
+//            if (submission.numTry >= myPreference.get_conf_service_max_retry()){
+//                Log.d("Kangtle", "Submission num try is already reached to CONF_SERVICE_MAX_RETRY. vehiclePlate: " + submission.vehiclePlate);
+//                continue;
+//            }
             VolleyHelper pictureVolleyHelper = new VolleyHelper(context, new VolleyHelper.Callback() {
                 @Override
                 public void onFinishedAllRequests() {
@@ -184,6 +184,127 @@ public class API implements VolleyHelper.Callback {
 
                 pictureVolleyHelper.add(multiPartRequest);
             }
+//        }
+    }
+
+    static public void resetInspection(int index) {
+        progressDialog.show();
+        dbHelper = new DBHelper(context);
+        myPreference = new MyPreference(context);
+        List<Submission> submissions = dbHelper.getAllSubmissions();
+
+        final Submission submission = submissions.get(index);
+        Log.d("Kangtle", "started to submit submissions vPlate " + submission.vehiclePlate);
+
+        VolleyHelper pictureVolleyHelper = new VolleyHelper(context, new VolleyHelper.Callback() {
+            @Override
+            public void onFinishedAllRequests() {
+                if (submission.failedCount > 0){
+                    submission.status = Submission.STATUS_FAILED;
+                    dbHelper.setSubmissionStatus(submission);
+                }else {
+                    VolleyHelper inspectionVolleyHelper = new VolleyHelper(context);
+                    JsonObjectRequest postInspectionDataRequest = new JsonObjectRequest(
+                            Request.Method.POST,
+                            Contents.API_SUBMIT_INSPECTION,
+                            null,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    progressDialog.dismiss();
+                                    submission.status = Submission.STATUS_SUBMITTED;
+                                    myPreference.setSubmissionDate();
+                                    Log.d("Kangtle", "success to submit " + submission.vehiclePlate);
+                                    dbHelper.setSubmissionStatus(submission);
+                                    AlertHelper.message(context, "Success", "Successfully submitted", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            callback.onProcessSubmit("");
+                                        }
+                                    });
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    progressDialog.dismiss();
+                                    submission.failedCount++;
+                                    submission.status = Submission.STATUS_FAILED;
+                                    dbHelper.setSubmissionStatus(submission);
+                                    try {
+                                        String respStr = new String(error.networkResponse.data, "UTF-8");
+                                        JSONObject json = new JSONObject(respStr);
+                                        if (json.has("error")) {
+                                            callback.onProcessSubmit(json.optString("message"));
+                                        } else {
+                                            callback.onProcessSubmit(error.toString());
+                                        }
+                                    } catch (Exception e) {
+                                        callback.onProcessSubmit(e.toString());
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                    ) {
+                        @Override
+                        public byte[] getBody() {
+                            String inspectData = getSubmitInspectionData(submission);
+                            try {
+                                return inspectData.getBytes("UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                return inspectData.getBytes();
+                            }
+                        }
+
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            Map<String, String> params = new HashMap<>();
+                            params.put("Content-Type", "application/json");
+                            params.put(Contents.HEADER_KEY, Contents.TOKEN);
+                            return params;
+                        }
+                    };
+                    inspectionVolleyHelper.add(postInspectionDataRequest);
+                }
+            }
+        });
+
+        List<SubmissionFile> submissionFiles = dbHelper.getFilesForSubmissionId(submission.id);
+
+        for(final SubmissionFile submissionFile: submissionFiles){
+            if(!FileHelper.exists(submissionFile.fileLocation)){
+                Log.e("Kangtle", "Submission File " + submissionFile.fileLocation + " not exist");
+            }
+            SimpleMultiPartRequest multiPartRequest = new SimpleMultiPartRequest(
+                    Request.Method.POST,
+                    Contents.API_STAGE_PICTURE,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("Kangtle", "API_SUBMIT_PICTURE: " + submissionFile.pictureId + response);
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Kangtle", "API_SUBMIT_PICTURE: onErrorResponse " + submissionFile.pictureId);
+                    submission.failedCount ++;
+                    submission.errorDetail = "API_SUBMIT_PICTURE: onErrorResponse " + submissionFile.pictureId;
+                }
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String>  params = new HashMap<>();
+                    params.put("Content-Type", "application/json");
+                    params.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return params;
+                }
+            };;
+            multiPartRequest.addStringParam("pictureId", submissionFile.pictureId);
+            multiPartRequest.addStringParam("phoneNumber", Contents.PHONE_NUMBER);
+            multiPartRequest.addFile("file", submissionFile.fileLocation);
+
+            pictureVolleyHelper.add(multiPartRequest);
         }
     }
 
@@ -404,38 +525,43 @@ public class API implements VolleyHelper.Callback {
             inspectionNotesObject.put("notePictureId", notesPictureID);
 
             if (Contents.TRUCK_TYPE == 2) {
-                submitData.put("trailerInspectionData", truckInspectionDataJson);
+                submitData.put("trailerInspectionData", trailerInspectionDataJson);
             } else {
                 submitData.put("truckInspectionData", truckInspectionDataJson);
                 if (Contents.IS_TRAILER_CHECKED)
                     submitData.put("trailerInspectionData", trailerInspectionDataJson);
             }
-            JsonObject obj = new JsonParser().parse(String.valueOf(driverDataJson)).getAsJsonObject();
-            obj.remove(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
-            try {
-                JSONObject resp = new JSONObject(obj.toString());
-                submitData.put("driverData", resp);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (driverDataJson != null) {
+                JsonObject obj = new JsonParser().parse(String.valueOf(driverDataJson)).getAsJsonObject();
+                obj.remove(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
+                try {
+                    JSONObject resp = new JSONObject(obj.toString());
+                    submitData.put("driverData", resp);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-            JsonObject obj1 = new JsonParser().parse(String.valueOf(trailerDataJson)).getAsJsonObject();
-            obj1.remove(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
-            try {
-                JSONObject resp1 = new JSONObject(obj1.toString());
-                submitData.put("trailerData", resp1);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (trailerDataJson != null) {
+                JsonObject obj1 = new JsonParser().parse(String.valueOf(trailerDataJson)).getAsJsonObject();
+                obj1.remove(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
+                try {
+                    JSONObject resp1 = new JSONObject(obj1.toString());
+                    submitData.put("trailerData", resp1);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-            JsonObject obj2 = new JsonParser().parse(String.valueOf(vehicleDataJson)).getAsJsonObject();
-            obj2.remove(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
-            try {
-                JSONObject resp2 = new JSONObject(obj2.toString());
-                submitData.put("vehicleData", resp2);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (vehicleDataJson != null) {
+                JsonObject obj2 = new JsonParser().parse(String.valueOf(vehicleDataJson)).getAsJsonObject();
+                obj2.remove(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
+                try {
+                    JSONObject resp2 = new JSONObject(obj2.toString());
+                    submitData.put("vehicleData", resp2);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
-//            submitData.put("datesAndPictures", dateAndPicturesArray);
             submitData.put("inspectionNotes", inspectionNotesObject);
             submitData.put("driverSigniturePictureId", driverSigniturePictureId);
             submitData.put("inspectorSigniturePictureId", inspectorSigniturePictureId);

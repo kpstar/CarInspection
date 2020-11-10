@@ -38,8 +38,8 @@ public class InspectionFragment extends Fragment {
 
 
 
-    private Fragment truckInspectionFragment;
-    private Fragment trailerInspectionFragment;
+    private Fragment truckInspectionFragment = null;
+    private Fragment trailerInspectionFragment = null;
     private MyPreference myPreference;
     private Fragment selectedFragment;
 
@@ -152,6 +152,17 @@ public class InspectionFragment extends Fragment {
 
         if (!hidden) {
             checkTruckType();
+        } else {
+            saveValuesToFile();
+        }
+    }
+
+    private void saveValuesToFile() {
+        if (truckInspectionFragment != null) {
+            ((TruckInspectionFragment)truckInspectionFragment).saveValuesToFile();
+        }
+        if (trailerInspectionFragment != null) {
+            ((TrailerInspectionFragment)trailerInspectionFragment).saveValuesToFile();
         }
     }
 

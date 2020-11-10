@@ -146,7 +146,7 @@ public class TrailerInspectionFragment extends Fragment {
         }
     }
 
-    private void saveValuesToFile(){
+    public void saveValuesToFile(){
         JSONObject jsonObject = getOutput();
         JsonHelper.saveJsonObject(jsonObject, Contents.JsonTrailerInspectionJson.FILE_PATH);
     }

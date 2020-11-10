@@ -2,6 +2,7 @@ package com.coretal.carinspection.fragments;
 
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -21,8 +22,10 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.error.AuthFailureError;
 import com.android.volley.error.VolleyError;
+import com.android.volley.request.JsonArrayRequest;
 import com.android.volley.request.JsonObjectRequest;
 import com.coretal.carinspection.R;
+import com.coretal.carinspection.utils.AlertHelper;
 import com.coretal.carinspection.utils.Contents;
 import com.coretal.carinspection.utils.FileHelper;
 import com.coretal.carinspection.utils.JsonHelper;
@@ -229,9 +232,42 @@ public class TrailerDetailFragment extends Fragment implements AdapterView.OnIte
                     return headers;
                 }
             };
+
+            JsonArrayRequest getTrailerInspectionsRequest = new JsonArrayRequest(
+                    Request.Method.GET,
+                    String.format(Contents.API_GET_VEHICLE_INPSECTIONS, Contents.PHONE_NUMBER, trailer),
+                    null,
+                    new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+
+                            JsonHelper.saveJsonArray(response, Contents.JsonVehicleInspect.SEC_FILE_PATH);
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            try {
+                                String respTxt = new String(error.networkResponse.data, "UTF-8");
+                                JSONObject resp = new JSONObject(respTxt);
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                    return headers;
+                }
+            };
+
             VolleyHelper volleyHelper = new VolleyHelper(getContext());
             volleyHelper.add(getTrailerDataRequest);
-
+            volleyHelper.add(getTrailerInspectionsRequest);
         }else{
             Contents.SECOND_VEHICLE_NUMBER = "";
             FileHelper.deleteFile(Contents.JsonVehicleTrailerData.FILE_PATH);

@@ -439,6 +439,40 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
                                     };
                                     volleyHelper.add(getTrailerDataRequest);
                                     volleyHelper.add(getTrailerInspectionsRequest);
+                                } else {
+                                    JsonObjectRequest getTrailerDataRequest = new JsonObjectRequest(
+                                            Request.Method.GET,
+                                            String.format(Contents.API_GET_TRAILER, Contents.PHONE_NUMBER, vPlate),
+                                            null,
+                                            new Response.Listener<JSONObject>() {
+                                                @Override
+                                                public void onResponse(JSONObject response) {
+                                                    if (!response.has("error")){
+                                                        Log.d("Kangtle", "got trailer data successfully.");
+                                                        JsonHelper.saveJsonObject(response, Contents.JsonVehicleTrailerData.FILE_PATH);
+                                                        Contents.SECOND_VEHICLE_NUMBER = trailerId;
+                                                    }else{
+                                                        Log.d("Kangtle", "error while getting trailer data.");
+                                                    }
+                                                }
+                                            },
+                                            new Response.ErrorListener() {
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
+                                                    Log.d("Kangtle", "error while getting trailer data.");
+                                                }
+                                            }
+                                    ){
+                                        @Override
+                                        public Map<String, String> getHeaders() throws AuthFailureError {
+                                            HashMap<String, String> headers = new HashMap<String, String>();
+                                            headers.put(Contents.HEADER_KEY, Contents.TOKEN);
+                                            return headers;
+                                        }
+                                    };
+                                    if (vehicleType == 2) {
+                                        volleyHelper.add(getTrailerDataRequest);
+                                    }
                                 }
 
                                 JsonObject obj = new JsonParser().parse(String.valueOf(response)).getAsJsonObject();

@@ -25,10 +25,10 @@ public class Contents {
     public static boolean IS_STARTED_INSPECTION = false;
     public static boolean IS_TRAILER_CHECKED = true;
     public static String IS_SET_URL = "IS_SET_URL";
-    public static String API_ROOT =
-            BuildConfig.DEBUG ?
-                    "http://24.30.63.116:8080/Peled_v6/restful" :
-                    "http://peled.co/Peled_v6/restful";
+    public static String API_ROOT = "http://24.30.63.116:8080/Peled_v6/restful";
+//            BuildConfig.DEBUG ?
+//                    "http://24.30.63.116:8080/Peled_v6/restful" :
+//                    "http://peled.co/Peled_v6/restful";
     public static String API_REGISTER_DEVICE = API_ROOT + "/configuration/registerDevice/%s"; //phone_number
     public static String API_GET_VEHICLE_DATA = API_ROOT + "/vehicle/getVehicleData/%s/%s"; //phone_number/v_plate
     public static String API_GET_INSPECTORS = API_ROOT + "/inspector/getInspectors/%s";//phone_number
