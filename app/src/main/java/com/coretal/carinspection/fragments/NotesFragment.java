@@ -61,7 +61,7 @@ public class NotesFragment extends Fragment {
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertHelper.question(getContext(), "Confirm", "Are you sure?", "Yes", "No", new DialogInterface.OnClickListener() {
+                AlertHelper.question(getContext(), getString(R.string.confirm), getString(R.string.are_you_sure), getString(R.string.yes), getString(R.string.no), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         pad.clear();

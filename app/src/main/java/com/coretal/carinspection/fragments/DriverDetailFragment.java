@@ -332,6 +332,10 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("Kangtle", error.toString());
+                        myPref.setDriverId("");
+                        Contents.DRIVER_ID = "";
+                        JsonHelper.saveJsonObject(null, Contents.JsonVehicleDriverData.FILE_PATH);
+                        setValuesFromFile();
                         progressDialog.dismiss();
                     }
                 }
@@ -352,6 +356,7 @@ public class DriverDetailFragment extends Fragment implements AdapterView.OnItem
         if (!isSpinnerTouched) return;
         Log.d("Kangtle", String.format("%d selected", position));
         if (position == 0) {
+            getDriver("");
             return;
         }
         if (position > 1) {

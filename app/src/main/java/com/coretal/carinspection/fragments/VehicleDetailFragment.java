@@ -897,7 +897,7 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
             String type = vehicleDataJson.getString(Contents.JsonVehicleData.TYPE);
             String subtype = vehicleDataJson.getString(Contents.JsonVehicleData.SUBTYPE);
             String details = vehicleDataJson.getString(Contents.JsonVehicleData.DETAILS);
-            String odometer = vehicleDataJson.getString(Contents.JsonVehicleData.CURRENTODOMETER);
+            String odometer = vehicleDataJson.optString(Contents.JsonVehicleData.CURRENTODOMETER);
             driverID = vehicleDataJson.optString(Contents.JsonVehicleData.DRIVERID);
             driverName = vehicleDataJson.optString(Contents.JsonVehicleData.DRIVERNAME);
 
@@ -951,10 +951,10 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
             return false;
         }
 
-        if (odometerEdit.getText().toString().isEmpty()){
-            Toast.makeText(getContext(), getString(R.string.required_odometer_field), Toast.LENGTH_SHORT).show();
-            return false;
-        }
+//        if (odometerEdit.getText().toString().isEmpty()){
+//            Toast.makeText(getContext(), getString(R.string.required_odometer_field), Toast.LENGTH_SHORT).show();
+//            return false;
+//        }
 
         return true;
     }
@@ -967,11 +967,13 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
             Toast.makeText(getContext(), "Truck documents are missing.", Toast.LENGTH_SHORT).show();
             return false;
         }else{
-            JSONArray truckDocumentArray = dateAndPicturesJson.optJSONArray(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
-            String[] truckMandatoryTypes = myPreference.get_conf_truck_mandatory_documents();
+            if (Contents.TRUCK_TYPE == 1) {
+                JSONArray truckDocumentArray = dateAndPicturesJson.optJSONArray(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
+                String[] truckMandatoryTypes = myPreference.get_conf_truck_mandatory_documents();
 
-            if (!checkMissingOrExpiredDocuments(truckDocumentArray, truckMandatoryTypes, "VEHICLE", getString(R.string.vehicle))){
-                return false;
+                if (!checkMissingOrExpiredDocuments(truckDocumentArray, truckMandatoryTypes, "VEHICLE", getString(R.string.vehicle))) {
+                    return false;
+                }
             }
         }
 
@@ -984,6 +986,7 @@ public class VehicleDetailFragment extends Fragment implements VPlateDialog.Call
         }
 
         if (trailerDataJson != null){
+            if ((Contents.TRUCK_TYPE < 2) && Contents.SECOND_VEHICLE_NUMBER.isEmpty()) return true;
             JSONArray trailerDocumentArray = trailerDataJson.optJSONArray(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
             String[] trailerMandatoryTypes = myPreference.get_conf_trailer_mandatory_documents();
             if (!checkMissingOrExpiredDocuments(trailerDocumentArray, trailerMandatoryTypes, "TRAILER", getString(R.string.trailer))){

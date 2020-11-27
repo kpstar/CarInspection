@@ -84,7 +84,7 @@ public class SubmissionFragment extends Fragment implements API.Callback {
             @Override
             public void onClick(View v) {
                 Log.d("Kangtle", String.valueOf(tableView.getSelectedRow()));
-                AlertHelper.question(getActivity(), "Confirm", "Are you sure?", "Yes", "No", new DialogInterface.OnClickListener() {
+                AlertHelper.question(getActivity(), getString(R.string.confirm), getString(R.string.are_you_sure), getString(R.string.yes), getString(R.string.no), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (actionSpinner.getSelectedItemPosition()){

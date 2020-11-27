@@ -5,14 +5,14 @@
     <string name="Home">בית</string>
     <string name="Inspection">בדיקה</string>
     <string name="Camera">טפסים</string>
-    <string name="Notes">Notes</string>
+    <string name="Notes">הערות</string>
     <string name="Setting">הגדרות</string>
 
     <!-- Home Navigation -->
     <string name="driver_details">נהג</string>
     <string name="vehicle_details">רכב</string>
     <string name="trailer_details">גרור</string>
-    <string name="doc_details">מסמך</string>
+    <string name="doc_details">בדיקות</string>
     <string name="vehicle_info">מידע</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -28,7 +28,7 @@
     <string name="inspector">קצין בטיחות</string>
     <string name="submit">שלח נתונים</string>
     <string name="save_driver">שמור נהג</string>
-    <string name="cancel">לְבַטֵל</string>
+    <string name="cancel">לבטל</string>
     <string name="v_driver">נהג</string>
     <string name="driver_license_number">מספר רשיון</string>
     <string name="address">כתובת</string>
@@ -66,7 +66,7 @@
     <string name="homas_date">תוקף חומס</string>
     <string name="manof_date">תוקף מנוף</string>
     <string name="is_kavua">נהג קבוע ברכב</string>
-    <string name="enter_root_url_of_api">כתובת של השרת</string>
+    <string name="enter_root_url_of_api">כתובת שרת</string>
     <string name="api_root">כתובת ה API</string>
     <string name="inspect_valid_until">בדיקה בתוקף עד</string>
     <string name="vehicle_make">יצרן</string>
@@ -76,37 +76,50 @@
     <string name="missing_document">מסמכים חסרים:</string>
     <string name="vehicle">רכב</string>
     <string name="driver">נהג</string>
-    <string name="truck">מַשָׂאִית</string>
+    <string name="truck">משאית</string>
     <string name="trailer">נגרר</string>
-    <string name="inspection_id">תְעוּדַת זֶהוּת</string>
-    <string name="inspection_month">חוֹדֶשׁ</string>
-    <string name="inspection_type">סוּג</string>
-    <string name="trailer_check_desc">שלח בדיקת קרוואן</string>
+    <string name="inspection_id">תעודת זהות</string>
+    <string name="inspection_month">חודש</string>
+    <string name="inspection_type">סוג</string>
+    <string name="trailer_check_desc">שלח בדיקת נגרר</string>
     <string name="required_date_field">תאריך בדיקה חסר</string>
     <string name="required_location_field">מיקום הבדיקה חסר</string>
     <string name="required_odometer_field">מד אוץ חסר</string>
     <string name="enter_another_vehicle_number">קיימת כבר בדיקה עבור רכב זה, יש להמתין 24 שעות. ניתן להזין מס רכב אחר</string>
-    <string name="driver_id">מזהה נהג*</string>
+    <string name="driver_id">תעודת זהות*</string>
     <string name="license_number">מספר רשיון*</string>
-    <string name="name">שֵׁם*</string>
+    <string name="name">שם*</string>
     <string name="license_type">סוג רישיון*</string>
-    <string name="reset">אִתחוּל</string>
+    <string name="reset">אתחול</string>
     <string name="resend">לשלוח שוב</string>
     <string name="clear">ברור</string>
-    <string name="send">לִשְׁלוֹחַ</string>
+    <string name="send">לשלוח</string>
     <string name="desc">תיאור</string>
-    <string name="create_new_driver">ליצור מנהל התקן חדש</string>
+    <string name="create_new_driver"> צור נהג חדש</string>
     <string name="id">מזהה</string>
-    <string name="month">חוֹדֶשׁ</string>
-    <string name="date">תַאֲרִיך</string>
-    <string name="type">סוּג</string>
-    <string name="status">סטָטוּס</string>
+    <string name="month">חודש</string>
+    <string name="date">תאריך</string>
+    <string name="type">סוג</string>
+    <string name="status">סטטוס</string>
     <string name="error_detail">פירוט שגיאה</string>
-    <string name="error">שְׁגִיאָה!</string>
+    <string name="error">שגיאה!</string>
     <string name="num_try">לנסות מספר</string>
     <string name="notes">הערות</string>
     <string name="started_at">התחיל ב</string>
     <string name="ended_at">הסתיים בשעה</string>
+
+    <string name="delete">מחק</string>
+    <string name="yes">כן</string>
+    <string name="confirm">אשר</string>
+    <string name="success">הצלחה</string>
+    <string name="success_submit">נשלח בהצלחה</string>
+    <string name="success_saved">נשמר בהצלחה</string>
+    <string name="success_reverted">חזר למצב מקורי בהצלחה</string>
+    <string name="ok">אוקי</string>
+    <string name="no">לא</string>
+    <string name="are_you_sure_delete">האם אתה בטוח שברצונך למחוק?</string>
+    <string name="are_you_sure">האם אתה בטוח?</string>
+
     <string name="signatures">"\n"אם אבצע טיפולים תקופתיים, תיקון ליקויים או תיקונים אחרים לכלי הרכב, איידע
 \nאת קצין הבטיחות על כך ואמציא לו חשבוניות תיקון המאשרות כי כלי הרכב טופל
 במוסך שניתן לו רישיון לפי סעיף 127 לחוק רישוי שירותים ומקצועות בענף הרכב,n\

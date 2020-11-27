@@ -12,7 +12,11 @@ import org.json.JSONObject;
 
 public class JsonHelper {
     public static void saveJsonObject(JSONObject jsonObject, String path){
-        FileHelper.writeStringToFile(jsonObject.toString(), path);
+        if (jsonObject == null) {
+            FileHelper.writeStringToFile("", path);
+        } else {
+            FileHelper.writeStringToFile(jsonObject.toString(), path);
+        }
     }
 
     public static void saveJsonArray(JSONArray jsonArray, String path){

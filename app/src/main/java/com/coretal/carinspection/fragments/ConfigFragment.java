@@ -77,13 +77,13 @@ public class ConfigFragment extends Fragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertHelper.question(getActivity(), "Confirm", "Are you sure?", "Yes", "No", new DialogInterface.OnClickListener() {
+                AlertHelper.question(getActivity(), getString(R.string.confirm), getString(R.string.are_you_sure), getString(R.string.yes), getString(R.string.no), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (actionSpinner.getSelectedItemPosition()){
                             case 0: //Save
                                 myPreference.backup();
-                                AlertHelper.message(getContext(), "Success", "Successfully saved");
+                                AlertHelper.message(getContext(), getString(R.string.success), getString(R.string.success_saved));
                                 Log.d("Kangtle", "did backup the config data.");
                                 break;
                             case 1: //Revert

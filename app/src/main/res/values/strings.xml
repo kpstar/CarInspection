@@ -107,6 +107,19 @@
     <string name="notes">Notes</string>
     <string name="started_at">Started At</string>
     <string name="ended_at">Ended At</string>
+
+    <string name="delete">Delete</string>
+    <string name="yes">Yes</string>
+    <string name="confirm">Confirm</string>
+    <string name="success">Success</string>
+    <string name="success_submit">Successfully submitted.</string>
+    <string name="success_saved">Successfully saved.</string>
+    <string name="success_reverted">Successfully reverted.</string>
+    <string name="ok">OK</string>
+    <string name="no">No</string>
+    <string name="are_you_sure_delete">Are you sure to delete it?</string>
+    <string name="are_you_sure">Are you sure ?</string>
+
     <string name="signatures">"\n"אם אבצע טיפולים תקופתיים, תיקון ליקויים או תיקונים אחרים לכלי הרכב, איידע
 \nאת קצין הבטיחות על כך ואמציא לו חשבוניות תיקון המאשרות כי כלי הרכב טופל
 במוסך שניתן לו רישיון לפי סעיף 127 לחוק רישוי שירותים ומקצועות בענף הרכב,n\

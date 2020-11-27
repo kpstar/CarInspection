@@ -126,7 +126,7 @@ public class DateAndPictureFragment extends Fragment implements DateAndPictureDi
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 //Remove swiped item from list and notify the RecyclerView
-                AlertHelper.question(getContext(), "Delete", "Are you sure to delete it?", "Yes", "No", new DialogInterface.OnClickListener() {
+                AlertHelper.question(getContext(), getString(R.string.delete), getString(R.string.are_you_sure_delete), getString(R.string.yes), getString(R.string.no), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

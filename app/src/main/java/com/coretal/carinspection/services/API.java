@@ -13,6 +13,7 @@ import com.android.volley.error.VolleyError;
 import com.android.volley.request.JsonArrayRequest;
 import com.android.volley.request.JsonObjectRequest;
 import com.android.volley.request.SimpleMultiPartRequest;
+import com.coretal.carinspection.R;
 import com.coretal.carinspection.activities.MainActivity;
 import com.coretal.carinspection.db.DBHelper;
 import com.coretal.carinspection.models.DateAndPicture;
@@ -94,7 +95,7 @@ public class API implements VolleyHelper.Callback {
                                         myPreference.setSubmissionDate();
                                         Log.d("Kangtle", "success to submit " + submission.vehiclePlate);
                                         dbHelper.setSubmissionStatus(submission);
-                                        AlertHelper.message(context, "Success", "Successfully submitted", new DialogInterface.OnClickListener() {
+                                        AlertHelper.message(context, context.getString(R.string.success), context.getString(R.string.success_submit), new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 callback.onProcessSubmit("");
@@ -216,7 +217,7 @@ public class API implements VolleyHelper.Callback {
                                     myPreference.setSubmissionDate();
                                     Log.d("Kangtle", "success to submit " + submission.vehiclePlate);
                                     dbHelper.setSubmissionStatus(submission);
-                                    AlertHelper.message(context, "Success", "Successfully submitted", new DialogInterface.OnClickListener() {
+                                    AlertHelper.message(context, context.getString(R.string.success), context.getString(R.string.success_submit), new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             callback.onProcessSubmit("");
@@ -541,7 +542,7 @@ public class API implements VolleyHelper.Callback {
                     e.printStackTrace();
                 }
             }
-            if (trailerDataJson != null) {
+            if (trailerDataJson != null && !Contents.SECOND_VEHICLE_NUMBER.isEmpty()) {
                 JsonObject obj1 = new JsonParser().parse(String.valueOf(trailerDataJson)).getAsJsonObject();
                 obj1.remove(Contents.JsonDateAndPictures.DATES_AND_PICTURES);
                 try {
