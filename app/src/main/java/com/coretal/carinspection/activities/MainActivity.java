@@ -61,7 +61,7 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements API_PhoneNumberDialog.Callback {
 
-    String[] PERMISSIONS = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    String[] PERMISSIONS = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.READ_MEDIA_IMAGES};
 
     private BottomNavigationViewEx navigation;
     private ImageView connectivityImageView;
